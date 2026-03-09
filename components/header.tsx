@@ -14,13 +14,13 @@ const Header = () => {
         <div className="md:flex gap-10 hidden text-text-200">
           <Link
             href={"#"}
-            className="uppercase font-medium hover:text-[#38BDF8] transition-colors"
+            className="uppercase font-medium hover:text-primary transition-colors"
           >
             Our Cars
           </Link>
           <Link
             href={"#"}
-            className="uppercase font-medium hover:text-[#38BDF8] transition-colors"
+            className="uppercase font-medium hover:text-primary transition-colors"
           >
             Find my Booking
           </Link>
