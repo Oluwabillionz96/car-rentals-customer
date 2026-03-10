@@ -28,11 +28,17 @@ const HeroSection = () => {
           </div>
 
           <Link
-            href="#"
+            href="/our-cars"
             className="flex items-center justify-center gap-2 bg-[#59C1F5] text-[#0F172A] py-5 rounded-2xl w-full font-bold text-xl transition-all active:scale-[0.98] shadow-lg"
           >
             Find Your Car
             <Search size={26} strokeWidth={2.5} />
+          </Link>
+          <Link
+            href="/how-it-works"
+            className="flex items-center justify-center gap-2  border-2 border-[#E2E8F0] text-white py-5 rounded-2xl w-full font-bold text-xl transition-all active:scale-[0.98] shadow-lg"
+          >
+            How It works
           </Link>
         </div>
       </div>
@@ -52,14 +58,14 @@ const HeroSection = () => {
           </p>
           <div className="flex flex-row gap-4 pt-2">
             <Link
-              href="#"
+              href="/our-cars"
               className="flex items-center justify-center font-sans gap-2 bg-primary text-white px-8 py-4 rounded-xl font-semibold text-sm transition-all hover:opacity-90 active:scale-95 shadow-lg shadow-primary/20"
             >
               <Search size={18} strokeWidth={3} />
-              See Cars
+              Our Cars
             </Link>
             <Link
-              href="#"
+              href="/how-it-works"
               className="flex items-center justify-center font-sans gap-2 border-2 border-[#E2E8F0] text-text-200 px-8 py-4 rounded-xl font-semibold text-sm transition-all hover:bg-slate-50 active:scale-95"
             >
               How it works

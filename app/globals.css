@@ -6,3 +6,9 @@
   --color-text-200: #475569;
   --font-sans: var(--font-inter);
 }
+
+@layer {
+  button {
+    @apply cursor-pointer;
+  }
+}
