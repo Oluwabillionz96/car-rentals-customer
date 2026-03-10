@@ -7,6 +7,7 @@ const CarGrid = () => {
       {MOCK_CARS.map((car) => (
         <CarCard
           key={car.id}
+          id={car.id}
           name={car.name}
           year={car.year}
           type={car.type}

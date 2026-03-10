@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft, Menu, X } from "lucide-react";
+import { ArrowLeft, Menu, Share2, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -22,6 +22,8 @@ const Header = () => {
     setIsSidebarOpen(false);
   }, [pathname]);
 
+  const isDetailsPage = pathname.startsWith("/cars");
+
   return (
     <header className="z-50 fixed bg-white/90 p-4  md:py-6 md:px-20 w-full top-0 left-0  shadow-sm backdrop-blur-md">
       <nav className=" flex justify-between   ">
@@ -30,16 +32,21 @@ const Header = () => {
             onClick={() => {
               router.back();
             }}
+            className="md:hidden"
           >
             <ArrowLeft />
           </button>
         )}
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.png" alt="Logo" width={25} height={25} />
-          <p className="text-text-100 font-bold text-sm md:font-extrabold md:text-xl">
-            Solution <span className="hidden md:inline">Car Rentals</span>
-          </p>
-        </Link>
+        {isDetailsPage ? (
+          <p className="font-bold text-lg text-text-100">Car Details</p>
+        ) : (
+          <Link href="/" className="flex items-center gap-2">
+            <Image src="/logo.png" alt="Logo" width={25} height={25} />
+            <p className="text-text-100 font-bold text-sm md:font-extrabold md:text-xl">
+              Solution <span className="hidden md:inline">Car Rentals</span>
+            </p>
+          </Link>
+        )}
         <div className="flex gap-10 text-text-200">
           {navLinks.map((item) => (
             <Link
@@ -50,8 +57,17 @@ const Header = () => {
               {item.name}
             </Link>
           ))}
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-            {isSidebarOpen ? <X /> : <Menu />}
+          <button
+            onClick={
+              isDetailsPage ? () => {} : () => setIsSidebarOpen(!isSidebarOpen)
+            }
+            className="md:hidden"
+          >
+            {isDetailsPage ? (
+              <Share2 />
+            ) : (
+              <>{isSidebarOpen ? <X /> : <Menu />}</>
+            )}
           </button>
         </div>
       </nav>

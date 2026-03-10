@@ -36,7 +36,7 @@ const HeroSection = () => {
           </Link>
           <Link
             href="/how-it-works"
-            className="flex items-center justify-center gap-2  border-2 border-[#E2E8F0] text-white py-5 rounded-2xl w-full font-bold text-xl transition-all active:scale-[0.98] shadow-lg"
+            className="flex items-center justify-center gap-2  border-2 border-border-100 text-white py-5 rounded-2xl w-full font-bold text-xl transition-all active:scale-[0.98] shadow-lg"
           >
             How It works
           </Link>
@@ -66,7 +66,7 @@ const HeroSection = () => {
             </Link>
             <Link
               href="/how-it-works"
-              className="flex items-center justify-center font-sans gap-2 border-2 border-[#E2E8F0] text-text-200 px-8 py-4 rounded-xl font-semibold text-sm transition-all hover:bg-slate-50 active:scale-95"
+              className="flex items-center justify-center font-sans gap-2 border-2 border-border-100 text-text-200 px-8 py-4 rounded-xl font-semibold text-sm transition-all hover:bg-slate-50 active:scale-95"
             >
               How it works
             </Link>
