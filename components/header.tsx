@@ -1,10 +1,12 @@
 "use client";
-import { ArrowLeft, Menu } from "lucide-react";
+import { ArrowLeft, Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import MobileNavbar from "./mobile-navbar";
+import { useEffect, useState } from "react";
 
-const navLinks = [
+export const navLinks = [
   { name: "Home", pathname: "/" },
   { name: "Our Cars", pathname: "/our-cars" },
   { name: "How It Works", pathname: "/how-it-works" },
@@ -14,10 +16,15 @@ const navLinks = [
 const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [pathname]);
 
   return (
-    <header>
-      <nav className="bg-white/90 p-4 md:py-6 md:px-20 fixed w-full top-0 left-0 flex justify-between z-50 shadow-sm backdrop-blur-md">
+    <header className="z-50 fixed bg-white/90 p-4  md:py-6 md:px-20 w-full top-0 left-0  shadow-sm backdrop-blur-md">
+      <nav className=" flex justify-between   ">
         {pathname !== "/" && (
           <button
             onClick={() => {
@@ -43,11 +50,12 @@ const Header = () => {
               {item.name}
             </Link>
           ))}
-          <button>
-            <Menu />
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+            {isSidebarOpen ? <X /> : <Menu />}
           </button>
         </div>
       </nav>
+      <MobileNavbar isNavOpen={isSidebarOpen} />
     </header>
   );
 };

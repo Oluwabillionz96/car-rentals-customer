@@ -17,7 +17,7 @@ const HeroSection = () => {
         {/* Subtle overlay for text legibility */}
         <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
 
-        <div className="relative z-10 space-y-4">
+        <div className="relative  space-y-4">
           <div className="space-y-2">
             <h1 className="text-4xl font-bold text-white leading-[1.1] tracking-tight">
               Rent a car in Nigeria
