@@ -18,9 +18,12 @@ const Input = ({
         type={type}
         placeholder={placeholder}
         id={id}
-        className="h-full w-full  outline-border-100 placeholder:text-text-400 p-4 pl-9"
+        className="h-full w-full  outline-border-100 placeholder:text-text-400 p-4 pl-9 lg:pl-4"
       />
-      <Icon className="absolute top-4 left-2 text-text-400" size={18} />
+      <Icon
+        className="absolute top-4 left-2 text-text-400 lg:hidden"
+        size={18}
+      />
     </div>
   );
 };

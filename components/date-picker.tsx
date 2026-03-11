@@ -206,7 +206,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
   return (
     <div className={`flex flex-col gap-4 w-full max-w-[400px] ${className}`}>
-      <h3 className="text-text-300 text-[10px] md:text-sm font-black uppercase tracking-widest px-1">
+      <h3 className="text-text-300 text-[10px] md:text-sm font-bold uppercase tracking-widest px-1">
         {label}
       </h3>
 

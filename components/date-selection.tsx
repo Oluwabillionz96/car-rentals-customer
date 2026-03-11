@@ -1,27 +1,41 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import DatePicker from "./date-picker";
 import { ArrowLeft } from "lucide-react";
 import { Car } from "@/constants/cars";
+import { calculateDays } from "@/app/(public)/cars/[id]/booking/page";
 
-const DateSelection = ({ car }: { car?: Car }) => {
-  const [pickupDate, setPickupDate] = useState<Date | null>(null);
-  const [dropoffDate, setDropoffDate] = useState<Date | null>(null);
-  const calculateDays = (start: Date | null, end: Date | null) => {
-    if (!start || !end) return 0;
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-  };
+const DateSelection = ({
+  car,
+  pickupDate,
+  dropoffDate,
+  setPickupDate,
+  setDropoffDate,
+}: {
+  car?: Car;
+  pickupDate: Date | null;
+  dropoffDate: Date | null;
+  setPickupDate: Dispatch<SetStateAction<Date | null>>;
+  setDropoffDate: Dispatch<SetStateAction<Date | null>>;
+}) => {
   const totalDays = calculateDays(pickupDate, dropoffDate);
   const totalPrice = totalDays * (car?.price ?? 0);
   return (
-    <section className="space-y-4">
-      <header className="flex justify-between items-center">
-        <h3 className="text-lg font-bold text-text-100">Rental Dates</h3>
+    <section className="space-y-4 lg:bg-white lg:border border-primary/10 lg:rounded-xl lg:p-8">
+      <header className="flex justify-between lg:gap-3 lg:justify-start items-center">
+        <h3 className="text-lg font-bold text-text-100 lg:hidden">
+          Rental Dates
+        </h3>
         {pickupDate && dropoffDate && (
-          <p className="bg-primary rounded-full text-white py-1 px-3 w-fit text-xs font-semibold">
+          <p className="bg-primary lg:hidden rounded-full text-white py-1 px-3 w-fit text-xs font-semibold">
             {totalDays} {totalDays === 1 ? "Day" : "Days"} Selected
           </p>
         )}
+        <span className="text-sm text-white hidden lg:block font-bold px-3 py-1.5 bg-primary rounded-full">
+          1
+        </span>
+        <p className="text-xl font-bold hidden lg:block text-text-100">
+          Select Dates
+        </p>
       </header>
 
       {pickupDate && (

@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import CarInfo from "@/components/car-info";
 import DesktopBookingCard from "@/components/desktop-booking-card";
+import NavigationMap from "@/components/navigation-map";
 
 const CarDetailsPage = () => {
   const { id } = useParams();
@@ -54,19 +55,13 @@ const CarDetailsPage = () => {
   return (
     <div className="min-h-screen pb-32 md:pb-20">
       {/* Desktop Breadcrumbs */}
-      <div className="hidden md:flex items-center gap-2 text-sm text-slate-500 mb-8 max-w-7xl mx-auto px-4">
-        <Link href="/" className="hover:text-primary transition-colors">
-          Home
-        </Link>
-        <ChevronRight size={14} />
-        <Link href="/our-cars" className="hover:text-primary transition-colors">
-          Rentals
-        </Link>
-        <ChevronRight size={14} />
-        <span className="text-text-100 font-medium">
-          {car.name} {car.year}
-        </span>
-      </div>
+      <NavigationMap
+        routes={[
+          { href: "/", label: "Home" },
+          { href: "/our-cars", label: "Our Cars" },
+          { href: `/cars/${car.id}`, label: car.name + " " + car.year },
+        ]}
+      />
 
       <div className="max-w-7xl mx-auto px-0 md:px-4 grid grid-cols-1 md:grid-cols-12 gap-8">
         {/* Left Column: Images & Info */}
