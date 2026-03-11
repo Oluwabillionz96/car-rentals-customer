@@ -23,6 +23,7 @@ const Header = () => {
   }, [pathname]);
 
   const isDetailsPage = pathname.startsWith("/cars");
+  const isBooking = isDetailsPage && pathname.includes("/booking");
 
   return (
     <header className="z-50 fixed bg-white/90 p-4  md:py-6 md:px-20 w-full top-0 left-0  shadow-sm backdrop-blur-md">
@@ -32,21 +33,26 @@ const Header = () => {
             onClick={() => {
               router.back();
             }}
-            className="md:hidden"
+            className={"md:hidden"}
           >
             <ArrowLeft />
           </button>
         )}
-        {isDetailsPage ? (
-          <p className="font-bold text-lg text-text-100">Car Details</p>
-        ) : (
-          <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo.png" alt="Logo" width={25} height={25} />
-            <p className="text-text-100 font-bold text-sm md:font-extrabold md:text-xl">
-              Solution <span className="hidden md:inline">Car Rentals</span>
-            </p>
-          </Link>
-        )}
+
+        <p className="font-bold text-lg text-text-100 lg:hidden">
+          {isBooking ? "Book Your Ride" : "Car Details"}
+        </p>
+
+        <Link
+          href="/"
+          className={`flex items-center gap-2 ${isDetailsPage ? "hidden md:flex" : ""}`}
+        >
+          <Image src="/logo.png" alt="Logo" width={25} height={25} />
+          <p className="text-text-100 font-bold text-sm md:font-extrabold md:text-xl">
+            Solution <span className="hidden md:inline">Car Rentals</span>
+          </p>
+        </Link>
+
         <div className="flex gap-10 text-text-200">
           {navLinks.map((item) => (
             <Link
@@ -59,11 +65,13 @@ const Header = () => {
           ))}
           <button
             onClick={
-              isDetailsPage ? () => {} : () => setIsSidebarOpen(!isSidebarOpen)
+              isDetailsPage && !isBooking
+                ? () => {}
+                : () => setIsSidebarOpen(!isSidebarOpen)
             }
             className="md:hidden"
           >
-            {isDetailsPage ? (
+            {isDetailsPage && !isBooking ? (
               <Share2 />
             ) : (
               <>{isSidebarOpen ? <X /> : <Menu />}</>

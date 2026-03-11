@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { MOCK_CARS } from "@/constants/cars";
+import { getCar } from "@/constants/cars";
 import Image from "next/image";
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import { useRef, useState } from "react";
@@ -35,7 +35,7 @@ const CarDetailsPage = () => {
     }
   };
 
-  const car = MOCK_CARS.find((c) => c.id === id);
+  const car = getCar(id);
 
   if (!car) {
     return (
@@ -78,36 +78,36 @@ const CarDetailsPage = () => {
               onScroll={handleScroll}
               className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar md:rounded-3xl shadow-sm"
             >
-                {[...(car.gallery.length > 0 ? car.gallery : [car.image])].map(
-                  (img, i) => (
-                    <div
-                      key={i}
-                      className="relative aspect-16/10 min-w-full snap-center"
-                    >
-                      <Image
-                        src={img}
-                        alt={`${car.name} ${i}`}
-                        fill
-                        priority={i === 0}
-                        className="object-cover"
-                      />
-                    </div>
-                  )
-                )}
-              </div>
-
-              {/* Mobile Dots */}
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 md:hidden">
-                {(car.gallery.length > 0 ? car.gallery : [car.image]).map(
-                  (_, i) => (
-                    <div
-                      key={i}
-                      className={`h-2 rounded-full transition-all duration-300 ${activeImage === i ? "w-6 bg-white" : "w-2 bg-white/50"}`}
+              {[...(car.gallery.length > 0 ? car.gallery : [car.image])].map(
+                (img, i) => (
+                  <div
+                    key={i}
+                    className="relative aspect-16/10 min-w-full snap-center"
+                  >
+                    <Image
+                      src={img}
+                      alt={`${car.name} ${i}`}
+                      fill
+                      priority={i === 0}
+                      className="object-cover"
                     />
-                  )
-                )}
-              </div>
+                  </div>
+                ),
+              )}
             </div>
+
+            {/* Mobile Dots */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 md:hidden">
+              {(car.gallery.length > 0 ? car.gallery : [car.image]).map(
+                (_, i) => (
+                  <div
+                    key={i}
+                    className={`h-2 rounded-full transition-all duration-300 ${activeImage === i ? "w-6 bg-white" : "w-2 bg-white/50"}`}
+                  />
+                ),
+              )}
+            </div>
+          </div>
 
           {/* Desktop Gallery Thumbnails */}
           <div className="hidden md:grid grid-cols-4 gap-4 mt-6">
@@ -155,10 +155,13 @@ const CarDetailsPage = () => {
             <span className="text-xs text-text-400 "> / day</span>
           </p>
         </div>
-        <button className="bg-primary text-white px-5 h-14 rounded-xl font-bold text-base shadow-xl  flex items-center gap-2 active:scale-95 transition-all">
+        <Link
+          href={`/cars/${car.id}/booking`}
+          className="bg-primary text-white px-5 h-14 rounded-xl font-bold text-base shadow-xl  flex items-center gap-2 active:scale-95 transition-all"
+        >
           Book
           <ArrowLeft size={20} className="rotate-180" />
-        </button>
+        </Link>
       </div>
     </div>
   );

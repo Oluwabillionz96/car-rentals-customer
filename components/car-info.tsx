@@ -1,12 +1,5 @@
-import { GET_CAR_PROPS, MOCK_CARS } from "@/constants/cars";
-import {
-  CheckCircle2,
-  ChevronDown,
-  Fuel,
-  MapPin,
-  Settings,
-  Users,
-} from "lucide-react";
+import { GET_CAR_PROPS, getCar } from "@/constants/cars";
+import { CheckCircle2, ChevronDown, MapPin } from "lucide-react";
 import { ParamValue } from "next/dist/server/request/params";
 import { Dispatch, SetStateAction } from "react";
 import IconCard from "./icon-card";
@@ -20,7 +13,7 @@ const CarInfo = ({
   setIsReadMore: Dispatch<SetStateAction<boolean>>;
   isReadMore: boolean;
 }) => {
-  const car = MOCK_CARS.find((c) => c.id === id);
+  const car = getCar(id);
   return (
     <div className="px-6 md:p-0 space-y-6">
       <div className="justify-between flex items-start gap-2">

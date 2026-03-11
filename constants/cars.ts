@@ -1,4 +1,5 @@
 import { Fuel, Settings, Users } from "lucide-react";
+import { ParamValue } from "next/dist/server/request/params";
 
 export interface Car {
   id: string;
@@ -225,3 +226,7 @@ export const GET_CAR_PROPS = (car?: Car) => [
     icon: Fuel,
   },
 ];
+
+export function getCar(id: string | ParamValue) {
+  return MOCK_CARS.find((car) => car.id === id);
+}

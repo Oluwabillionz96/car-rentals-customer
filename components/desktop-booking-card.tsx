@@ -1,6 +1,7 @@
 import { Car, GET_CAR_PROPS } from "@/constants/cars";
 import { ArrowLeft, CheckCircle2, Fuel, Settings, Users } from "lucide-react";
 import IconCard from "./icon-card";
+import Link from "next/link";
 
 const DesktopBookingCard = ({ car }: { car: Car }) => {
   return (
@@ -34,9 +35,9 @@ const DesktopBookingCard = ({ car }: { car: Car }) => {
           </div>
 
           <div className="space-y-4">
-            <button className="w-full bg-primary text-white py-4 rounded-xl font-black text-base  hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+            <Link href={`/cars/${car.id}/booking`} className="w-full bg-primary text-white py-4 rounded-xl font-black text-base  hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
               Book This Car
-            </button>
+            </Link>
             <button className="w-full bg-slate-50 text-text-100 py-4 rounded-xl font-black text-base border border-slate-100 hover:bg-white transition-all">
               Add to Favorites
             </button>
