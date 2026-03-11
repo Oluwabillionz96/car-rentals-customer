@@ -1,4 +1,4 @@
-import { MOCK_CARS } from "@/constants/cars";
+import { GET_CAR_PROPS, MOCK_CARS } from "@/constants/cars";
 import {
   CheckCircle2,
   ChevronDown,
@@ -25,7 +25,7 @@ const CarInfo = ({
     <div className="px-6 md:p-0 space-y-6">
       <div className="justify-between flex items-start gap-2">
         <div className="flex-1">
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap md:hidden">
             <p className="bg-primary/20 text-primary text-xs font-medium px-2 py-1 rounded-full">
               {car?.type}
             </p>
@@ -43,7 +43,7 @@ const CarInfo = ({
           </p>
         </div>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2 md:hidden">
         <h1 className="text-2xl md:text-4xl font-bold text-text-100 truncate">
           {car?.name} {car?.year}
         </h1>
@@ -53,37 +53,26 @@ const CarInfo = ({
       </div>
 
       {/* Quick Specs Boxes */}
-      <div className="grid grid-cols-2 gap-4">
-        {[
-          {
-            label: `${car?.seats} SEATS`,
-            icon: Users,
-          },
-          {
-            label: car?.transmission.toUpperCase(),
-            icon: Settings,
-          },
-          {
-            label: car?.fuel.toUpperCase(),
-            icon: Fuel,
-          },
-        ].map((spec, i) => (
+      <div className="grid grid-cols-2 md:hidden gap-4">
+        {GET_CAR_PROPS(car).map((spec, i) => (
           <IconCard key={i} text={spec.label ?? ""} icon={spec.icon} />
         ))}
       </div>
 
       {/* About Section */}
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-text-100 ">About this car</h2>
+        <h2 className="text-lg md:text-xl font-bold text-text-100 ">
+          Description
+        </h2>
         <div className="relative">
           <p
-            className={`text-text-200 text-sm leading-relaxed  transition-all duration-300 ${!isReadMore && "line-clamp-4"}`}
+            className={`text-text-200 text-sm md:text-lg leading-relaxed  transition-all duration-300 ${!isReadMore && "line-clamp-4 md:line-clamp-5"}`}
           >
             {car?.description}
           </p>
           <button
             onClick={() => setIsReadMore(!isReadMore)}
-            className="text-primary text-sm font-bold mt-2 flex items-center gap-1 hover:underline active:scale-95 transition-all"
+            className="text-primary md:hidden text-sm font-bold mt-2 flex items-center gap-1 hover:underline active:scale-95 transition-all"
           >
             {isReadMore ? "Read less" : "Read more"}
             <ChevronDown
@@ -97,7 +86,7 @@ const CarInfo = ({
       {/* Top Features */}
       <div className="space-y-4">
         <h2 className="text-lg font-bold text-text-100">Top Features</h2>
-        <div className="grid grid-cols-1 gap-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4">
           {car?.features.map((feature, i) => (
             <div key={i} className="flex items-center gap-3">
               <CheckCircle2 size={20} className="text-green-500" />
@@ -117,7 +106,7 @@ const CarInfo = ({
             View map
           </button>
         </div>
-        <div className="w-full py-4 px-2 rounded-xl bg-[#F1F5F9] border border-slate-100 flex items-center gap-4 transition-all hover:bg-white hover:shadow-md group">
+        <div className="w-full py-4 px-2 md:px-4 rounded-xl bg-[#F1F5F9] border border-slate-100 flex items-center gap-4 transition-all hover:bg-white hover:shadow-md group">
           <div className="bg-primary/20 text-primary p-3 rounded-2xl group-hover:scale-110 transition-transform">
             <MapPin size={24} />
           </div>
