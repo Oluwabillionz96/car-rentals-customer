@@ -65,14 +65,12 @@ const Header = () => {
           ))}
           <button
             onClick={
-              isDetailsPage && !isBooking
-                ? () => {}
-                : () => setIsSidebarOpen(!isSidebarOpen)
+              isDetailsPage ? () => {} : () => setIsSidebarOpen(!isSidebarOpen)
             }
             className="md:hidden"
           >
-            {isDetailsPage && !isBooking ? (
-              <Share2 />
+            {isDetailsPage ? (
+              <> {!isBooking && <Share2 />}</>
             ) : (
               <>{isSidebarOpen ? <X /> : <Menu />}</>
             )}

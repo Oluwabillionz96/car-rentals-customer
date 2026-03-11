@@ -5,6 +5,7 @@
   --color-primary: #4fbff8;
   --color-text-200: #475569;
   --color-text-300: #64748b;
+  --color-label: #334155;
   --color-border-100: #e2e8f0;
   --color-text-400: #94a3b8;
   --font-sans: var(--font-inter);
@@ -19,4 +20,3 @@
     scrollbar-width: none; /* Firefox */
   }
 }
-
