@@ -3,19 +3,8 @@
 import { useParams, useRouter } from "next/navigation";
 import { MOCK_CARS } from "@/constants/cars";
 import Image from "next/image";
-import {
-  ArrowLeft,
-  Share2,
-  Heart,
-  Users,
-  Settings,
-  Fuel,
-  CheckCircle2,
-  MapPin,
-  ChevronRight,
-  ChevronDown,
-} from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, ChevronRight } from "lucide-react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import CarInfo from "@/components/car-info";
 import DesktopBookingCard from "@/components/desktop-booking-card";
@@ -25,6 +14,26 @@ const CarDetailsPage = () => {
   const router = useRouter();
   const [isReadMore, setIsReadMore] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, offsetWidth } = scrollRef.current;
+      const index = Math.round(scrollLeft / offsetWidth);
+      if (index !== activeImage) {
+        setActiveImage(index);
+      }
+    }
+  };
+
+  const scrollToImage = (index: number) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        left: index * scrollRef.current.offsetWidth,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const car = MOCK_CARS.find((c) => c.id === id);
 
@@ -64,56 +73,65 @@ const CarDetailsPage = () => {
         <div className="md:col-span-8 space-y-8">
           {/* Main Image Slider/Gallery */}
           <div className="relative group">
-            <div className="relative aspect-16/10 md:rounded-3xl overflow-hidden shadow-sm">
-              <Image
-                src={car.gallery[activeImage] || car.image}
-                alt={car.name}
-                fill
-                className="object-cover"
-              />
-              {/* Mobile Heart Button */}
-              {/* <button className="absolute top-4 right-4 bg-white p-2.5 rounded-full shadow-lg md:hidden">
-                <Heart
-                  size={20}
-                  className="text-slate-400 group-hover:text-red-500 transition-colors"
-                />
-              </button> */}
+            <div
+              ref={scrollRef}
+              onScroll={handleScroll}
+              className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar md:rounded-3xl shadow-sm"
+            >
+                {[...(car.gallery.length > 0 ? car.gallery : [car.image])].map(
+                  (img, i) => (
+                    <div
+                      key={i}
+                      className="relative aspect-16/10 min-w-full snap-center"
+                    >
+                      <Image
+                        src={img}
+                        alt={`${car.name} ${i}`}
+                        fill
+                        priority={i === 0}
+                        className="object-cover"
+                      />
+                    </div>
+                  )
+                )}
+              </div>
 
               {/* Mobile Dots */}
               <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 md:hidden">
-                {car.gallery.map((_, i) => (
-                  <div
-                    key={i}
-                    className={`h-2 rounded-full transition-all duration-300 ${activeImage === i ? "w-6 bg-white" : "w-2 bg-white/50"}`}
-                  />
-                ))}
+                {(car.gallery.length > 0 ? car.gallery : [car.image]).map(
+                  (_, i) => (
+                    <div
+                      key={i}
+                      className={`h-2 rounded-full transition-all duration-300 ${activeImage === i ? "w-6 bg-white" : "w-2 bg-white/50"}`}
+                    />
+                  )
+                )}
               </div>
             </div>
 
-            {/* Desktop Gallery Thumbnails */}
-            <div className="hidden md:grid grid-cols-4 gap-4 mt-6">
-              {car.gallery.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImage(i)}
-                  className={`relative aspect-video rounded-2xl overflow-hidden border-2 transition-all ${activeImage === i ? "border-primary ring-4 ring-primary/10" : "border-transparent opacity-70 hover:opacity-100"}`}
-                >
-                  <Image
-                    src={img}
-                    alt={`${car.name} ${i}`}
-                    fill
-                    className="object-cover"
-                  />
-                  {i === 3 && car.gallery.length > 4 && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                      <span className="text-white font-bold">
-                        +{car.gallery.length - 4}
-                      </span>
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
+          {/* Desktop Gallery Thumbnails */}
+          <div className="hidden md:grid grid-cols-4 gap-4 mt-6">
+            {car.gallery.slice(0, 4).map((img, i) => (
+              <button
+                key={i}
+                onClick={() => scrollToImage(i)}
+                className={`relative aspect-video rounded-2xl overflow-hidden border-2 transition-all ${activeImage === i ? "border-primary ring-4 ring-primary/10" : "border-transparent opacity-70 hover:opacity-100"}`}
+              >
+                <Image
+                  src={img}
+                  alt={`${car.name} ${i}`}
+                  fill
+                  className="object-cover"
+                />
+                {i === 3 && car.gallery.length > 4 && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <span className="text-white font-bold">
+                      +{car.gallery.length - 4}
+                    </span>
+                  </div>
+                )}
+              </button>
+            ))}
           </div>
 
           {/* Mobile Car Header Info */}

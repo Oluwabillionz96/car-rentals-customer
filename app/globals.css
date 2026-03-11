@@ -10,8 +10,13 @@
   --font-sans: var(--font-inter);
 }
 
-@layer {
-  button {
-    @apply cursor-pointer;
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }
+
