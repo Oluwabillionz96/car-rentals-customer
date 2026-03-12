@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const DesktopBookingCard = ({ car }: { car: Car }) => {
   return (
-    <div className="hidden md:block md:col-span-4">
+    <div className="hidden lg:block lg:col-span-4">
       <div className="top-44 space-y-6">
         <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-8 relative overflow-hidden">
           <p className="bg-primary/20 text-primary text-xs font-medium px-2 py-1 rounded-full w-fit">

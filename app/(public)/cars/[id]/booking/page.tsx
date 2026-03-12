@@ -38,8 +38,10 @@ const CarBookingPage = () => {
   const car = getCar(id);
   const router = useRouter();
   const booking = useBookingStore((state) => state.booking);
-  const [pickupDate, setPickupDate] = useState<Date | null>(booking.pickupDate );
-  const [dropoffDate, setDropoffDate] = useState<Date | null>(booking.dropoffDate);
+  const [pickupDate, setPickupDate] = useState<Date | null>(booking.pickupDate);
+  const [dropoffDate, setDropoffDate] = useState<Date | null>(
+    booking.dropoffDate,
+  );
 
   const {
     register,
@@ -99,7 +101,7 @@ const CarBookingPage = () => {
             { href: "/", label: "Home" },
             { href: "/our-cars", label: "Our Cars" },
             { href: `/cars/${car?.id}`, label: car?.name ?? "" },
-            { href: `/cars/${car?.id}/booking`, label: "Checkout" },
+            { href: `/cars/${car?.id}/booking`, label: "Booking" },
           ]}
         />
         <h1 className="text-4xl font-extrabold text-text-500 mt-4 mb-2">
@@ -109,7 +111,7 @@ const CarBookingPage = () => {
           Secure your premium vehicle in just a few steps.
         </p>
       </header>
-      <section className="flex gap-8">
+      <section className="flex flex-col lg:flex-row gap-8">
         <section className="space-y-8 flex-1">
           <MobileCarCard car={car} />
           <div className="space-y-2">

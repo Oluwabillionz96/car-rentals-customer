@@ -29,7 +29,7 @@ const Header = () => {
   return (
     <header className="z-50 fixed bg-white/90 p-4  md:py-6 md:px-20 w-full top-0 left-0  shadow-sm backdrop-blur-md">
       <nav className=" flex justify-between   ">
-        {pathname !== "/" && (
+        {isDetailsPage && (
           <button
             onClick={() => {
               router.back();
@@ -40,9 +40,11 @@ const Header = () => {
           </button>
         )}
 
-        <p className="font-bold text-lg text-text-100 lg:hidden">
-          {isBooking ? "Book Your Ride" : isPayment ? "Payment" : "Car Details"}
-        </p>
+        {isDetailsPage && (
+          <p className="font-bold text-lg text-text-100 lg:hidden">
+            {isBooking ? "Book Your Ride" : isPayment ? "Payment" : "Car Details"}
+          </p>
+        )}
 
         <Link
           href="/"

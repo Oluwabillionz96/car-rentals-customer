@@ -12,7 +12,7 @@ const MobileCarCard = ({
 }) => {
   return (
     <div
-      className={`flex items-start gap-4 lg:hidden  border ${isPayment ? "border-neutral-100 bg-white shadow-md shadow-neutral-100" : "border-primary/20 bg-primary/10"} p-4 rounded-xl`}
+      className={`flex items-start gap-4 lg:hidden border ${isPayment ? "border-neutral-100 bg-white shadow-md shadow-neutral-100" : "border-primary/20 bg-primary/10"} p-4 rounded-xl`}
     >
       <div className="w-20 aspect-square relative rounded-lg overflow-hidden">
         <Image

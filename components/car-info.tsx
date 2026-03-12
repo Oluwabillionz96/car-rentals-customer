@@ -18,7 +18,7 @@ const CarInfo = ({
     <div className="px-6 md:p-0 space-y-6">
       <div className="justify-between flex items-start gap-2">
         <div className="flex-1">
-          <div className="flex gap-2 flex-wrap md:hidden">
+          <div className="flex gap-2 flex-wrap lg:hidden">
             <p className="bg-primary/20 text-primary text-xs font-medium px-2 py-1 rounded-full">
               {car?.type}
             </p>
@@ -27,7 +27,7 @@ const CarInfo = ({
             </p>
           </div>
         </div>
-        <div className="md:hidden  text-right">
+        <div className="lg:hidden text-right">
           <p className="text-primary text-xl font-bold">
             ₦{car?.price.toLocaleString()}
           </p>
@@ -36,7 +36,7 @@ const CarInfo = ({
           </p>
         </div>
       </div>
-      <div className="space-y-2 md:hidden">
+      <div className="space-y-2 lg:hidden">
         <h1 className="text-2xl md:text-4xl font-bold text-text-100 truncate">
           {car?.name} {car?.year}
         </h1>
@@ -46,7 +46,7 @@ const CarInfo = ({
       </div>
 
       {/* Quick Specs Boxes */}
-      <div className="grid grid-cols-2 md:hidden gap-4">
+      <div className="grid grid-cols-2 lg:hidden gap-4">
         {GET_CAR_PROPS(car).map((spec, i) => (
           <IconCard key={i} text={spec.label ?? ""} icon={spec.icon} />
         ))}
@@ -65,7 +65,7 @@ const CarInfo = ({
           </p>
           <button
             onClick={() => setIsReadMore(!isReadMore)}
-            className="text-primary md:hidden text-sm font-bold mt-2 flex items-center gap-1 hover:underline active:scale-95 transition-all"
+            className="text-primary lg:hidden text-sm font-bold mt-2 flex items-center gap-1 hover:underline active:scale-95 transition-all"
           >
             {isReadMore ? "Read less" : "Read more"}
             <ChevronDown
@@ -79,7 +79,7 @@ const CarInfo = ({
       {/* Top Features */}
       <div className="space-y-4">
         <h2 className="text-lg font-bold text-text-100">Top Features</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-4">
           {car?.features.map((feature, i) => (
             <div key={i} className="flex items-center gap-3">
               <CheckCircle2 size={20} className="text-green-500" />

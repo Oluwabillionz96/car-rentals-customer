@@ -15,7 +15,7 @@ const MobileNavbar = ({ isNavOpen }: { isNavOpen: boolean }) => {
     <AnimatePresence mode="wait">
       {isNavOpen ? (
         <motion.nav
-          className="w-2/3 md:hidden fixed top-14 right-0 h-[calc(100vh-3.5rem)] bg-white/95 backdrop-blur-xl border-l border-slate-100 shadow-2xl overflow-y-auto"
+          className="w-1/2 lg:hidden fixed top-14 right-0 h-[calc(100vh-3.5rem)] bg-white/95 backdrop-blur-xl border-l border-slate-100 shadow-2xl overflow-y-auto"
           initial={{ x: "100%" }}
           animate={{ x: isNavOpen ? "0" : "100%" }}
           exit={{ x: "100%" }}

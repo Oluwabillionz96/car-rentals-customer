@@ -53,7 +53,7 @@ const CarDetailsPage = () => {
   }
 
   return (
-    <div className="min-h-screen pb-32 md:pb-20">
+    <div className="min-h-screen pb-32 lg:pb-20">
       {/* Desktop Breadcrumbs */}
       <NavigationMap
         routes={[
@@ -63,9 +63,9 @@ const CarDetailsPage = () => {
         ]}
       />
 
-      <div className="max-w-7xl mx-auto px-0 md:px-4 grid grid-cols-1 md:grid-cols-12 gap-8">
+      <div className="max-w-7xl mx-auto px-0 md:px-4 grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Images & Info */}
-        <div className="md:col-span-8 space-y-8">
+        <div className="lg:col-span-8 space-y-8">
           {/* Main Image Slider/Gallery */}
           <div className="relative group">
             <div
@@ -142,7 +142,7 @@ const CarDetailsPage = () => {
       </div>
 
       {/* Mobile Floating Bottom Bar */}
-      <div className="md:hidden fixed  bottom-0 left-0 right-0 h-24 bg-white/90 backdrop-blur-xl border-t border-border-100 px-6 flex items-center justify-between z-50">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 h-24 bg-white/90 backdrop-blur-xl border-t border-border-100 px-6 flex items-center justify-between z-50">
         <div>
           <p className="text-xs text-text-300 font-medium ">Total Price</p>
           <p className="text-text-100 text-lg font-bold">

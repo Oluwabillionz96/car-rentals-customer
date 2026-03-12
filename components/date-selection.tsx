@@ -44,21 +44,21 @@ const DateSelection = ({
             setPickupDate(null);
             setDropoffDate(null);
           }}
-          className="md:hidden flex items-center gap-2 text-primary font-bold text-sm"
+          className="lg:hidden flex items-center gap-2 text-primary font-bold text-sm"
         >
           <ArrowLeft size={16} />
           Change Pickup Date
         </button>
       )}
 
-      <div className="flex gap-8 flex-col md:flex-row">
+      <div className="flex gap-8 flex-col lg:flex-row">
         <DatePicker
           label="Pickup Date"
           selectedDate={pickupDate}
           onDateSelect={setPickupDate}
           startDate={pickupDate}
           endDate={dropoffDate}
-          className={`${pickupDate ? "hidden" : "flex"} md:flex`}
+          className={`${pickupDate ? "hidden" : "flex"} lg:flex`}
         />
         <DatePicker
           label="Drop-off Date"
@@ -66,7 +66,7 @@ const DateSelection = ({
           onDateSelect={setDropoffDate}
           startDate={pickupDate}
           endDate={dropoffDate}
-          className={`${!pickupDate ? "hidden" : "flex"} md:flex`}
+          className={`${!pickupDate ? "hidden" : "flex"} lg:flex`}
         />
       </div>
 
