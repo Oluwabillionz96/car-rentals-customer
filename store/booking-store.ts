@@ -18,8 +18,18 @@ export interface BookingStore {
   addBooking: (bookingDetails: BookingDetails) => void;
 }
 
+const getBookingFromLocalStorage = () => {
+  const jsonBooking = localStorage.getItem("booking");
+  const booking = jsonBooking ? JSON.parse(jsonBooking) : null;
+  if (booking !== null) {
+    booking.pickupDate = new Date(booking.pickupDate);
+    booking.dropoffDate = new Date(booking.dropoffDate);
+  }
+  return booking;
+};
+
 const useBookingStore = create<BookingStore>((set) => ({
-  booking: {
+  booking: getBookingFromLocalStorage() || {
     totalPrice: 0,
     carId: "",
     pickupDate: null,
@@ -32,6 +42,7 @@ const useBookingStore = create<BookingStore>((set) => ({
     },
   },
   addBooking(bookingDetails) {
+    localStorage.setItem("booking", JSON.stringify(bookingDetails));
     set((state) => ({ booking: bookingDetails }));
   },
 }));

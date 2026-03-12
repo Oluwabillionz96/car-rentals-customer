@@ -1,6 +1,7 @@
 import { Car } from "@/constants/cars";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
+import Button from "@/components/button";
 
 const DesktopCheckoutCard = ({
   car,
@@ -52,14 +53,10 @@ const DesktopCheckoutCard = ({
               </p>
             </div>
             <div className="space-y-3">
-              <button
-                type="submit"
-                form="user-info"
-                className="bg-primary text-white justify-center px-5 h-14 rounded-xl font-bold text-base shadow-xl  flex items-center gap-2 active:scale-95 transition-all w-full"
-              >
+              <Button type="submit" form="user-info">
                 Proceed to Payment
                 <ArrowRight />
-              </button>
+              </Button>
               <p className="text-xs text-center text-text-400">
                 By proceeding, you agree to Solution Car Rentals' Terms of
                 Service .

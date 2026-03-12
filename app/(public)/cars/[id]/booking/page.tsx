@@ -7,12 +7,14 @@ import NavigationMap from "@/components/navigation-map";
 import { getCar } from "@/constants/cars";
 import { ArrowRight, Mail, Phone, User } from "lucide-react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm, UseFormRegisterReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import useBookingStore, { BookingStore } from "@/store/booking-store";
+import useBookingStore from "@/store/booking-store";
+import MobileCarCard from "@/components/mobile-car-card";
+import Button from "@/components/button";
 
 export const calculateDays = (start: Date | null, end: Date | null) => {
   if (!start || !end) return 0;
@@ -34,8 +36,10 @@ export type BookingFormValues = z.infer<typeof bookingSchema>;
 const CarBookingPage = () => {
   const { id } = useParams();
   const car = getCar(id);
-  const [pickupDate, setPickupDate] = useState<Date | null>(null);
-  const [dropoffDate, setDropoffDate] = useState<Date | null>(null);
+  const router = useRouter();
+  const booking = useBookingStore((state) => state.booking);
+  const [pickupDate, setPickupDate] = useState<Date | null>(booking.pickupDate );
+  const [dropoffDate, setDropoffDate] = useState<Date | null>(booking.dropoffDate);
 
   const {
     register,
@@ -45,6 +49,12 @@ const CarBookingPage = () => {
     formState: { errors },
   } = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
+    defaultValues: {
+      firstName: booking.customer.firstName,
+      lastName: booking.customer.lastName,
+      email: booking.customer.email,
+      phone: booking.customer.phone,
+    },
   });
 
   // Sync external date state with form state
@@ -63,7 +73,6 @@ const CarBookingPage = () => {
   const totalPrice = totalDays * (car?.price ?? 0);
 
   const addBooking = useBookingStore((state) => state.addBooking);
-  const booking = useBookingStore((state) => state.booking);
 
   const onSubmit = (data: BookingFormValues) => {
     addBooking({
@@ -79,7 +88,7 @@ const CarBookingPage = () => {
       },
     });
 
-    console.log({ booking });
+    router.push(`/cars/${car?.id}/payment`);
   };
 
   return (
@@ -102,19 +111,7 @@ const CarBookingPage = () => {
       </header>
       <section className="flex gap-8">
         <section className="space-y-8 flex-1">
-          <div className="flex items-start gap-4 lg:hidden bg-primary/10 border border-primary/20 p-4 rounded-xl">
-            <div className="w-20 aspect-square relative rounded-lg overflow-hidden">
-              <Image src={car?.image ?? ""} alt={car?.name ?? ""} fill />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-text-100">
-                {car?.name} {car?.year}
-              </h3>
-              <p className="text-sm text-text-300">
-                ₦{car?.price.toLocaleString()} / day
-              </p>
-            </div>
-          </div>
+          <MobileCarCard car={car} />
           <div className="space-y-2">
             <DateSelection
               car={car}
@@ -209,14 +206,10 @@ const CarBookingPage = () => {
               </div>
             </form>
             <div className="space-y-3 lg:hidden">
-              <button
-                type="submit"
-                form="user-info"
-                className="bg-primary text-white justify-center px-5 h-14 rounded-xl font-bold text-base shadow-xl  flex items-center gap-2 active:scale-95 transition-all w-full"
-              >
+              <Button type="submit" form="user-info">
                 Proceed to Payment
                 <ArrowRight />
-              </button>
+              </Button>
               <p className="text-xs text-center text-text-400">
                 By proceeding, you agree to Solution Car Rentals' Terms of
                 Service .

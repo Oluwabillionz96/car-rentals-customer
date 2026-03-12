@@ -99,7 +99,7 @@ const CarInfo = ({
             View map
           </button>
         </div>
-        <div className="w-full py-4 px-2 md:px-4 rounded-xl bg-[#F1F5F9] border border-slate-100 flex items-center gap-4 transition-all hover:bg-white hover:shadow-md group">
+        <div className="w-full py-4 px-2 md:px-4 rounded-xl bg-neutral-100 border border-slate-100 flex items-center gap-4 transition-all hover:bg-white hover:shadow-md group">
           <div className="bg-primary/20 text-primary p-3 rounded-2xl group-hover:scale-110 transition-transform">
             <MapPin size={24} />
           </div>

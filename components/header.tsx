@@ -24,6 +24,7 @@ const Header = () => {
 
   const isDetailsPage = pathname.startsWith("/cars");
   const isBooking = isDetailsPage && pathname.includes("/booking");
+  const isPayment = isDetailsPage && pathname.includes("/payment");
 
   return (
     <header className="z-50 fixed bg-white/90 p-4  md:py-6 md:px-20 w-full top-0 left-0  shadow-sm backdrop-blur-md">
@@ -33,19 +34,19 @@ const Header = () => {
             onClick={() => {
               router.back();
             }}
-            className={"md:hidden"}
+            className={"lg:hidden"}
           >
             <ArrowLeft />
           </button>
         )}
 
         <p className="font-bold text-lg text-text-100 lg:hidden">
-          {isBooking ? "Book Your Ride" : "Car Details"}
+          {isBooking ? "Book Your Ride" : isPayment ? "Payment" : "Car Details"}
         </p>
 
         <Link
           href="/"
-          className={`flex items-center gap-2 ${isDetailsPage ? "hidden md:flex" : ""}`}
+          className={`flex items-center gap-2 ${isDetailsPage ? "hidden lg:flex" : ""}`}
         >
           <Image src="/logo.png" alt="Logo" width={25} height={25} />
           <p className="text-text-100 font-bold text-sm md:font-extrabold md:text-xl">
@@ -58,7 +59,7 @@ const Header = () => {
             <Link
               href={item.pathname}
               key={item.pathname}
-              className={`uppercase hidden md:block font-medium hover:text-primary transition-colors ${pathname === item.pathname ? "text-primary underline" : ""}`}
+              className={`uppercase hidden lg:block font-medium hover:text-primary transition-colors ${pathname === item.pathname ? "text-primary underline" : ""}`}
             >
               {item.name}
             </Link>
@@ -67,10 +68,10 @@ const Header = () => {
             onClick={
               isDetailsPage ? () => {} : () => setIsSidebarOpen(!isSidebarOpen)
             }
-            className="md:hidden"
+            className="lg:hidden"
           >
             {isDetailsPage ? (
-              <> {!isBooking && <Share2 />}</>
+              <> {!isBooking && !isPayment && <Share2 />}</>
             ) : (
               <>{isSidebarOpen ? <X /> : <Menu />}</>
             )}

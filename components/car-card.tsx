@@ -30,7 +30,7 @@ const CarCard = ({
       href={`/cars/${id}`}
       className="block h-full transition-transform active:scale-[0.98]"
     >
-      <div className="w-full cursor-pointer max-w-[400px] bg-white border border-[#F1F5F9] rounded-lg md:rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
+      <div className="w-full cursor-pointer max-w-[400px] bg-white border border-neutral-100 rounded-lg md:rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
         {/* Image Container */}
         <div className="relative aspect-4/3 w-full overflow-hidden">
           <Image

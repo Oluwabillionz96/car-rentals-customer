@@ -11,7 +11,7 @@ const IconCard = ({
 }) => {
   const Icon = icon;
   return (
-    <article className=" bg-[#F1F5F9] border-border-100 border rounded-xl flex flex-col items-center justify-center gap-1 px-7 py-4">
+    <article className=" bg-neutral-100 border-border-100 border rounded-xl flex flex-col items-center justify-center gap-1 px-7 py-4">
       <Icon className="text-primary" size={23} />
       <p className="hidden md:block text-[10px] text-text-400 font-bold">
         {title}
