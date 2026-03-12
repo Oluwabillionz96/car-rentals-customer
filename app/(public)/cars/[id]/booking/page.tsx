@@ -8,7 +8,11 @@ import { getCar } from "@/constants/cars";
 import { ArrowRight, Mail, Phone, User } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm, UseFormRegisterReturn } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import useBookingStore, { BookingStore } from "@/store/booking-store";
 
 export const calculateDays = (start: Date | null, end: Date | null) => {
   if (!start || !end) return 0;
@@ -16,14 +20,68 @@ export const calculateDays = (start: Date | null, end: Date | null) => {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
 };
 
+const bookingSchema = z.object({
+  firstName: z.string().min(2, "First name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+  email: z.email("Invalid email address"),
+  phone: z.string().min(11, "Phone number must be at least 11 digits"),
+  pickupDate: z.date("Please select a pickup date"),
+  dropoffDate: z.date("Please select a drop-off date"),
+});
+
+export type BookingFormValues = z.infer<typeof bookingSchema>;
+
 const CarBookingPage = () => {
   const { id } = useParams();
   const car = getCar(id);
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
   const [dropoffDate, setDropoffDate] = useState<Date | null>(null);
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    trigger,
+    formState: { errors },
+  } = useForm<BookingFormValues>({
+    resolver: zodResolver(bookingSchema),
+  });
+
+  // Sync external date state with form state
+  useEffect(() => {
+    if (pickupDate) {
+      setValue("pickupDate", pickupDate);
+      trigger("pickupDate");
+    }
+    if (dropoffDate) {
+      setValue("dropoffDate", dropoffDate);
+      trigger("dropoffDate");
+    }
+  }, [pickupDate, dropoffDate, setValue, trigger]);
+
   const totalDays = calculateDays(pickupDate, dropoffDate);
   const totalPrice = totalDays * (car?.price ?? 0);
+
+  const addBooking = useBookingStore((state) => state.addBooking);
+  const booking = useBookingStore((state) => state.booking);
+
+  const onSubmit = (data: BookingFormValues) => {
+    addBooking({
+      totalPrice,
+      carId: car?.id || "",
+      pickupDate: data.pickupDate,
+      dropoffDate: data.dropoffDate,
+      customer: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone,
+      },
+    });
+
+    console.log({ booking });
+  };
+
   return (
     <section className="space-y-6">
       <header className="hidden lg:block">
@@ -57,15 +115,21 @@ const CarBookingPage = () => {
               </p>
             </div>
           </div>
-          <DateSelection
-            car={car}
-            pickupDate={pickupDate}
-            setPickupDate={setPickupDate}
-            dropoffDate={dropoffDate}
-            setDropoffDate={setDropoffDate}
-          />
+          <div className="space-y-2">
+            <DateSelection
+              car={car}
+              pickupDate={pickupDate}
+              setPickupDate={setPickupDate}
+              dropoffDate={dropoffDate}
+              setDropoffDate={setDropoffDate}
+            />
+            {(errors.pickupDate || errors.dropoffDate) && (
+              <p className="text-xs text-red-500 font-medium px-4">
+                {errors.pickupDate?.message || errors.dropoffDate?.message}
+              </p>
+            )}
+          </div>
           <section className="space-y-6 lg:bg-white lg:rounded-xl lg:p-8">
-            {" "}
             <h3 className="text-lg lg:hidden font-bold text-text-100">
               Customer Details
             </h3>
@@ -80,16 +144,8 @@ const CarBookingPage = () => {
             <form
               className="space-y-4 lg:grid grid-cols-2 gap-6 "
               id="user-info"
+              onSubmit={handleSubmit(onSubmit)}
             >
-              <div className="flex flex-col gap-1.5 lg:hidden">
-                <label
-                  htmlFor="full-name"
-                  className="text-sm font-semibold text-label"
-                >
-                  Full Name
-                </label>
-                <Input icon={User} placeholder="John Doe" id="full-name" />
-              </div>
               <div className="flex flex-col gap-1.5 ">
                 <label
                   htmlFor="first-name"
@@ -97,29 +153,43 @@ const CarBookingPage = () => {
                 >
                   First Name
                 </label>
-                <Input icon={User} placeholder="John" id="first-name" />
+                <Input
+                  icon={User}
+                  placeholder="John"
+                  id="first-name"
+                  registration={register("firstName")}
+                  error={errors.firstName?.message}
+                />
               </div>
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1.5 ">
                 <label
                   htmlFor="last-name"
                   className="text-sm font-semibold text-label"
                 >
                   Last Name
                 </label>
-                <Input icon={User} placeholder="Doe" id="last-name" />
+                <Input
+                  icon={User}
+                  placeholder="Doe"
+                  id="last-name"
+                  registration={register("lastName")}
+                  error={errors.lastName?.message}
+                />
               </div>
               <div className="flex flex-col gap-1.5">
                 <label
                   htmlFor="email-address"
                   className="text-sm font-semibold text-label"
                 >
-                  Email Adress
+                  Email Address
                 </label>
                 <Input
                   icon={Mail}
                   placeholder="johndoe@example.com"
                   id="email-address"
                   type="email"
+                  registration={register("email")}
+                  error={errors.email?.message}
                 />
               </div>
               <div className="flex flex-col gap-1.5">
@@ -133,11 +203,17 @@ const CarBookingPage = () => {
                   icon={Phone}
                   placeholder="+234 700 000 0000"
                   id="phone-number"
+                  registration={register("phone")}
+                  error={errors.phone?.message}
                 />
               </div>
             </form>
             <div className="space-y-3 lg:hidden">
-              <button className="bg-primary text-white justify-center px-5 h-14 rounded-xl font-bold text-base shadow-xl  flex items-center gap-2 active:scale-95 transition-all w-full">
+              <button
+                type="submit"
+                form="user-info"
+                className="bg-primary text-white justify-center px-5 h-14 rounded-xl font-bold text-base shadow-xl  flex items-center gap-2 active:scale-95 transition-all w-full"
+              >
                 Proceed to Payment
                 <ArrowRight />
               </button>

@@ -52,7 +52,11 @@ const DesktopCheckoutCard = ({
               </p>
             </div>
             <div className="space-y-3">
-              <button className="bg-primary text-white justify-center px-5 h-14 rounded-xl font-bold text-base shadow-xl  flex items-center gap-2 active:scale-95 transition-all w-full">
+              <button
+                type="submit"
+                form="user-info"
+                className="bg-primary text-white justify-center px-5 h-14 rounded-xl font-bold text-base shadow-xl  flex items-center gap-2 active:scale-95 transition-all w-full"
+              >
                 Proceed to Payment
                 <ArrowRight />
               </button>
