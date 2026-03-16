@@ -53,7 +53,7 @@ const HeroSection = () => {
             Rent a Car in <span className="text-primary">Nigeria</span>
           </h1>
           <p className="text-xl text-text-200 max-w-xl">
-            Experience seamless mobility with Nigeria's most trusted fleet.
+            Experience seamless mobility with Nigeria&apos;s most trusted fleet.
             Easy, professional, and reliable.
           </p>
           <div className="flex flex-row gap-4 pt-2">

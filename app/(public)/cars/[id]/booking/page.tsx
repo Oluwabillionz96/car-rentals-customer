@@ -6,10 +6,9 @@ import Input from "@/components/input";
 import NavigationMap from "@/components/navigation-map";
 import { getCar } from "@/constants/cars";
 import { ArrowRight, Mail, Phone, User } from "lucide-react";
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm, UseFormRegisterReturn } from "react-hook-form";
+import { useForm} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import useBookingStore from "@/store/booking-store";
@@ -213,7 +212,7 @@ const CarBookingPage = () => {
                 <ArrowRight />
               </Button>
               <p className="text-xs text-center text-text-400">
-                By proceeding, you agree to Solution Car Rentals' Terms of
+                By proceeding, you agree to Solution Car Rentals &apos; Terms of
                 Service .
               </p>
             </div>

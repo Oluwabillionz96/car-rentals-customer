@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { getCar } from "@/constants/cars";
 import Image from "next/image";
-import { ArrowLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft} from "lucide-react";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import CarInfo from "@/components/car-info";

@@ -1,4 +1,3 @@
-import AvailableCars from "@/components/available-cars";
 import CarGrid from "@/components/car-grid";
 
 const OurCars = () => {

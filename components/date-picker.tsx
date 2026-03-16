@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 interface DatePickerProps {
   label: string;
@@ -64,14 +64,14 @@ const DatePicker: React.FC<DatePickerProps> = ({
     setCurrentMonth(new Date(year, month + 1, 1));
   };
 
-  const isToday = (day: number) => {
-    const today = new Date();
-    return (
-      day === today.getDate() &&
-      month === today.getMonth() &&
-      year === today.getFullYear()
-    );
-  };
+  // const isToday = (day: number) => {
+  //   const today = new Date();
+  //   return (
+  //     day === today.getDate() &&
+  //     month === today.getMonth() &&
+  //     year === today.getFullYear()
+  //   );
+  // };
 
   const isSelected = (day: number) => {
     return (

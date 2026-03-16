@@ -43,7 +43,7 @@ const useBookingStore = create<BookingStore>((set) => ({
   },
   addBooking(bookingDetails) {
     localStorage.setItem("booking", JSON.stringify(bookingDetails));
-    set((state) => ({ booking: bookingDetails }));
+    set(() => ({ booking: bookingDetails }));
   },
 }));
 
