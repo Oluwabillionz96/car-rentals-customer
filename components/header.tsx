@@ -25,11 +25,12 @@ const Header = () => {
   const isDetailsPage = pathname.startsWith("/cars");
   const isBooking = isDetailsPage && pathname.includes("/booking");
   const isPayment = isDetailsPage && pathname.includes("/payment");
+  const showBackIcon = isDetailsPage || pathname.startsWith("/how-it-works")
 
   return (
     <header className="z-50 fixed bg-white/90 p-4  md:py-6 md:px-20 w-full top-0 left-0  shadow-sm backdrop-blur-md">
       <nav className=" flex justify-between   ">
-        {isDetailsPage && (
+        {showBackIcon && (
           <button
             onClick={() => {
               router.back();
