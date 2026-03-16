@@ -78,7 +78,7 @@ const HowItWorksPage = () => {
              <div className="text-center mb-10 md:mb-20">
                 <h2 className="text-[22px] md:text-[32px] font-bold text-slate-900 mb-2 md:mb-4">
                    <span className="md:hidden">Our Simple Process</span>
-                   <span className="hidden md:block relative inline-block pb-4 text-[#1e2330]">
+                   <span className="hidden md:block relative pb-4 text-[#1e2330]">
                       Your Journey in 4 Simple Steps
                       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-[3px] bg-[#4facfe] rounded-full"></div>
                    </span>
@@ -123,7 +123,7 @@ const HowItWorksPage = () => {
        </div>
 
        {/* Ready to Start Section */}
-       <div className="py-12 md:py-24 px-4 md:px-20 mx-4 md:mx-0 pb-20 md:pb-32 max-w-[1400px] md:mx-auto">
+       <div className="py-12 md:py-24 px-4 md:px-20 mx-4 pb-20 md:pb-32 max-w-[1400px] md:mx-auto">
           {/* Mobile version */}
           <div className="md:hidden bg-[#eaf4fe] rounded-3xl p-8 text-center flex flex-col items-center shadow-sm">
              <h2 className="text-2xl font-bold text-slate-900 mb-3">Ready to start?</h2>
