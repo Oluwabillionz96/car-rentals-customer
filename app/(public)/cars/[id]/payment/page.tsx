@@ -2,7 +2,7 @@
 import MobileCarCard from "@/components/mobile-car-card";
 import { getCar } from "@/constants/cars";
 import useBookingStore from "@/store/booking-store";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { calculateDays } from "../booking/page";
 import { Wallet } from "lucide-react";
 import Button from "@/components/button";
@@ -11,6 +11,7 @@ import DesktopCarPaymentCard from "@/components/desktop-car-payment-card";
 
 const PaymentPage = () => {
   const { id } = useParams();
+  const router = useRouter();
   const car = getCar(id);
   const booking = useBookingStore((state) => state.booking);
   const totalDays = calculateDays(booking.pickupDate, booking.dropoffDate);
@@ -73,7 +74,7 @@ const PaymentPage = () => {
           </div>
           
           <div className="lg:hidden">
-            <Button>
+            <Button onClick={() => router.push(`/cars/${car?.id}/confirmation`)}>
               <Wallet />
               Pay with Paystack
             </Button>

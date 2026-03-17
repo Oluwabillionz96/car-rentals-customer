@@ -58,7 +58,7 @@ const DesktopCheckoutCard = ({
                 <ArrowRight />
               </Button>
               <p className="text-xs text-center text-text-400">
-                By proceeding, you agree to Solution Car Rentals' Terms of
+                By proceeding, you agree to Solution Car Rentals&apos; Terms of
                 Service .
               </p>
             </div>

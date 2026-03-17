@@ -56,7 +56,7 @@ const DesktopCarPaymentCard = ({
               </p>
             </div>
             <div className="space-y-3">
-              <Button>
+              <Button onClick={() => window.location.href = `/cars/${car?.id}/confirmation`}>
                 <Wallet />
                 Pay with Paystack
               </Button>

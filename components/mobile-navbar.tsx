@@ -8,7 +8,13 @@ import { AnimatePresence, motion } from "framer-motion";
  * MobileNavbar component for side navigation on mobile views.
  * Designed to show menu items with an active indicator.
  */
-const MobileNavbar = ({ isNavOpen }: { isNavOpen: boolean }) => {
+const MobileNavbar = ({ 
+  isNavOpen, 
+  setNavOpen 
+}: { 
+  isNavOpen: boolean, 
+  setNavOpen: (open: boolean) => void 
+}) => {
   const pathname = usePathname();
 
   return (
@@ -29,6 +35,7 @@ const MobileNavbar = ({ isNavOpen }: { isNavOpen: boolean }) => {
                   <li key={link.name}>
                     <Link
                       href={link.pathname}
+                      onClick={() => setNavOpen(false)}
                       className={`flex items-center justify-between px-4 py-4 rounded-2xl transition-all duration-300 group ${
                         isActive
                           ? "bg-primary/10 text-primary font-bold shadow-sm"

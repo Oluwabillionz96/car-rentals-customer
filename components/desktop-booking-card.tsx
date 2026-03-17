@@ -1,5 +1,5 @@
 import { Car, GET_CAR_PROPS } from "@/constants/cars";
-import { ArrowLeft, CheckCircle2, Fuel, Settings, Users } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import IconCard from "./icon-card";
 import Link from "next/link";
 

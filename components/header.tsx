@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import MobileNavbar from "./mobile-navbar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const navLinks = [
   { name: "Home", pathname: "/" },
@@ -18,13 +18,10 @@ const Header = () => {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    setIsSidebarOpen(false);
-  }, [pathname]);
-
   const isDetailsPage = pathname.startsWith("/cars");
   const isBooking = isDetailsPage && pathname.includes("/booking");
   const isPayment = isDetailsPage && pathname.includes("/payment");
+  const isConfirmation = pathname.includes("/confirmation");
   const showBackIcon = isDetailsPage || pathname.startsWith("/how-it-works")
 
   return (
@@ -43,7 +40,7 @@ const Header = () => {
 
         {isDetailsPage && (
           <p className="font-bold text-lg text-text-100 lg:hidden">
-            {isBooking ? "Book Your Ride" : isPayment ? "Payment" : "Car Details"}
+            {isBooking ? "Book Your Ride" : isPayment ? "Payment" : isConfirmation ? "Confirmation" : "Car Details"}
           </p>
         )}
 
@@ -74,14 +71,14 @@ const Header = () => {
             className="lg:hidden"
           >
             {isDetailsPage ? (
-              <> {!isBooking && !isPayment && <Share2 />}</>
+              <> {!isBooking && !isPayment && !isConfirmation && <Share2 />}</>
             ) : (
               <>{isSidebarOpen ? <X /> : <Menu />}</>
             )}
           </button>
         </div>
       </nav>
-      <MobileNavbar isNavOpen={isSidebarOpen} />
+      <MobileNavbar isNavOpen={isSidebarOpen} setNavOpen={setIsSidebarOpen} />
     </header>
   );
 };

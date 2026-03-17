@@ -62,7 +62,7 @@ const HowItWorksPage = () => {
                    Experience a seamless car rental process in four simple steps. Find, book, and drive your perfect car today with Solution Car Rentals.
                 </span>
                 <span className="hidden md:block leading-[1.6]">
-                   Experience a seamless car rental journey with Solution Car Rentals. From<br className="hidden lg:block" />browsing to driving, we've simplified every step for your convenience.
+                   Experience a seamless car rental journey with Solution Car Rentals. From<br className="hidden lg:block" />browsing to driving, we&apos;ve simplified every step for your convenience.
                 </span>
              </p>
              <Link href="/our-cars" className="bg-[#4facfe] md:bg-[#4facfe] hover:opacity-90 text-slate-900 md:text-white font-semibold py-3 px-8 md:py-4 md:px-10 md:text-[17px] rounded-full transition-opacity inline-block">
