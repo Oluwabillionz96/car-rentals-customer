@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction} from "react";
 import DatePicker from "./date-picker";
 import { ArrowLeft } from "lucide-react";
 import { Car } from "@/constants/cars";
-import { calculateDays } from "@/app/(public)/cars/[id]/booking/page";
+import { calculateDays } from "@/lib/utils";
 
 const DateSelection = ({
   car,

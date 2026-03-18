@@ -15,11 +15,7 @@ import useBookingStore from "@/store/booking-store";
 import MobileCarCard from "@/components/mobile-car-card";
 import Button from "@/components/button";
 
-export const calculateDays = (start: Date | null, end: Date | null) => {
-  if (!start || !end) return 0;
-  const diffTime = Math.abs(end.getTime() - start.getTime());
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-};
+import { calculateDays } from "@/lib/utils";
 
 const bookingSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),

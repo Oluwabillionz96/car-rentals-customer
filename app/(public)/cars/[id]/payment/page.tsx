@@ -3,7 +3,7 @@ import MobileCarCard from "@/components/mobile-car-card";
 import { getCar } from "@/constants/cars";
 import useBookingStore from "@/store/booking-store";
 import { useParams, useRouter } from "next/navigation";
-import { calculateDays } from "../booking/page";
+import { calculateDays } from "@/lib/utils";
 import { Wallet } from "lucide-react";
 import Button from "@/components/button";
 import NavigationMap from "@/components/navigation-map";
