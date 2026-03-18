@@ -169,9 +169,32 @@ const BookingDetailsPage = () => {
 
             {/* Payment Summary */}
             <div className="pt-6 space-y-3.5">
-              <h3 className="text-base font-bold text-[#1e293b] mb-1">
+              <h3 className="text-base font-bold text-[#1e293b] mb-3">
                 Payment Summary
               </h3>
+
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-400 font-medium whitespace-nowrap">
+                    Rental Fee ({days} {days === 1 ? "day" : "days"})
+                  </span>
+                  <span className="text-[#1e293b] font-bold">
+                    ₦ {booking.totalPrice.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-400 font-medium whitespace-nowrap">
+                    Insurance (Premium)
+                  </span>
+                  <span className="text-[#1e293b] font-bold">₦0.00</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-400 font-medium whitespace-nowrap">
+                    Taxes & Fees
+                  </span>
+                  <span className="text-[#1e293b] font-bold">₦0.00</span>
+                </div>
+              </div>
 
               <div className="pt-4 flex justify-between items-center border-t border-slate-50">
                 <p className="text-base font-bold text-[#1e293b]">Total Paid</p>
