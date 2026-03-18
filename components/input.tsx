@@ -8,6 +8,10 @@ const Input = ({
   id,
   registration,
   error,
+  className,
+  value,
+  onChange,
+  showIconDesktop = false,
 }: {
   icon: LucideIcon;
   type?: string;
@@ -15,12 +19,16 @@ const Input = ({
   id: string;
   registration?: UseFormRegisterReturn;
   error?: string;
+  className?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  showIconDesktop?: boolean;
 }) => {
   const Icon = icon;
   return (
-    <div className="space-y-1">
+    <div className={`space-y-1 ${className}`}>
       <div
-        className={`h-12 border relative rounded-xl overflow-hidden transition-colors ${
+        className={`relative h-12 rounded-xl overflow-hidden transition-colors border ${
           error ? "border-red-500" : "border-border-100"
         }`}
       >
@@ -28,11 +36,17 @@ const Input = ({
           type={type}
           placeholder={placeholder}
           id={id}
-          className="h-full w-full outline-none placeholder:text-text-400 p-4 pl-9 lg:pl-4"
+          value={value}
+          onChange={onChange}
+          className={`h-full w-full outline-none placeholder:text-text-400 p-4 ${
+            showIconDesktop ? "pl-12" : "pl-9 lg:pl-4"
+          }`}
           {...registration}
         />
         <Icon
-          className="absolute top-4 left-2 text-text-400 lg:hidden"
+          className={`absolute top-1/2 -translate-y-1/2 left-4 text-text-400 ${
+            showIconDesktop ? "" : "lg:hidden"
+          }`}
           size={18}
         />
       </div>

@@ -7,10 +7,12 @@ const DesktopCarPaymentCard = ({
   car,
   totalDays,
   totalPrice,
+  onPayment,
 }: {
   car?: Car;
   totalDays: number;
   totalPrice: number;
+  onPayment: () => void;
 }) => {
   return (
     <section className="bg-white hidden lg:block p-6 h-fit rounded-xl lg:w-[400px]">
@@ -36,9 +38,7 @@ const DesktopCarPaymentCard = ({
               </p>
             </div>
             <div className="flex justify-between items-center">
-              <p className="text-sm text-text-300">
-                Rental Fees
-              </p>
+              <p className="text-sm text-text-300">Rental Fees</p>
               <p className="text-sm font-semibold text-text-100">
                 {" "}
                 ₦{totalPrice.toLocaleString()}
@@ -56,7 +56,7 @@ const DesktopCarPaymentCard = ({
               </p>
             </div>
             <div className="space-y-3">
-              <Button onClick={() => window.location.href = `/cars/${car?.id}/confirmation`}>
+              <Button onClick={onPayment}>
                 <Wallet />
                 Pay with Paystack
               </Button>

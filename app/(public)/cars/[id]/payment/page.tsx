@@ -15,6 +15,12 @@ const PaymentPage = () => {
   const car = getCar(id);
   const booking = useBookingStore((state) => state.booking);
   const totalDays = calculateDays(booking.pickupDate, booking.dropoffDate);
+  const completeBooking = useBookingStore((state) => state.completeBooking);
+
+  const onPayment = () => {
+    completeBooking();
+    router.push(`/cars/${car?.id}/confirmation`);
+  };
   return (
     <section>
       <header className="hidden lg:block">
@@ -30,9 +36,7 @@ const PaymentPage = () => {
         <h1 className="text-4xl font-extrabold text-text-500 mt-4 mb-2">
           Secure Payment
         </h1>
-        <p className="text-text-300">
-          Complete your purchase securely.
-        </p>
+        <p className="text-text-300">Complete your purchase securely.</p>
       </header>
 
       <div className="lg:hidden text-sm">
@@ -47,14 +51,17 @@ const PaymentPage = () => {
 
       <div className="flex flex-col lg:flex-row justify-center gap-8 mt-6 lg:mt-10">
         <div className="lg:hidden flex-1">
-          <h1 className="text-xl font-bold text-text-100 mb-4 lg:hidden">Order Summary</h1>
+          <h1 className="text-xl font-bold text-text-100 mb-4 lg:hidden">
+            Order Summary
+          </h1>
           <MobileCarCard car={car} isPayment totalDays={totalDays} />
-          
+
           <div className="bg-white my-6 p-5 rounded-xl lg:hidden">
             <div className="flex flex-col gap-3 py-3">
               <div className="flex justify-between">
                 <p className="text-sm text-text-300">
-                  Rental Fees (₦ {car?.price.toLocaleString() || 0} x {totalDays})
+                  Rental Fees (₦ {car?.price.toLocaleString() || 0} x{" "}
+                  {totalDays})
                 </p>
                 <p className="text-sm font-medium text-text-100">
                   ₦{booking.totalPrice.toLocaleString()}
@@ -72,17 +79,21 @@ const PaymentPage = () => {
               </p>
             </div>
           </div>
-          
+
           <div className="lg:hidden">
-            <Button onClick={() => router.push(`/cars/${car?.id}/confirmation`)}>
+            <Button onClick={onPayment}>
               <Wallet />
               Pay with Paystack
             </Button>
           </div>
-          
         </div>
 
-        <DesktopCarPaymentCard car={car} totalDays={totalDays} totalPrice={booking.totalPrice} />
+        <DesktopCarPaymentCard
+          car={car}
+          totalDays={totalDays}
+          totalPrice={booking.totalPrice}
+          onPayment={onPayment}
+        />
       </div>
     </section>
   );

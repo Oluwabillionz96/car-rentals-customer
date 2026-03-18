@@ -230,3 +230,12 @@ export const GET_CAR_PROPS = (car?: Car) => [
 export function getCar(id: string | ParamValue) {
   return MOCK_CARS.find((car) => car.id === id);
 }
+
+export const generateBookingId = () => {
+  let bookingId = "SRC-2026-";
+  for (let i = 0; i !== 5; i++) {
+    bookingId = `${bookingId}${Math.floor(Math.random() * 10).toString()}`;
+  }
+
+  return bookingId;
+};
