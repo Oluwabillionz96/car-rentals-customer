@@ -34,7 +34,7 @@ const getBookingFromSessionStorage = () => {
   return booking;
 };
 
-const getVerifiedBookingsFromLocalStorage = () => {
+export const getVerifiedBookingsFromLocalStorage = () => {
   if (typeof window === "undefined") return [];
   const jsonBooking = localStorage.getItem("verifiedBookings");
   let bookings: BookingDetails[] | null = jsonBooking

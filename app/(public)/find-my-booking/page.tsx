@@ -7,11 +7,16 @@ import {
   HelpCircle,
   Headphones,
   MessageSquare,
+  SearchX,
+  RefreshCw,
 } from "lucide-react";
 import Input from "@/components/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { getVerifiedBookingsFromLocalStorage } from "@/store/booking-store";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const findBookingSchema = z.object({
   email: z.email("Please enter a valid email address"),
@@ -31,9 +36,23 @@ export default function FindMyBookingPage() {
     defaultValues: { email: "", bookingId: "" },
   });
 
+  const [notFoundBooking, setNotFoundBooking] = useState(false);
+
+  const router = useRouter();
+
   const onSubmit = async (data: FindBookingFormValues) => {
-    console.log("Searching for booking:", data);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const verifiedBookings = getVerifiedBookingsFromLocalStorage();
+
+    const booking = verifiedBookings?.find(
+      (booking) =>
+        booking?.customer.email === data.email &&
+        booking.bookingId === data.bookingId,
+    );
+    if (booking) {
+      router.push(`/booking-details/${booking.bookingId}`);
+    } else {
+      setNotFoundBooking(true);
+    }
   };
 
   return (
@@ -66,66 +85,94 @@ export default function FindMyBookingPage() {
             onSubmit={handleSubmit(onSubmit)}
             className="w-full max-w-md space-y-5 md:space-y-6 text-left"
           >
-            <div className="space-y-2">
-              <label
-                className="text-sm font-bold text-text-100 ml-1"
-                htmlFor="email-search"
-              >
-                Email Address
-              </label>
-              <Input
-                icon={Mail}
-                id="email-search"
-                placeholder="e.g. name@example.com"
-                registration={register("email")}
-                error={errors.email?.message}
-                showIconDesktop
-                className="bg-[#f8fafc] md:bg-[#f8fafc] border-slate-100"
-              />
-            </div>
+            {!notFoundBooking ? (
+              <>
+                <div className="space-y-2">
+                  <label
+                    className="text-sm font-bold text-text-100 ml-1"
+                    htmlFor="email-search"
+                  >
+                    Email Address
+                  </label>
+                  <Input
+                    icon={Mail}
+                    id="email-search"
+                    placeholder="e.g. name@example.com"
+                    registration={register("email")}
+                    error={errors.email?.message}
+                    showIconDesktop
+                    className="bg-[#f8fafc] md:bg-[#f8fafc] border-slate-100"
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <label
-                className="text-sm font-bold text-text-100 ml-1"
-                htmlFor="booking-id-search"
-              >
-                Booking ID
-              </label>
-              <Input
-                icon={Ticket}
-                id="booking-id-search"
-                placeholder="e.g. SCR-123456"
-                registration={register("bookingId")}
-                error={errors.bookingId?.message}
-                showIconDesktop
-                className="bg-[#f8fafc] md:bg-[#f8fafc] border-slate-100"
-              />
-              <p className="text-[11px] text-slate-400 mt-2 flex items-center gap-1.5 ml-1">
-                <HelpCircle size={14} />
-                Check your confirmation email for the Booking ID
-              </p>
-            </div>
+                <div className="space-y-2">
+                  <label
+                    className="text-sm font-bold text-text-100 ml-1"
+                    htmlFor="booking-id-search"
+                  >
+                    Booking ID
+                  </label>
+                  <Input
+                    icon={Ticket}
+                    id="booking-id-search"
+                    placeholder="e.g. SCR-123456"
+                    registration={register("bookingId")}
+                    error={errors.bookingId?.message}
+                    showIconDesktop
+                    className="bg-[#f8fafc] md:bg-[#f8fafc] border-slate-100"
+                  />
+                  <p className="text-[11px] text-slate-400 mt-2 flex items-center gap-1.5 ml-1">
+                    <HelpCircle size={14} />
+                    Check your confirmation email for the Booking ID
+                  </p>
+                </div>
 
-            <button
-              type="submit"
-              disabled={!isValid || isSubmitting}
-              className="w-full bg-[#4facfe] hover:bg-[#3b82f6] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 md:py-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98] mt-4"
-            >
-              {isSubmitting ? "Searching..." : "Find Booking"}
-              <ArrowRight size={22} strokeWidth={2.5} />
-            </button>
+                <button
+                  type="submit"
+                  disabled={!isValid || isSubmitting}
+                  className="w-full bg-[#4facfe] hover:bg-[#3b82f6] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 md:py-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98] mt-4"
+                >
+                  {isSubmitting ? "Searching..." : "Find Booking"}
+                  <ArrowRight size={22} strokeWidth={2.5} />
+                </button>
+              </>
+            ) : (
+              <div className="flex flex-col items-center py-4 animate-in fade-in zoom-in duration-300">
+                <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center text-red-500 mb-6 border border-red-100/50">
+                  <SearchX size={32} strokeWidth={1.5} />
+                </div>
+                <h3 className="text-xl font-bold text-text-100 mb-2">
+                  Booking Not Found
+                </h3>
+                <p className="text-text-400 text-sm text-center mb-8 leading-relaxed max-w-[280px]">
+                  We couldn&apos;t find any booking with those details. Please
+                  make sure you entered the correct email and booking ID.
+                </p>
+                <div className="w-full flex flex-col gap-3">
+                  <button
+                    onClick={() => setNotFoundBooking(false)}
+                    className="w-full bg-[#4facfe] text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 transition-all active:scale-[0.98]"
+                  >
+                    <RefreshCw size={18} />
+                    Try Again
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Responsive Support Section */}
             <div className="flex items-center justify-center gap-4 md:gap-6 pt-8 md:pt-10 border-t border-slate-100 mt-8 md:mt-10 mb-2 md:mb-0">
               <p className="hidden md:block text-sm text-slate-400 font-medium shrink-0">
                 Need help?
               </p>
-              <button
-                type="button"
+              <a
+                href="https://wa.me/2347010944519?text=Hello%20Solution%20Car%20Rentals%20Support%2C%20I%20am%20messaging%20from%20the%20%27Find%20My%20Booking%27%20page.%20I%20am%20having%20some%20trouble%20finding%20my%20booking%20details.%20Could%20you%20please%20assist%20me%3F"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-[#3b82f6] font-bold text-[13px] md:text-sm hover:underline transition-all"
               >
                 Contact Support
-              </button>
+              </a>
               <div className="flex gap-2">
                 <button
                   type="button"
@@ -156,9 +203,14 @@ export default function FindMyBookingPage() {
               Can&apos;t find your booking ID? Check your confirmation email or
               contact support.
             </p>
-            <button className="text-[#3b82f6] font-bold text-[15px] hover:underline">
+            <a
+              href="https://wa.me/2347010944519?text=Hello%20Solution%20Car%20Rentals%20Support%2C%20I%20am%20messaging%20from%20the%20%27Find%20My%20Booking%27%20page.%20I%20am%20having%20some%20trouble%20finding%20my%20booking%20details.%20Could%20you%20please%20assist%20me%3F"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#3b82f6] font-bold text-[15px] hover:underline"
+            >
               Contact Support
-            </button>
+            </a>
           </div>
         </div>
       </div>
