@@ -15,7 +15,7 @@ import * as z from "zod";
 
 const findBookingSchema = z.object({
   email: z.email("Please enter a valid email address"),
-  bookingId: z.string().min(5, "Booking ID must be at least 5 characters"),
+  bookingId: z.string().min(14, "Booking ID must be 14 characters"),
 });
 
 type FindBookingFormValues = z.infer<typeof findBookingSchema>;

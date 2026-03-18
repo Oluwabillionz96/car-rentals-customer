@@ -5,7 +5,7 @@ import HeroSection from "@/components/hero-section";
 export default function Home() {
   return (
     <>
-      <BookingStatusCard name="John" bookingDate="March 15" />
+      <BookingStatusCard />
       <HeroSection />
       <AvailableCars />
     </>
