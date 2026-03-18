@@ -115,7 +115,7 @@ export default function FindMyBookingPage() {
                   <Input
                     icon={Ticket}
                     id="booking-id-search"
-                    placeholder="e.g. SCR-123456"
+                    placeholder="e.g. SCR-1234-XXXXX"
                     registration={register("bookingId")}
                     error={errors.bookingId?.message}
                     showIconDesktop
