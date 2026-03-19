@@ -19,7 +19,7 @@ const PaymentPage = () => {
 
   const onPayment = () => {
     completeBooking();
-    router.push(`/cars/${car?.id}/confirmation`);
+    router.push(`/cars/${car?.id}/booking/${booking.bookingId}/confirmation`);
   };
   return (
     <section>

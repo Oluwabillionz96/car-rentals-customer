@@ -2,10 +2,13 @@
 
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Calendar, MapPin, Hash } from "lucide-react";
+import { Calendar, MapPin, Hash, XCircle } from "lucide-react";
 import useBookingStore from "@/store/booking-store";
 import { getCar } from "@/constants/cars";
 import { calculateDays } from "@/lib/utils";
+import { useState } from "react";
+import CancellationCard from "@/components/cancellation-card";
+import { useCancelBooking } from "@/hooks/use-cancel-booking";
 
 const BookingDetailsPage = () => {
   const { id } = useParams();
@@ -14,6 +17,11 @@ const BookingDetailsPage = () => {
 
   const booking = verifiedBookings?.find((b) => b.bookingId === id);
   const car = booking ? getCar(booking.carId) : null;
+
+  const { openCancelModal, CancelModal } = useCancelBooking({
+    carName: car?.name || "",
+    bookingId: booking?.bookingId || "",
+  });
 
   if (!booking || !car) {
     return (
@@ -66,6 +74,12 @@ const BookingDetailsPage = () => {
         return (
           <span className="w-fit px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold rounded-md uppercase tracking-wide border border-slate-200">
             Completed
+          </span>
+        );
+      case "Cancelled":
+        return (
+          <span className="w-fit px-3 py-1 bg-red-50 text-red-500 text-[10px] font-bold rounded-md uppercase tracking-wide border border-red-100">
+            Cancelled
           </span>
         );
       default:
@@ -222,16 +236,19 @@ const BookingDetailsPage = () => {
             </div>
           </div>
 
-          {/* Actions */}
+          {/* Cancellation Policy Card */}
           {booking.status === "Future" && (
-            <div className="flex flex-col gap-3 mt-2">
-              <button className="w-full bg-[#FFF5F5] text-[#F34444] border border-[#F34444]/20 font-bold py-4 rounded-[12px] transition-all active:scale-[0.98] hover:bg-red-50 hover:border-[#F34444]/40">
-                Cancel Booking
-              </button>
-            </div>
+            <CancellationCard
+              pickupDate={booking.pickupDate}
+              onCancel={openCancelModal}
+              className="mt-2"
+            />
           )}
         </div>
       </div>
+
+      {/* Cancel Confirmation Modal via Hook */}
+      <CancelModal />
     </div>
   );
 };

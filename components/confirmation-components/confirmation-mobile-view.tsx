@@ -1,6 +1,7 @@
 import { Car } from "@/constants/cars";
 import { CheckCircle2 } from "lucide-react";
 import { ActionButtons, BookingShortSummary, SupportTooltip } from "./util-components";
+import CancellationCard from "@/components/cancellation-card";
 
 export default function ConfirmationMobileView({
   car,
@@ -10,6 +11,8 @@ export default function ConfirmationMobileView({
   pickupDate,
   dropoffDate,
   bookingId,
+  onCancel,
+  rawPickupDate,
 }: {
   car: Car;
   onBackHome: () => void;
@@ -18,6 +21,8 @@ export default function ConfirmationMobileView({
   pickupDate: string;
   dropoffDate: string;
   bookingId: string;
+  onCancel: () => void;
+  rawPickupDate: Date | null;
 }) {
   return (
     <div className="md:hidden flex flex-col items-center pt-4">
@@ -50,7 +55,13 @@ export default function ConfirmationMobileView({
         </div>
       </div>
 
-      <div className="mt-4 w-full">
+      <CancellationCard
+        pickupDate={rawPickupDate}
+        onCancel={onCancel}
+        className="mt-6 w-full"
+      />
+
+      <div className="mt-4 w-full text-left">
         <SupportTooltip mobile />
       </div>
     </div>

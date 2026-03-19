@@ -160,16 +160,6 @@ export function ActionButtons({
         <Download size={mobile ? 18 : 20} />
         Download Receipt
       </button>
-      <button
-        className={
-          mobile
-            ? "bg-slate-100 text-text-200 font-bold py-3 px-6 rounded-xl active:scale-[0.98] transition-all text-sm flex justify-center gap-2"
-            : btnClass
-        }
-      >
-        <Calendar size={mobile ? 18 : 20} />
-        Manage Booking
-      </button>
       {mobile ? (
         <button
           onClick={onBackHome}
@@ -206,10 +196,6 @@ export function SuccessHeader({
         <button className="border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold py-4 px-12 rounded-2xl flex items-center gap-2 transition-all">
           <Download size={20} />
           Download Receipt
-        </button>
-        <button className="bg-[#4facfe] hover:opacity-90 text-white font-bold py-4 px-12 rounded-2xl flex items-center gap-2 shadow-lg shadow-blue-500/20 transition-all">
-          <Calendar size={20} />
-          Manage Booking
         </button>
       </div>
       <button

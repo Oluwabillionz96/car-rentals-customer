@@ -6,6 +6,7 @@ import {
   SuccessHeader,
   SupportTooltip,
 } from "./util-components";
+import CancellationCard from "@/components/cancellation-card";
 
 export default function ConfirmationDesktopView({
   car,
@@ -16,6 +17,8 @@ export default function ConfirmationDesktopView({
   pickupDateStr,
   dropoffDateStr,
   bookingId,
+  onCancel,
+  rawPickupDate,
 }: {
   car: Car;
   onBackHome: () => void;
@@ -25,6 +28,8 @@ export default function ConfirmationDesktopView({
   pickupDateStr: string;
   dropoffDateStr: string;
   bookingId: string;
+  onCancel: () => void;
+  rawPickupDate: Date | null;
 }) {
   return (
     <div className="hidden md:block">
@@ -45,6 +50,10 @@ export default function ConfirmationDesktopView({
             name={userName}
             email={userEmail}
             phone={userPhone}
+          />
+          <CancellationCard
+            pickupDate={rawPickupDate}
+            onCancel={onCancel}
           />
           <SupportTooltip />
         </div>

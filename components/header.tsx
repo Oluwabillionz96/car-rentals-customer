@@ -21,9 +21,10 @@ const Header = () => {
   const isDetailsPage = pathname.startsWith("/cars");
   const isBooking = isDetailsPage && pathname.includes("/booking");
   const isPayment = isDetailsPage && pathname.includes("/payment");
-  const isConfirmation = pathname.includes("/confirmation");
+  const isConfirmation = isDetailsPage && pathname.includes("/confirmation");
   const isBookingDetails = pathname.startsWith("/booking-details");
-  const showBackIcon = isDetailsPage || pathname.startsWith("/how-it-works") || isBookingDetails;
+  const showBackIcon =
+    isDetailsPage || pathname.startsWith("/how-it-works") || isBookingDetails;
 
   return (
     <header className="z-50 fixed bg-white/90 p-4  md:py-6 md:px-20 w-full top-0 left-0  shadow-sm backdrop-blur-md">
@@ -39,17 +40,21 @@ const Header = () => {
           </button>
         )}
 
-        {isDetailsPage || isBookingDetails && (
+        {(isDetailsPage || isBookingDetails) && (
           <p className="font-bold text-lg text-text-100 lg:hidden">
             {isBookingDetails
               ? "Booking Details"
-              : isBooking
-                ? "Book Your Ride"
-                : isPayment
-                  ? "Payment"
-                  : isConfirmation
-                    ? "Confirmation"
-                    : "Car Details"}
+              : isDetailsPage && (
+                  <>
+                    {isConfirmation
+                      ? "Confirmation"
+                      : isBooking
+                        ? "Book Your Ride"
+                        : isPayment
+                          ? "Payment"
+                          : "Car Details"}
+                  </>
+                )}
           </p>
         )}
 

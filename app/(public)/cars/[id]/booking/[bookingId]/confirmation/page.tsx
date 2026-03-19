@@ -5,15 +5,30 @@ import { useParams, useRouter } from "next/navigation";
 import useBookingStore from "@/store/booking-store";
 import ConfirmationMobileView from "@/components/confirmation-components/confirmation-mobile-view";
 import ConfirmationDesktopView from "@/components/confirmation-components/confirmation-desktop-view";
+import { useCancelBooking } from "@/hooks/use-cancel-booking";
 
 export default function ConfirmationPage() {
-  const { id } = useParams();
+  const { id, bookingId } = useParams();
   const car = getCar(id);
   const router = useRouter();
   const verifiedBookings = useBookingStore((state) => state.verifiedBooking);
-  const booking = verifiedBookings?.find((booking) => booking.carId === id);
+  const booking = verifiedBookings?.find(
+    (booking) =>
+      booking.bookingId === bookingId &&
+      booking.carId === (id as string) &&
+      booking.isBooked === true,
+  );
   const pickupDate = booking?.pickupDate || null;
   const dropoffDate = booking?.dropoffDate || null;
+
+  const { openCancelModal, CancelModal } = useCancelBooking({
+    carName: car?.name || "",
+    bookingId: (bookingId as string) || "",
+  });
+
+  if (!booking) {
+    return <div className="p-20 text-center">Booking not found</div>;
+  }
 
   const duration =
     (dropoffDate ? dropoffDate.getTime() : 0) -
@@ -42,13 +57,10 @@ export default function ConfirmationPage() {
   }
 
   const handleBackHome = () => {
-    if (typeof window !== "undefined") {
-      sessionStorage.clear();
-    }
     router.push("/");
   };
 
-  const bookingId = booking?.bookingId || "SRC-2026-XXXXX";
+  //   const bookingId = booking?.bookingId || "SRC-2026-XXXXX";
 
   if (!booking?.isBooked) {
     router.push(`/cars/${id}/booking`);
@@ -63,7 +75,9 @@ export default function ConfirmationPage() {
         customerName={customerName}
         pickupDate={formatDate(pickupDate)}
         dropoffDate={formatDate(dropoffDate)}
-        bookingId={bookingId}
+        bookingId={bookingId as string}
+        onCancel={openCancelModal}
+        rawPickupDate={pickupDate}
       />
       <ConfirmationDesktopView
         car={car}
@@ -73,8 +87,13 @@ export default function ConfirmationPage() {
         userPhone={customerPhone}
         pickupDateStr={formatDate(pickupDate)}
         dropoffDateStr={formatDate(dropoffDate)}
-        bookingId={bookingId}
+        bookingId={bookingId as string}
+        onCancel={openCancelModal}
+        rawPickupDate={pickupDate}
       />
+
+      {/* Cancel Confirmation Modal via Hook */}
+      <CancelModal />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { generateBookingId } from "@/constants/cars";
 import { create } from "zustand";
 
-export type BookingStatus = "Past" | "Future" | "Ongoing";
+export type BookingStatus = "Past" | "Future" | "Ongoing" | "Cancelled";
 
 export interface BookingDetails {
   totalPrice: number;
@@ -15,7 +15,7 @@ export interface BookingDetails {
     phone: string;
   };
   isBooked?: boolean;
-  bookingId?: string | null;
+  bookingId: string | null;
   status?: BookingStatus;
 }
 
@@ -25,13 +25,17 @@ export interface BookingStore {
   addBooking: (bookingDetails: BookingDetails) => void;
   completeBooking: () => void;
   updateBookingStatuses: () => void;
+  cancelBooking: (bookingId: string) => void;
 }
 
-const calculateStatus = (pickup: Date | null, dropoff: Date | null): BookingStatus => {
+const calculateStatus = (
+  pickup: Date | null,
+  dropoff: Date | null,
+): BookingStatus => {
   if (!pickup || !dropoff) return "Future";
   const now = new Date();
-  
-  // Normalize dates to start of day for accurate comparison if needed, 
+
+  // Normalize dates to start of day for accurate comparison if needed,
   // but usually for car rentals time matters. Let's use full time.
   if (now < pickup) return "Future";
   if (now > dropoff) return "Past";
@@ -44,7 +48,8 @@ const getBookingFromSessionStorage = () => {
   const booking = jsonBooking ? JSON.parse(jsonBooking) : null;
   if (booking !== null) {
     if (booking.pickupDate) booking.pickupDate = new Date(booking.pickupDate);
-    if (booking.dropoffDate) booking.dropoffDate = new Date(booking.dropoffDate);
+    if (booking.dropoffDate)
+      booking.dropoffDate = new Date(booking.dropoffDate);
   }
   return booking;
 };
@@ -63,7 +68,7 @@ const getVerifiedBookingsFromLocalStorage = () => {
         ...item,
         pickupDate,
         dropoffDate,
-        status: calculateStatus(pickupDate, dropoffDate),
+        status: item.status === "Cancelled" ? "Cancelled" : calculateStatus(pickupDate, dropoffDate),
       };
     });
   }
@@ -102,7 +107,6 @@ const useBookingStore = create<BookingStore>((set) => ({
       const verifiedbooking: BookingDetails = {
         ...state.booking,
         isBooked: true,
-        bookingId: generateBookingId(),
         status: calculateStatus(pickupDate, dropoffDate),
       };
       const clearedBooking = {
@@ -137,10 +141,33 @@ const useBookingStore = create<BookingStore>((set) => ({
   updateBookingStatuses() {
     set((state) => {
       if (!state.verifiedBooking) return state;
-      const updatedBookings = state.verifiedBooking.map((b) => ({
-        ...b,
-        status: calculateStatus(b.pickupDate, b.dropoffDate),
-      }));
+      const updatedBookings = state.verifiedBooking.map((b) => {
+        if (b.status === "Cancelled") return b;
+        const status = calculateStatus(b.pickupDate, b.dropoffDate);
+        return {
+          ...b,
+          status,
+          isBooked: status === "Cancelled" || status === "Past" ? false : true,
+        };
+      });
+      return { verifiedBooking: updatedBookings };
+    });
+  },
+  cancelBooking(bookingId) {
+    set((state) => {
+      if (!state.verifiedBooking) return state;
+      const updatedBookings = state.verifiedBooking.map((b) =>
+        b.bookingId === bookingId
+          ? { ...b, status: "Cancelled" as const, isBooked: false }
+          : b,
+      );
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem(
+          "verifiedBookings",
+          JSON.stringify(updatedBookings),
+        );
+      }
       return { verifiedBooking: updatedBookings };
     });
   },

@@ -4,7 +4,7 @@ import DateSelection from "@/components/date-selection";
 import DesktopCheckoutCard from "@/components/desktop-checkout-card";
 import Input from "@/components/input";
 import NavigationMap from "@/components/navigation-map";
-import { getCar } from "@/constants/cars";
+import { generateBookingId, getCar } from "@/constants/cars";
 import { ArrowRight, Mail, Phone, User } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -83,6 +83,7 @@ const CarBookingPage = () => {
         email: data.email,
         phone: data.phone,
       },
+      bookingId: generateBookingId(),
     });
 
     router.push(`/cars/${car?.id}/payment`);
