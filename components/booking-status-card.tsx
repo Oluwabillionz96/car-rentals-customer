@@ -3,11 +3,15 @@
 import useBookingStore from "@/store/booking-store";
 import { ArrowRight, CalendarCheck } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 
 export default function BookingStatusCard() {
   const bookings = useBookingStore((state) => state.verifiedBooking);
-  const updateBookingStatuses = useBookingStore((state) => state.updateBookingStatuses);
+  const router = useRouter();
+  const updateBookingStatuses = useBookingStore(
+    (state) => state.updateBookingStatuses,
+  );
 
   useEffect(() => {
     // Update statuses on mount to ensure "Ongoing" vs "Past" is accurate
@@ -16,18 +20,22 @@ export default function BookingStatusCard() {
 
   const activeBooking = useMemo(() => {
     if (!bookings) return null;
-    
+
     // Filter for Ongoing or Future bookings and pick the most recent one (last in array)
-    const filtered = bookings.filter(b => b.status === "Ongoing" || b.status === "Future");
+    const filtered = bookings.filter(
+      (b) => b.status === "Ongoing" || b.status === "Future",
+    );
     return filtered.length > 0 ? filtered[filtered.length - 1] : null;
   }, [bookings]);
 
   if (!activeBooking) return null;
 
   const name = activeBooking.customer.firstName;
-  const dateObj = activeBooking.pickupDate ? new Date(activeBooking.pickupDate) : null;
+  const dateObj = activeBooking.pickupDate
+    ? new Date(activeBooking.pickupDate)
+    : null;
   const today = new Date();
-  
+
   const isToday =
     dateObj &&
     dateObj.getDate() === today.getDate() &&
@@ -44,7 +52,10 @@ export default function BookingStatusCard() {
       : "your scheduled date";
 
   return (
-    <Link href={`/booking-details/${activeBooking.bookingId}`} className="w-full mx-auto p-4 md:p-6 bg-primary/5 md:bg-white border border-primary/20 rounded-xl shadow-sm flex items-start md:items-center justify-between gap-4">
+    <div
+      onClick={() => router.push(`/booking-details/${activeBooking.bookingId}`)}
+      className="w-full mx-auto p-4 md:p-6 bg-primary/5 md:bg-white border border-primary/20 rounded-xl shadow-sm flex items-start md:items-center justify-between gap-4"
+    >
       <div className="flex items-center gap-4">
         <div className="hidden md:flex p-3 bg-primary/10 rounded-full">
           <CalendarCheck size={24} color="#4FBFF8" />
@@ -55,7 +66,9 @@ export default function BookingStatusCard() {
             Welcome back, {name} <span className="md:text-xl">👋</span>
           </h2>
           <p className="text-text-300 text-xs md:text-base truncate">
-            {isToday ? "You have a booking today" : `You have a booking on ${bookingDateText}`}
+            {isToday
+              ? "You have a booking today"
+              : `You have a booking on ${bookingDateText}`}
           </p>
         </div>
       </div>
@@ -70,6 +83,6 @@ export default function BookingStatusCard() {
           <ArrowRight size={18} />
         </Link>
       </div>
-    </Link>
+    </div>
   );
 }
