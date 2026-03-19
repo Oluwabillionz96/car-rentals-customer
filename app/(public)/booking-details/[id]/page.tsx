@@ -4,10 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   Calendar,
-  ChevronRight,
   MapPin,
-  ShieldCheck,
-  Clock,
   Hash,
 } from "lucide-react";
 import useBookingStore from "@/store/booking-store";

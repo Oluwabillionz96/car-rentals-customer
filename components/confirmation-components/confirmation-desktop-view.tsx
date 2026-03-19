@@ -1,4 +1,4 @@
-import { Car, generateBookingId } from "@/constants/cars";
+import { Car } from "@/constants/cars";
 import {
   BookingIDCard,
   CustomerDetailsCard,
