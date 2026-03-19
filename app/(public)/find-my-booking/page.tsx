@@ -14,7 +14,7 @@ import Input from "@/components/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { getVerifiedBookingsFromLocalStorage } from "@/store/booking-store";
+import useBookingStore from "@/store/booking-store";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -37,12 +37,11 @@ export default function FindMyBookingPage() {
   });
 
   const [notFoundBooking, setNotFoundBooking] = useState(false);
+  const verifiedBookings = useBookingStore((state) => state.verifiedBooking);
 
   const router = useRouter();
 
   const onSubmit = async (data: FindBookingFormValues) => {
-    const verifiedBookings = getVerifiedBookingsFromLocalStorage();
-
     const booking = verifiedBookings?.find(
       (booking) =>
         booking?.customer.email === data.email &&

@@ -2,11 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import {
-  Calendar,
-  MapPin,
-  Hash,
-} from "lucide-react";
+import { Calendar, MapPin, Hash } from "lucide-react";
 import useBookingStore from "@/store/booking-store";
 import { getCar } from "@/constants/cars";
 import { calculateDays } from "@/lib/utils";
@@ -52,6 +48,31 @@ const BookingDetailsPage = () => {
     });
   };
 
+  const getStatusBadge = (status?: string) => {
+    switch (status) {
+      case "Future":
+        return (
+          <span className="w-fit px-3 py-1 bg-blue-50 text-blue-500 text-[10px] font-bold rounded-md uppercase tracking-wide border border-blue-100">
+            Upcoming
+          </span>
+        );
+      case "Ongoing":
+        return (
+          <span className="w-fit px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-md uppercase tracking-wide border border-emerald-100">
+            Ongoing
+          </span>
+        );
+      case "Past":
+        return (
+          <span className="w-fit px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold rounded-md uppercase tracking-wide border border-slate-200">
+            Completed
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f8fafb] pb-20 lg:pb-10 font-[Inter]">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:items-start">
@@ -69,7 +90,7 @@ const BookingDetailsPage = () => {
           </div>
 
           {/* Pick-up Location Card */}
-          <div className="md:mx-6 lg:mx-0 bg-white rounded-[24px] p-3 lg:p-6 shadow-xl shadow-slate-200/40 border border-slate-50">
+          <div className="bg-white rounded-[24px] p-3 lg:p-6 shadow-xl shadow-slate-200/40 border border-slate-50">
             <div className="flex items-center gap-3 mb-4">
               <MapPin size={18} className="text-primary" />
               <h3 className="text-base font-bold text-[#1e293b]">
@@ -83,12 +104,6 @@ const BookingDetailsPage = () => {
               </p>
 
               <div className="w-full h-48 md:h-64 relative rounded-[16px] overflow-hidden border border-slate-100">
-                {/* <Image
-                    src="/booking_map_location_1773838165052.png"
-                    alt="Map showing location"
-                    fill
-                    className="object-cover"
-                  /> */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
                     <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
@@ -107,9 +122,7 @@ const BookingDetailsPage = () => {
           <div className="bg-white rounded-[24px] p-3 lg:p-6 shadow-xl shadow-slate-200/40 border border-slate-50">
             <div className="flex justify-between items-start mb-4 flex-col gap-6 md:gap-2 md:flex-row">
               <div className="flex flex-col gap-1.5">
-                {/* <span className="w-fit px-3 py-1 bg-[#E1F5FE] text-[#4FBFF8] text-[10px] font-bold rounded-md uppercase tracking-wide">
-                    Upcoming
-                  </span> */}
+                {getStatusBadge(booking.status)}
                 <h2 className="text-2xl font-bold text-[#1e293b]">
                   {car.name}
                 </h2>
@@ -209,14 +222,14 @@ const BookingDetailsPage = () => {
             </div>
           </div>
 
-          {/* Policy Card */}
-
           {/* Actions */}
-          <div className="flex flex-col gap-3 mt-2">
-            <button className="w-full bg-[#FFF5F5] text-[#F34444] font-bold py-4 rounded-[12px] transition-all active:scale-[0.98]">
-              Cancel Booking
-            </button>
-          </div>
+          {booking.status === "Future" && (
+            <div className="flex flex-col gap-3 mt-2">
+              <button className="w-full bg-[#FFF5F5] text-[#F34444] border border-[#F34444]/20 font-bold py-4 rounded-[12px] transition-all active:scale-[0.98] hover:bg-red-50 hover:border-[#F34444]/40">
+                Cancel Booking
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
