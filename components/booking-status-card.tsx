@@ -44,7 +44,7 @@ export default function BookingStatusCard() {
       : "your scheduled date";
 
   return (
-    <div className="w-full mx-auto p-4 md:p-6 bg-primary/5 md:bg-white border border-primary/20 rounded-xl shadow-sm flex items-start md:items-center justify-between gap-4">
+    <Link href={`/booking-details/${activeBooking.bookingId}`} className="w-full mx-auto p-4 md:p-6 bg-primary/5 md:bg-white border border-primary/20 rounded-xl shadow-sm flex items-start md:items-center justify-between gap-4">
       <div className="flex items-center gap-4">
         <div className="hidden md:flex p-3 bg-primary/10 rounded-full">
           <CalendarCheck size={24} color="#4FBFF8" />
@@ -70,6 +70,6 @@ export default function BookingStatusCard() {
           <ArrowRight size={18} />
         </Link>
       </div>
-    </div>
+    </Link>
   );
 }
