@@ -6,6 +6,8 @@ import useBookingStore from "@/store/booking-store";
 import ConfirmationMobileView from "@/components/confirmation-components/confirmation-mobile-view";
 import ConfirmationDesktopView from "@/components/confirmation-components/confirmation-desktop-view";
 import { useCancelBooking } from "@/hooks/use-cancel-booking";
+import EmptyState from "@/components/empty-state";
+import { Hash } from "lucide-react";
 
 export default function ConfirmationPage() {
   const { id, bookingId } = useParams();
@@ -26,8 +28,16 @@ export default function ConfirmationPage() {
     bookingId: (bookingId as string) || "",
   });
 
-  if (!booking) {
-    return <div className="p-20 text-center">Booking not found</div>;
+  if (!booking || !car) {
+    return (
+      <EmptyState
+        title="Booking Not Found"
+        description={`We couldn't find a confirmed booking with the ID: ${bookingId}. Please check your booking history.`}
+        icon={Hash}
+        actionLabel="Find My Booking"
+        actionHref="/find-my-booking"
+      />
+    );
   }
 
   const duration =

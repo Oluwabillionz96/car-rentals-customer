@@ -9,6 +9,8 @@ import Link from "next/link";
 import CarInfo from "@/components/car-info";
 import DesktopBookingCard from "@/components/desktop-booking-card";
 import NavigationMap from "@/components/navigation-map";
+import EmptyState from "@/components/empty-state";
+import { AlertCircle } from "lucide-react";
 
 const CarDetailsPage = () => {
   const { id } = useParams();
@@ -40,15 +42,13 @@ const CarDetailsPage = () => {
 
   if (!car) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <h2 className="text-2xl font-bold text-text-100">Car not found</h2>
-        <button
-          onClick={() => router.back()}
-          className="bg-primary text-white px-6 py-2 rounded-xl font-bold"
-        >
-          Go Back
-        </button>
-      </div>
+      <EmptyState
+        title="Car Model Not Found"
+        description={`We couldn't find the car model with ID: ${id}. It might have been recently removed from our fleet.`}
+        icon={AlertCircle}
+        actionLabel="View Other Cars"
+        actionHref="/"
+      />
     );
   }
 

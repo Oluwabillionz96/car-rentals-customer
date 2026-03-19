@@ -14,8 +14,9 @@ import * as z from "zod";
 import useBookingStore from "@/store/booking-store";
 import MobileCarCard from "@/components/mobile-car-card";
 import Button from "@/components/button";
-
 import { calculateDays } from "@/lib/utils";
+import EmptyState from "@/components/empty-state";
+import { AlertCircle } from "lucide-react";
 
 const bookingSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -31,6 +32,19 @@ export type BookingFormValues = z.infer<typeof bookingSchema>;
 const CarBookingPage = () => {
   const { id } = useParams();
   const car = getCar(id);
+
+  if (!car) {
+    return (
+      <EmptyState
+        title="Car Model Not Found"
+        description={`We couldn't find the car model with ID: ${id}. It might have been recently removed from our fleet.`}
+        icon={AlertCircle}
+        actionLabel="View Other Cars"
+        actionHref="/"
+      />
+    );
+  }
+
   const router = useRouter();
   const booking = useBookingStore((state) => state.booking);
   const [pickupDate, setPickupDate] = useState<Date | null>(booking.pickupDate);

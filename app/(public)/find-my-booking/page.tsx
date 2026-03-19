@@ -11,6 +11,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import Input from "@/components/input";
+import EmptyState from "@/components/empty-state";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -136,27 +137,14 @@ export default function FindMyBookingPage() {
                 </button>
               </>
             ) : (
-              <div className="flex flex-col items-center py-4 animate-in fade-in zoom-in duration-300">
-                <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center text-red-500 mb-6 border border-red-100/50">
-                  <SearchX size={32} strokeWidth={1.5} />
-                </div>
-                <h3 className="text-xl font-bold text-text-100 mb-2">
-                  Booking Not Found
-                </h3>
-                <p className="text-text-400 text-sm text-center mb-8 leading-relaxed max-w-[280px]">
-                  We couldn&apos;t find any booking with those details. Please
-                  make sure you entered the correct email and booking ID.
-                </p>
-                <div className="w-full flex flex-col gap-3">
-                  <button
-                    onClick={() => setNotFoundBooking(false)}
-                    className="w-full bg-[#4facfe] text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 transition-all active:scale-[0.98]"
-                  >
-                    <RefreshCw size={18} />
-                    Try Again
-                  </button>
-                </div>
-              </div>
+              <EmptyState
+                title="Booking Not Found"
+                description="We couldn't find any booking with those details. Please make sure you entered the correct email and booking ID."
+                icon={SearchX}
+                actionLabel="Try Again"
+                onAction={() => setNotFoundBooking(false)}
+                compact
+              />
             )}
 
             {/* Responsive Support Section */}

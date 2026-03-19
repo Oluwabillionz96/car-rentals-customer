@@ -6,9 +6,10 @@ import { Calendar, MapPin, Hash, XCircle } from "lucide-react";
 import useBookingStore from "@/store/booking-store";
 import { getCar } from "@/constants/cars";
 import { calculateDays } from "@/lib/utils";
-import { useState } from "react";
-import CancellationCard from "@/components/cancellation-card";
+import EmptyState from "@/components/empty-state";
 import { useCancelBooking } from "@/hooks/use-cancel-booking";
+import CancellationCard from "@/components/cancellation-card";
+import { useState } from "react";
 
 const BookingDetailsPage = () => {
   const { id } = useParams();
@@ -25,23 +26,13 @@ const BookingDetailsPage = () => {
 
   if (!booking || !car) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-center">
-        <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6 text-slate-400">
-          <Hash size={40} />
-        </div>
-        <h1 className="text-2xl font-bold text-slate-800 mb-2">
-          Booking Not Found
-        </h1>
-        <p className="text-slate-500 mb-8 max-w-xs">
-          We couldn&apos;t find any active booking with the ID: {id}
-        </p>
-        <button
-          onClick={() => router.push("/")}
-          className="bg-[#4FBFF8] text-white font-bold py-4 px-10 rounded-2xl shadow-lg shadow-primary/20"
-        >
-          Return Home
-        </button>
-      </div>
+      <EmptyState
+        title="Booking Not Found"
+        description={`We couldn't find any active booking with the ID: ${id}. Please check your confirmation email.`}
+        icon={Hash}
+        actionLabel="Return Home"
+        actionHref="/"
+      />
     );
   }
 
