@@ -3,6 +3,7 @@ import { CheckCircle2, ChevronDown, MapPin } from "lucide-react";
 import { ParamValue } from "next/dist/server/request/params";
 import { Dispatch, SetStateAction } from "react";
 import IconCard from "./icon-card";
+import Link from "next/link";
 
 const CarInfo = ({
   id,
@@ -95,9 +96,16 @@ const CarInfo = ({
       <div className="space-y-6">
         <div className="flex justify-between items-end">
           <h2 className="text-lg font-bold text-text-100">Pickup Location</h2>
-          <button className="text-primary text-sm font-bold hover:underline">
+          <Link
+            href={
+              "https://www.google.com/maps?ll=5.020473,7.946645&z=14&t=m&hl=en&gl=NG&mapclient=embed&cid=2943027075063025104"
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary text-sm font-bold hover:underline"
+          >
             View map
-          </button>
+          </Link>
         </div>
         <div className="w-full py-4 px-2 md:px-4 rounded-xl bg-neutral-100 border border-slate-100 flex items-center gap-4 transition-all hover:bg-white hover:shadow-md group">
           <div className="bg-primary/20 text-primary p-3 rounded-2xl group-hover:scale-110 transition-transform">
@@ -105,16 +113,24 @@ const CarInfo = ({
           </div>
           <div>
             <p className="text-text-100 font-semibold text-sm ">
-              De-Castle Luxury Home
+              Solution Car rental Services
             </p>
             <p className="text-text-300 text-xs">Ewet Housing Estate, Uyo</p>
           </div>
         </div>
         {/* Map Placeholder */}
-        <div className="hidden md:block relative h-64 rounded-3xl overflow-hidden shadow-inner bg-slate-200">
-          <div className="absolute inset-0 flex items-center justify-center opacity-30">
-            <MapPin size={48} className="text-primary animate-bounce" />
-          </div>
+        <div className="block relative h-64 md:rounded-3xl rounded-xl overflow-hidden shadow-inner bg-slate-200">
+          {/* <div className="absolute inset-0 flex items-center justify-center"> */}
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7949.0530107938785!2d7.939429724739661!3d5.0179854185323105!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x105d57dd42e2ce85%3A0x28d7bb882d7d0dd0!2sSolution%20Car%20Rental%20Services%20uyo!5e0!3m2!1sen!2sng!4v1774015313487!5m2!1sen!2sng"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          ></iframe>
+          {/* </div> */}
         </div>
       </div>
     </div>
