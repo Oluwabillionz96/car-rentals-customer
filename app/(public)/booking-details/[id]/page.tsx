@@ -2,13 +2,14 @@
 
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { Calendar, MapPin, Hash} from "lucide-react";
+import { Calendar, MapPin, Hash } from "lucide-react";
 import useBookingStore from "@/store/booking-store";
 import { getCar } from "@/constants/cars";
 import { calculateDays } from "@/lib/utils";
 import EmptyState from "@/components/empty-state";
 import { useCancelBooking } from "@/hooks/use-cancel-booking";
 import CancellationCard from "@/components/cancellation-card";
+import Map from "@/components/map";
 
 const BookingDetailsPage = () => {
   const { id } = useParams();
@@ -107,13 +108,7 @@ const BookingDetailsPage = () => {
               </p>
 
               <div className="w-full h-48 md:h-64 relative rounded-[16px] overflow-hidden border border-slate-100">
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
-                      <MapPin size={16} />
-                    </div>
-                  </div>
-                </div>
+                <Map />
               </div>
             </div>
           </div>
