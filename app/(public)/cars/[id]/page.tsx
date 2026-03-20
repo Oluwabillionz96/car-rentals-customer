@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { getCar } from "@/constants/cars";
 import Image from "next/image";
 import { ArrowLeft} from "lucide-react";
@@ -14,7 +14,6 @@ import { AlertCircle } from "lucide-react";
 
 const CarDetailsPage = () => {
   const { id } = useParams();
-  const router = useRouter();
   const [isReadMore, setIsReadMore] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);

@@ -2,7 +2,6 @@
 
 import { LucideIcon, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { JSX } from "react";
 
 interface EmptyStateProps {
   title: string;

@@ -1,19 +1,17 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Image from "next/image";
-import { Calendar, MapPin, Hash, XCircle } from "lucide-react";
+import { Calendar, MapPin, Hash} from "lucide-react";
 import useBookingStore from "@/store/booking-store";
 import { getCar } from "@/constants/cars";
 import { calculateDays } from "@/lib/utils";
 import EmptyState from "@/components/empty-state";
 import { useCancelBooking } from "@/hooks/use-cancel-booking";
 import CancellationCard from "@/components/cancellation-card";
-import { useState } from "react";
 
 const BookingDetailsPage = () => {
   const { id } = useParams();
-  const router = useRouter();
   const verifiedBookings = useBookingStore((state) => state.verifiedBooking);
 
   const booking = verifiedBookings?.find((b) => b.bookingId === id);

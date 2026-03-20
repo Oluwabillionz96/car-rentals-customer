@@ -39,7 +39,7 @@ const Input = ({
           value={value}
           onChange={onChange}
           className={`h-full w-full outline-none placeholder:text-text-400 p-4 ${
-            showIconDesktop ? "pl-12" : "pl-9 lg:pl-4"
+            showIconDesktop ? "pl-12" : "pl-10 lg:pl-4"
           }`}
           {...registration}
         />

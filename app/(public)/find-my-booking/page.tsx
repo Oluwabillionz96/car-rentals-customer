@@ -7,7 +7,6 @@ import {
   HelpCircle,
   Headphones,
   MessageSquare,
-  SearchX,
   RefreshCw,
 } from "lucide-react";
 import Input from "@/components/input";
@@ -140,7 +139,7 @@ export default function FindMyBookingPage() {
               <EmptyState
                 title="Booking Not Found"
                 description="We couldn't find any booking with those details. Please make sure you entered the correct email and booking ID."
-                icon={SearchX}
+                icon={RefreshCw}
                 actionLabel="Try Again"
                 onAction={() => setNotFoundBooking(false)}
                 compact

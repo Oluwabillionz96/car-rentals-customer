@@ -8,7 +8,7 @@ import { generateBookingId, getCar } from "@/constants/cars";
 import { ArrowRight, Mail, Phone, User } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import useBookingStore from "@/store/booking-store";
@@ -32,19 +32,6 @@ export type BookingFormValues = z.infer<typeof bookingSchema>;
 const CarBookingPage = () => {
   const { id } = useParams();
   const car = getCar(id);
-
-  if (!car) {
-    return (
-      <EmptyState
-        title="Car Model Not Found"
-        description={`We couldn't find the car model with ID: ${id}. It might have been recently removed from our fleet.`}
-        icon={AlertCircle}
-        actionLabel="View Other Cars"
-        actionHref="/"
-      />
-    );
-  }
-
   const router = useRouter();
   const booking = useBookingStore((state) => state.booking);
   const [pickupDate, setPickupDate] = useState<Date | null>(booking.pickupDate);
@@ -68,7 +55,6 @@ const CarBookingPage = () => {
     },
   });
 
-  // Sync external date state with form state
   useEffect(() => {
     if (pickupDate) {
       setValue("pickupDate", pickupDate);
@@ -80,10 +66,24 @@ const CarBookingPage = () => {
     }
   }, [pickupDate, dropoffDate, setValue, trigger]);
 
+  const addBooking = useBookingStore((state) => state.addBooking);
+
+  if (!car) {
+    return (
+      <EmptyState
+        title="Car Model Not Found"
+        description={`We couldn't find the car model with ID: ${id}. It might have been recently removed from our fleet.`}
+        icon={AlertCircle}
+        actionLabel="View Other Cars"
+        actionHref="/"
+      />
+    );
+  }
+
+  // Sync external date state with form state
+
   const totalDays = calculateDays(pickupDate, dropoffDate);
   const totalPrice = totalDays * (car?.price ?? 0);
-
-  const addBooking = useBookingStore((state) => state.addBooking);
 
   const onSubmit = (data: BookingFormValues) => {
     addBooking({

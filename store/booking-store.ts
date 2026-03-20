@@ -1,4 +1,3 @@
-import { generateBookingId } from "@/constants/cars";
 import { create } from "zustand";
 
 export type BookingStatus = "Past" | "Future" | "Ongoing" | "Cancelled";
@@ -68,7 +67,10 @@ const getVerifiedBookingsFromLocalStorage = () => {
         ...item,
         pickupDate,
         dropoffDate,
-        status: item.status === "Cancelled" ? "Cancelled" : calculateStatus(pickupDate, dropoffDate),
+        status:
+          item.status === "Cancelled"
+            ? "Cancelled"
+            : calculateStatus(pickupDate, dropoffDate),
       };
     });
   }
