@@ -17,6 +17,7 @@ import Button from "@/components/button";
 import { calculateDays } from "@/lib/utils";
 import EmptyState from "@/components/empty-state";
 import { AlertCircle } from "lucide-react";
+import PaymentWarningModal from "@/components/payment-warning-modal";
 
 const bookingSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -66,6 +67,11 @@ const CarBookingPage = () => {
     }
   }, [pickupDate, dropoffDate, setValue, trigger]);
 
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
+  const [tempBookingData, setTempBookingData] = useState<BookingFormValues | null>(
+    null,
+  );
+
   const addBooking = useBookingStore((state) => state.addBooking);
 
   if (!car) {
@@ -86,20 +92,28 @@ const CarBookingPage = () => {
   const totalPrice = totalDays * (car?.price ?? 0);
 
   const onSubmit = (data: BookingFormValues) => {
+    setTempBookingData(data);
+    setIsWarningModalOpen(true);
+  };
+
+  const handleConfirmBooking = () => {
+    if (!tempBookingData) return;
+
     addBooking({
       totalPrice,
       carId: car?.id || "",
-      pickupDate: data.pickupDate,
-      dropoffDate: data.dropoffDate,
+      pickupDate: tempBookingData.pickupDate,
+      dropoffDate: tempBookingData.dropoffDate,
       customer: {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phone: data.phone,
+        firstName: tempBookingData.firstName,
+        lastName: tempBookingData.lastName,
+        email: tempBookingData.email,
+        phone: tempBookingData.phone,
       },
       bookingId: generateBookingId(),
     });
 
+    setIsWarningModalOpen(false);
     router.push(`/cars/${car?.id}/payment`);
   };
 
@@ -235,6 +249,11 @@ const CarBookingPage = () => {
           car={car}
         />
       </section>
+      <PaymentWarningModal
+        isOpen={isWarningModalOpen}
+        onClose={() => setIsWarningModalOpen(false)}
+        onConfirm={handleConfirmBooking}
+      />
     </section>
   );
 };
