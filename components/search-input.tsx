@@ -1,13 +1,12 @@
 import { Search, X } from "lucide-react";
 import Input from "./input";
-import { Dispatch, SetStateAction } from "react";
 
 const SearchInput = ({
   searchQuery,
   setSearchQuery,
 }: {
   searchQuery: string;
-  setSearchQuery: Dispatch<SetStateAction<string>>;
+  setSearchQuery: (query:string )=>void;
 }) => {
   return (
     <div className="w-full md:w-1/2">
