@@ -63,7 +63,7 @@ export default function BookingStatusCard() {
 
         <div className="flex flex-col min-w-0">
           <h2 className="text-text-100 text-sm md:text-lg font-bold flex items-center md:gap-2 truncate">
-            Welcome back, {name} <span className="md:text-xl">👋</span>
+            Hello, {name} <span className="md:text-xl">👋</span>
           </h2>
           <p className="text-text-300 text-xs md:text-base truncate">
             {isToday
