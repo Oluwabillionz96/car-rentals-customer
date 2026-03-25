@@ -19,7 +19,7 @@ export interface BookingDetails {
 }
 
 export interface BookingStore {
-  booking: BookingDetails;
+  booking: BookingDetails | null;
   verifiedBooking: BookingDetails[] | null;
   addBooking: (bookingDetails: BookingDetails) => void;
   completeBooking: () => void;
@@ -39,18 +39,6 @@ const calculateStatus = (
   if (now < pickup) return "Future";
   if (now > dropoff) return "Past";
   return "Ongoing";
-};
-
-const getBookingFromSessionStorage = () => {
-  if (typeof window === "undefined") return null;
-  const jsonBooking = sessionStorage.getItem("booking");
-  const booking = jsonBooking ? JSON.parse(jsonBooking) : null;
-  if (booking !== null) {
-    if (booking.pickupDate) booking.pickupDate = new Date(booking.pickupDate);
-    if (booking.dropoffDate)
-      booking.dropoffDate = new Date(booking.dropoffDate);
-  }
-  return booking;
 };
 
 const getVerifiedBookingsFromLocalStorage = () => {
@@ -78,32 +66,14 @@ const getVerifiedBookingsFromLocalStorage = () => {
 };
 
 const useBookingStore = create<BookingStore>((set) => ({
-  booking: getBookingFromSessionStorage() || {
-    totalPrice: 0,
-    carId: "",
-    pickupDate: null,
-    dropoffDate: null,
-    customer: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-    },
-    isBooked: false,
-    bookingId: null,
-  },
+  booking: null,
   verifiedBooking: getVerifiedBookingsFromLocalStorage(),
   addBooking(bookingDetails) {
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("booking", JSON.stringify(bookingDetails));
-    }
-    set((state) => {
-      const booking = { ...state.booking, ...bookingDetails };
-      return { booking };
-    });
+    set(() => ({ booking: bookingDetails }));
   },
   completeBooking() {
     set((state) => {
+      if (!state.booking) return { verifiedBooking: state.verifiedBooking };
       const pickupDate = state.booking.pickupDate;
       const dropoffDate = state.booking.dropoffDate;
       const verifiedbooking: BookingDetails = {
@@ -111,20 +81,7 @@ const useBookingStore = create<BookingStore>((set) => ({
         isBooked: true,
         status: calculateStatus(pickupDate, dropoffDate),
       };
-      const clearedBooking = {
-        totalPrice: 0,
-        carId: "",
-        pickupDate: null,
-        dropoffDate: null,
-        customer: {
-          firstName: "",
-          lastName: "",
-          email: "",
-          phone: "",
-        },
-        isBooked: false,
-        bookingId: null,
-      };
+
       const verifiedBookings = state.verifiedBooking
         ? [...state.verifiedBooking, verifiedbooking]
         : [verifiedbooking];
@@ -134,10 +91,8 @@ const useBookingStore = create<BookingStore>((set) => ({
           "verifiedBookings",
           JSON.stringify(verifiedBookings),
         );
-
-        sessionStorage.removeItem("booking");
       }
-      return { booking: clearedBooking, verifiedBooking: verifiedBookings };
+      return { verifiedBooking: verifiedBookings, booking: null };
     });
   },
   updateBookingStatuses() {

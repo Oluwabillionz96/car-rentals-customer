@@ -10,16 +10,25 @@ import NavigationMap from "@/components/navigation-map";
 import DesktopCarPaymentCard from "@/components/desktop-car-payment-card";
 
 const PaymentPage = () => {
-  const { id } = useParams();
+  const { id, bookingId } = useParams();
   const router = useRouter();
   const car = getCar(id);
-  const booking = useBookingStore((state) => state.booking);
-  const totalDays = calculateDays(booking.pickupDate, booking.dropoffDate);
+  const bookingStore = useBookingStore(state => state)
+  const verifiedBookings =  bookingStore?.verifiedBooking?.find(
+      (booking) => booking.bookingId === bookingId,
+  );
+  const currentBooking = bookingStore.booking
+  const booking = verifiedBookings || currentBooking
+   
+  const totalDays = calculateDays(
+    booking?.pickupDate ?? null,
+    booking?.dropoffDate || null,
+  );
   const completeBooking = useBookingStore((state) => state.completeBooking);
 
   const onPayment = () => {
     completeBooking();
-    router.push(`/cars/${car?.id}/booking/${booking.bookingId}/confirmation`);
+    router.push(`/cars/${car?.id}/booking/${booking?.bookingId}/confirmation`);
   };
   return (
     <section>
@@ -64,7 +73,7 @@ const PaymentPage = () => {
                   {totalDays})
                 </p>
                 <p className="text-sm font-medium text-text-100">
-                  ₦{booking.totalPrice.toLocaleString()}
+                  ₦{booking?.totalPrice?.toLocaleString() ?? "0.00"}
                 </p>
               </div>
               <div className="flex justify-between">
@@ -75,15 +84,19 @@ const PaymentPage = () => {
             <div className="pt-3 border-t border-neutral-100 flex justify-between">
               <p className="text-text-100 font-bold">Total Amount</p>
               <p className="text-lg font-bold text-primary">
-                ₦ {booking.totalPrice.toLocaleString()}
+                ₦ {booking?.totalPrice?.toLocaleString() || "0.00"}
               </p>
             </div>
           </div>
 
           <div className="lg:hidden">
-            <Button onClick={onPayment}>
+            <Button
+              onClick={onPayment}
+              className="disabled:opacity-50 cursor-not-allowed"
+              disabled={booking?.isBooked}
+            >
               <Wallet />
-              Pay with Paystack
+              {!booking?.isBooked ? "Pay with Paystack" : "Paid"}
             </Button>
           </div>
         </div>
@@ -91,7 +104,7 @@ const PaymentPage = () => {
         <DesktopCarPaymentCard
           car={car}
           totalDays={totalDays}
-          totalPrice={booking.totalPrice}
+          totalPrice={booking?.totalPrice ?? 0.0}
           onPayment={onPayment}
         />
       </div>

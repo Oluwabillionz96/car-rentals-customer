@@ -35,9 +35,11 @@ const CarBookingPage = () => {
   const car = getCar(id);
   const router = useRouter();
   const booking = useBookingStore((state) => state.booking);
-  const [pickupDate, setPickupDate] = useState<Date | null>(booking.pickupDate);
+  const [pickupDate, setPickupDate] = useState<Date | null>(
+    booking?.pickupDate ?? null,
+  );
   const [dropoffDate, setDropoffDate] = useState<Date | null>(
-    booking.dropoffDate,
+    booking?.dropoffDate || null,
   );
 
   const {
@@ -49,10 +51,10 @@ const CarBookingPage = () => {
   } = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
-      firstName: booking.customer.firstName,
-      lastName: booking.customer.lastName,
-      email: booking.customer.email,
-      phone: booking.customer.phone,
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
     },
   });
 
@@ -68,9 +70,8 @@ const CarBookingPage = () => {
   }, [pickupDate, dropoffDate, setValue, trigger]);
 
   const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
-  const [tempBookingData, setTempBookingData] = useState<BookingFormValues | null>(
-    null,
-  );
+  const [tempBookingData, setTempBookingData] =
+    useState<BookingFormValues | null>(null);
 
   const addBooking = useBookingStore((state) => state.addBooking);
 
@@ -98,6 +99,7 @@ const CarBookingPage = () => {
 
   const handleConfirmBooking = () => {
     if (!tempBookingData) return;
+    const bookingId = generateBookingId();
 
     addBooking({
       totalPrice,
@@ -110,11 +112,11 @@ const CarBookingPage = () => {
         email: tempBookingData.email,
         phone: tempBookingData.phone,
       },
-      bookingId: generateBookingId(),
+      bookingId,
     });
 
     setIsWarningModalOpen(false);
-    router.push(`/cars/${car?.id}/payment`);
+    router.push(`/cars/${car?.id}/booking/${bookingId}/payment`);
   };
 
   return (

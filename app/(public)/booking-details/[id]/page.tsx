@@ -187,7 +187,7 @@ const BookingDetailsPage = () => {
                     Rental Fee ({days} {days === 1 ? "day" : "days"})
                   </span>
                   <span className="text-[#1e293b] font-bold">
-                    ₦ {booking.totalPrice.toLocaleString()}
+                    ₦ {booking?.totalPrice?.toLocaleString() || "0.00"}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
@@ -207,7 +207,7 @@ const BookingDetailsPage = () => {
               <div className="pt-4 flex justify-between items-center border-t border-slate-50">
                 <p className="text-base font-bold text-[#1e293b]">Total Paid</p>
                 <p className="text-lg md:text-2xl font-bold text-[#4FBFF8] tracking-tight">
-                  ₦ {booking.totalPrice.toLocaleString()}
+                  ₦ {booking.totalPrice?.toLocaleString() || "0.00"}
                 </p>
               </div>
 

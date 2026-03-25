@@ -2,7 +2,7 @@
 import { ArrowLeft, Menu, Share2, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import MobileNavbar from "./mobile-navbar";
 import { useState } from "react";
 
@@ -17,6 +17,7 @@ const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { id } = useParams();
 
   const isDetailsPage = pathname.startsWith("/cars");
   const isBooking = isDetailsPage && pathname.includes("/booking");
@@ -26,12 +27,22 @@ const Header = () => {
   const showBackIcon =
     isDetailsPage || pathname.startsWith("/how-it-works") || isBookingDetails;
 
+  console.log({ isConfirmation, isBooking });
   return (
     <header className="z-50 fixed bg-white/90 p-4  md:py-6 md:px-20 w-full top-0 left-0  shadow-sm backdrop-blur-md">
       <nav className=" flex justify-between   ">
         {showBackIcon && (
           <button
             onClick={() => {
+              if (isConfirmation) {
+                router.push("/");
+                return;
+              }
+              if (isBooking) {
+                router.push(`/cars/${id}`);
+                return;
+              }
+
               router.back();
             }}
             className={"lg:hidden"}
@@ -48,11 +59,11 @@ const Header = () => {
                   <>
                     {isConfirmation
                       ? "Confirmation"
-                      : isBooking
-                        ? "Book Your Ride"
-                        : isPayment
+                      :isPayment
                           ? "Payment"
-                          : "Car Details"}
+                          : isBooking
+                        ? "Book Your Ride"
+                        :  "Car Details"}
                   </>
                 )}
           </p>
