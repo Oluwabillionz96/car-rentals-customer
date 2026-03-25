@@ -1,5 +1,6 @@
 "use client";
 
+import useBookingStore from "@/store/booking-store";
 import CarGrid from "./car-grid";
 import SearchInput from "./search-input";
 import useSearch from "@/hooks/use-search";
@@ -7,6 +8,8 @@ import useSearch from "@/hooks/use-search";
 const AvailableCars = () => {
   const { searchQuery, setSearchQuery, filteredCars, loading, allCars } =
     useSearch();
+
+
   return (
     <section className="space-y-8">
       <header className="flex justify-between md:items-end flex-col md:flex-row">

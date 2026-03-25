@@ -3,7 +3,13 @@ import { CheckCircle2 } from "lucide-react";
 import IconCard from "./icon-card";
 import Link from "next/link";
 
-const DesktopBookingCard = ({ car }: { car: Car }) => {
+const DesktopBookingCard = ({
+  car,
+  isBooked,
+}: {
+  car: Car;
+  isBooked: boolean;
+}) => {
   return (
     <div className="hidden lg:block lg:col-span-4">
       <div className="top-44 space-y-6">
@@ -35,19 +41,22 @@ const DesktopBookingCard = ({ car }: { car: Car }) => {
           </div>
 
           <div className="space-y-4">
-            <Link href={`/cars/${car.id}/booking`} className="w-full bg-primary text-white py-4 rounded-xl font-black text-base  hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
-              Book This Car
+            <Link
+              href={isBooked ? "#" : `/cars/${car.id}/booking`}
+              className={`w-full py-4 rounded-xl font-black text-base  hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 ${isBooked ? "bg-gray-400" : "bg-primary"} text-white`}
+            >
+              {isBooked ? "Unavailable" : "Book This Car"}
             </Link>
-            <button className="w-full bg-slate-50 text-text-100 py-4 rounded-xl font-black text-base border border-slate-100 hover:bg-white transition-all">
+            {/* <button className="w-full bg-slate-50 text-text-100 py-4 rounded-xl font-black text-base border border-slate-100 hover:bg-white transition-all">
               Add to Favorites
-            </button>
+            </button> */}
           </div>
 
           <div className="pt-6 border-t border-slate-100">
             <div className="flex items-start gap-3">
               <CheckCircle2 size={18} className="text-green-500 mt-0.5" />
               <p className="text-slate-500 text-xs font-bold leading-relaxed">
-                Free cancellation up to 48 hours before pickup.
+                Free cancellation up to 20 hours before pickup.
               </p>
             </div>
           </div>

@@ -21,11 +21,21 @@ export default function BookingStatusCard() {
   const activeBooking = useMemo(() => {
     if (!bookings) return null;
 
-    // Filter for Ongoing or Future bookings and pick the most recent one (last in array)
+    // Filter for Ongoing or Future bookings
     const filtered = bookings.filter(
       (b) => b.status === "Ongoing" || b.status === "Future",
     );
-    return filtered.length > 0 ? filtered[filtered.length - 1] : null;
+    
+    if (filtered.length === 0) return null;
+
+    // Sort by pickup date (earliest first) and return the nearest upcoming booking
+    const sorted = filtered.sort((a, b) => {
+      const dateA = a.pickupDate ? new Date(a.pickupDate).getTime() : Infinity;
+      const dateB = b.pickupDate ? new Date(b.pickupDate).getTime() : Infinity;
+      return dateA - dateB;
+    });
+
+    return sorted[0]; // Return the earliest booking
   }, [bookings]);
 
   if (!activeBooking) return null;

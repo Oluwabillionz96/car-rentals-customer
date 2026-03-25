@@ -26,8 +26,6 @@ const Header = () => {
   const isBookingDetails = pathname.startsWith("/booking-details");
   const showBackIcon =
     isDetailsPage || pathname.startsWith("/how-it-works") || isBookingDetails;
-
-  console.log({ isConfirmation, isBooking });
   return (
     <header className="z-50 fixed bg-white/90 p-4  md:py-6 md:px-20 w-full top-0 left-0  shadow-sm backdrop-blur-md">
       <nav className=" flex justify-between   ">
@@ -59,11 +57,11 @@ const Header = () => {
                   <>
                     {isConfirmation
                       ? "Confirmation"
-                      :isPayment
-                          ? "Payment"
-                          : isBooking
-                        ? "Book Your Ride"
-                        :  "Car Details"}
+                      : isPayment
+                        ? "Payment"
+                        : isBooking
+                          ? "Book Your Ride"
+                          : "Car Details"}
                   </>
                 )}
           </p>

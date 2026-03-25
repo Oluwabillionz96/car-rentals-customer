@@ -1,6 +1,7 @@
 "use client";
 
 import { MOCK_CARS } from "@/constants/cars";
+import useBookingStore from "@/store/booking-store";
 import { useMemo, useRef, useState } from "react";
 
 const useSearch = () => {
@@ -8,6 +9,7 @@ const useSearch = () => {
   const [loading, setLoading] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const bookings = useBookingStore((state) => state.verifiedBooking);
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setLoading(true);
@@ -21,11 +23,15 @@ const useSearch = () => {
     }, 800);
   };
 
+  const cars = MOCK_CARS.filter((car) => {
+    return !bookings?.some((booking) => booking.carId === car.id);
+  });
+
   const filteredCars = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
-    if (!query) return MOCK_CARS;
+    if (!query) return cars;
 
-    return MOCK_CARS.filter(
+    return cars.filter(
       (car) =>
         car.name.toLowerCase().includes(query) ||
         car.type.toLowerCase().includes(query),
@@ -37,7 +43,7 @@ const useSearch = () => {
     setSearchQuery: handleSearch,
     loading,
     searchQuery,
-    allCars: MOCK_CARS.length,
+    allCars: cars.length,
   };
 };
 

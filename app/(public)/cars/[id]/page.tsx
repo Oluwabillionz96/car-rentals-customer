@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { getCar } from "@/constants/cars";
 import Image from "next/image";
-import { ArrowLeft} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import CarInfo from "@/components/car-info";
@@ -11,12 +11,19 @@ import DesktopBookingCard from "@/components/desktop-booking-card";
 import NavigationMap from "@/components/navigation-map";
 import EmptyState from "@/components/empty-state";
 import { AlertCircle } from "lucide-react";
+import useBookingStore from "@/store/booking-store";
 
 const CarDetailsPage = () => {
   const { id } = useParams();
   const [isReadMore, setIsReadMore] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const verifiedBookings = useBookingStore((state) => state.verifiedBooking);
+
+  const isAlreadyBookedByUser = verifiedBookings?.some(
+    (booking) => booking.carId === id,
+  );
 
   const handleScroll = () => {
     if (scrollRef.current) {
@@ -137,7 +144,10 @@ const CarDetailsPage = () => {
         </div>
 
         {/* Right Column: Desktop Booking Sidebar */}
-        <DesktopBookingCard car={car} />
+        <DesktopBookingCard
+          car={car}
+          isBooked={isAlreadyBookedByUser ?? false}
+        />
       </div>
 
       {/* Mobile Floating Bottom Bar */}
@@ -150,11 +160,13 @@ const CarDetailsPage = () => {
           </p>
         </div>
         <Link
-          href={`/cars/${car.id}/booking`}
-          className="bg-primary text-white px-5 h-14 rounded-xl font-bold text-base shadow-xl  flex items-center gap-2 active:scale-95 transition-all"
+          href={isAlreadyBookedByUser ? "#" : `/cars/${car.id}/booking`}
+          className={`px-5 h-14 rounded-xl font-bold text-base shadow-xl text-white  flex items-center gap-2 active:scale-95 transition-all ${isAlreadyBookedByUser ? "bg-gray-400" : "bg-primary"}`}
         >
-          Book
-          <ArrowLeft size={20} className="rotate-180" />
+          {isAlreadyBookedByUser ? "Unavailable" : "Book"}
+          {!isAlreadyBookedByUser && (
+            <ArrowLeft size={20} className="rotate-180" />
+          )}
         </Link>
       </div>
     </div>
