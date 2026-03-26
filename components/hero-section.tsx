@@ -20,10 +20,10 @@ const HeroSection = () => {
         <div className="relative  space-y-4">
           <div className="space-y-2">
             <h1 className="text-4xl font-bold text-white leading-[1.1] tracking-tight">
-              Rent a car in Nigeria
+              Premium Chauffeur Service
             </h1>
             <p className="text-white/90 text-lg leading-relaxed max-w-[280px]">
-              Easy, professional, and trustworthy car rentals.
+              Professional drivers and luxury cars for your every need.
             </p>
           </div>
 
@@ -44,18 +44,19 @@ const HeroSection = () => {
       </div>
 
       {/* Desktop Hero View */}
-      <section className="hidden md:flex flex-row gap-12 px-0">
-        <div className="w-1/2 space-y-6">
+      <section className="hidden md:flex flex-col-reverse lg:flex-row gap-12 px-0">
+        <div className="flex-1 w-full space-y-6">
           <p className="w-fit uppercase rounded-full text-primary text-xs font-bold tracking-widest bg-primary/10 px-4 py-1.5">
-            Premium Service in Nigeria
+            Premium Chauffeur Service
           </p>
           <h1 className="text-7xl font-black text-text-100 leading-[1.1]">
             Rent a Car in <span className="text-primary">Nigeria</span>
           </h1>
           <p className="text-xl text-text-200 max-w-xl">
-            Experience seamless mobility with Nigeria&apos;s most trusted fleet.
-            Easy, professional, and reliable.
+            Experience seamless mobility with professional chauffeurs and a
+            trusted fleet. Easy, reliable, and premium.
           </p>
+
           <div className="flex flex-row gap-4 pt-2">
             <Link
               href="/our-cars"
@@ -72,7 +73,7 @@ const HeroSection = () => {
             </Link>
           </div>
         </div>
-        <div className="relative flex-1 rounded-4xl overflow-hidden shadow-2xl">
+        <div className="relative h-80 lg:h-auto lg:flex-1 rounded-4xl overflow-hidden shadow-2xl">
           <Image
             src={
               "https://lh3.googleusercontent.com/aida-public/AB6AXuCE-I2RHlo_mOiI7LPw9Q1MktVBcFnv8ltmHQJQkHgWz7DrQm7oj-AFY4EJ1bLfGsOp-U0YcmKF2gVJUpWbAirV9LRiLrGLH6eWFEpDwV-nIc1ughKkI19k6I3-or2rqyWsmW679UE5E2DZZHiOfHdxAcpW2WEFpRkx-tOQ63aEpfG_iL7eAWqG3_gHKmyjKoszTzz2dGnH6smUV_aNpVMcV7hnJvIaFz_ksmaMUJ6DgkZQWcic-OedlSJBh-owRCWSIBZoLWmGKg"
