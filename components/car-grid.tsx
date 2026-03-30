@@ -10,6 +10,8 @@ interface CarGridProps {
   loading: boolean;
   allCars: number;
   handleClearFilter: () => void;
+  isSelect?: boolean;
+  selectType?: "single" | "multiple";
 }
 
 const CarGrid = ({
@@ -17,6 +19,8 @@ const CarGrid = ({
   loading,
   allCars,
   handleClearFilter,
+  isSelect,
+  selectType,
 }: CarGridProps) => {
   if (loading) {
     return (
@@ -71,13 +75,8 @@ const CarGrid = ({
         <CarCard
           key={car.id}
           id={car.id}
-          name={car.name}
-          year={car.year}
-          type={car.type}
-          seats={car.seats}
-          transmission={car.transmission}
-          price={car.price}
-          image={car.image}
+          isSelect={isSelect}
+          selectType={selectType}
         />
       ))}
     </div>

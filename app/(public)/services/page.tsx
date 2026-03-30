@@ -1,6 +1,6 @@
 import ServiceCard from "@/components/service-card";
 import { services } from "@/lib/data/services";
-import { CheckCircle2, ChevronRight } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
 const Features = [

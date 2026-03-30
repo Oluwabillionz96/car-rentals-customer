@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { ChevronRight, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -28,17 +28,18 @@ const HeroSection = () => {
           </div>
 
           <Link
-            href="/our-cars"
+            href="/services"
             className="flex items-center justify-center gap-2 bg-[#59C1F5] text-[#0F172A] py-5 rounded-2xl w-full font-bold text-xl transition-all active:scale-[0.98] shadow-lg"
           >
-            Find Your Car
-            <Search size={26} strokeWidth={2.5} />
+            Book our services
+            <ChevronRight size={26} strokeWidth={2.5} />
           </Link>
           <Link
-            href="/how-it-works"
+            href="/our-fleet"
             className="flex items-center justify-center gap-2  border-2 border-border-100 text-white py-5 rounded-2xl w-full font-bold text-xl transition-all active:scale-[0.98] shadow-lg"
           >
-            How It works
+            Explore our fleet
+            <ChevronRight size={26} strokeWidth={2.5} />
           </Link>
         </div>
       </div>

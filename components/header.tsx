@@ -25,8 +25,7 @@ const Header = () => {
   const isPayment = isDetailsPage && pathname.includes("/payment");
   const isConfirmation = isDetailsPage && pathname.includes("/confirmation");
   const isBookingDetails = pathname.startsWith("/booking-details");
-  const showBackIcon =
-    isDetailsPage || pathname.startsWith("/how-it-works") || isBookingDetails;
+  const showBackIcon = pathname !== "/";
   return (
     <header className="z-50 fixed bg-white/90 p-4  md:py-6 md:px-20 w-full top-0 left-0  shadow-sm backdrop-blur-md">
       <nav className=" flex justify-between   ">
