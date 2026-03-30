@@ -2,19 +2,16 @@ import {
   BusFront,
   CalendarHeart,
   CarFront,
+  ChevronRight,
   Plane,
+  Search,
   UserRound,
 } from "lucide-react";
 import ServiceCard from "./service-card";
 import { services } from "@/lib/data/services";
-const Icon = {
-  wedding: CalendarHeart,
-  executive: UserRound,
-  airport_transfers: Plane,
-  city_tours: CarFront,
-  group_trips: BusFront,
-  self_drive: UserRound,
-};
+import { Icon } from "@/lib/utils";
+import Link from "next/link";
+
 const ServicesSection = () => {
   return (
     <section className="  py-10">
@@ -22,18 +19,19 @@ const ServicesSection = () => {
         Our Expertise
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-        {services.map((service, index) => {
-          const ServiceIcon = Icon[service.id];
+        {services.slice(0, 3).map((service) => {
           return (
-            <ServiceCard
-              key={index}
-              serviceName={service.name}
-              serviceDescription={service.description}
-              serviceIcon={<ServiceIcon />}
-            />
+            <ServiceCard key={service.id} service={service} isPage={false} />
           );
         })}
       </div>
+      <Link
+        href="/services"
+        className="flex items-center justify-center gap-2 bg-primary text-white px-8 py-4 rounded-2xl w-fit font-bold text-xl transition-all active:scale-[0.98] mx-auto mt-6 shadow-lg"
+      >
+        See more services
+        <ChevronRight size={26} strokeWidth={2.5} />
+      </Link>
     </section>
   );
 };

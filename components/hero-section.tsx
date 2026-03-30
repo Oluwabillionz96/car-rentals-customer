@@ -59,17 +59,17 @@ const HeroSection = () => {
 
           <div className="flex flex-row gap-4 pt-2">
             <Link
-              href="/our-cars"
+              href="/services"
               className="flex items-center justify-center font-sans gap-2 bg-primary text-white px-8 py-4 rounded-xl font-semibold text-sm transition-all hover:opacity-90 active:scale-95 shadow-lg shadow-primary/20"
             >
               <Search size={18} strokeWidth={3} />
-              Our Cars
+              Book Our Services
             </Link>
             <Link
-              href="/how-it-works"
+              href="/our-fleet"
               className="flex items-center justify-center font-sans gap-2 border-2 border-border-100 text-text-200 px-8 py-4 rounded-xl font-semibold text-sm transition-all hover:bg-slate-50 active:scale-95"
             >
-              How it works
+              Explore our fleet
             </Link>
           </div>
         </div>

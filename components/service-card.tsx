@@ -1,34 +1,63 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { Service } from "@/lib/types";
+import { Icon } from "@/lib/utils";
 
 const ServiceCard = ({
-  serviceName,
-  serviceDescription,
-  serviceIcon,
+  service,
+  isPage,
 }: {
-  serviceName: string;
-  serviceDescription: string;
-  serviceIcon: React.ReactNode;
+  service: Service;
+  isPage: boolean;
 }) => {
+  const ServiceIcon = Icon[service.id as keyof typeof Icon] || Icon.executive;
   return (
-    <article className="group relative p-6 bg-white rounded-2xl border border-border-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/20 flex flex-col items-start justify-evenly h-full gap-4">
-      <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
-        <span className="[&>svg]:w-7 [&>svg]:h-7 transition-all duration-300 group-hover:scale-110">
-          {serviceIcon}
-        </span>
-      </div>
-
-      <div className="space-y-2">
-        <h3 className="text-xl font-bold text-text-100 group-hover:text-primary transition-colors duration-300">
-          {serviceName}
+    <article className="group p-8 bg-white border border-border-100 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 flex flex-col justify-between">
+      <div>
+        <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+          <ServiceIcon size={32} />
+        </div>
+        <h3 className="text-2xl font-bold text-text-100 mb-3 group-hover:text-primary transition-colors">
+          {service.name}
         </h3>
-        <p className="text-sm leading-relaxed text-text-200/90">
-          {serviceDescription}
+        <p className="text-text-200 leading-relaxed mb-6">
+          {service.description}
         </p>
+
+        {isPage && (
+          <ul className="space-y-3 mb-8">
+            <li className="flex items-center gap-2 text-sm text-text-300">
+              <CheckCircle2 size={16} className="text-green-500" />
+              {service.hasChauffeur
+                ? "Professional Chauffeur included"
+                : "Available for Self-Drive"}
+            </li>
+            <li className="flex items-center gap-2 text-sm text-text-300">
+              <CheckCircle2 size={16} className="text-green-500" />
+              {service.pricing === "hourly"
+                ? "Flexible Hourly Rates"
+                : "Standard Daily Rates"}
+            </li>
+            {service.minHours && (
+              <li className="flex items-center gap-2 text-sm text-text-300">
+                <CheckCircle2 size={16} className="text-green-500" />
+                Minimum {service.minHours} hours booking
+              </li>
+            )}
+          </ul>
+        )}
       </div>
 
-      <button className="flex items-center gap-2 text-sm text-primary font-semibold hover:underline">
-        Book This Service <ArrowRight size={16} />
-      </button>
+      <Link
+        href={`/our-fleet?service=${service.id}&select=true&selectType=${service.selectType}`}
+        className="inline-flex items-center gap-2 font-bold text-primary group/link"
+      >
+        Book this Service
+        <ChevronRight
+          size={20}
+          className="group-hover/link:translate-x-1 transition-transform"
+        />
+      </Link>
     </article>
   );
 };
