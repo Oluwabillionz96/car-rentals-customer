@@ -5,6 +5,8 @@ import SearchInput from "@/components/search-input";
 import useSearch from "@/hooks/use-search";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import SelectionBar from "@/components/selection-bar";
+import useGlobalStore from "@/store/global-store";
 
 const OurCars = () => {
   const { searchQuery, setSearchQuery, filteredCars, loading, allCars } =
@@ -14,7 +16,7 @@ const OurCars = () => {
   const [selectType, setSelectType] = useState<"single" | "multiple">(
     queryParams.get("selectType") as "single" | "multiple",
   );
-
+  const { selectedCarsId, clearCars } = useGlobalStore();
   useEffect(() => {
     if (queryParams.get("select")) {
       setIsSelect(true);
@@ -22,9 +24,11 @@ const OurCars = () => {
     if (queryParams.get("selectType")) {
       setSelectType(queryParams.get("selectType") as "single" | "multiple");
     }
+
+    clearCars();
   }, [queryParams]);
   return (
-    <section>
+    <section className={isSelect && selectedCarsId.length > 0 ? "pb-40" : ""}>
       <header className="md:mb-8 mb-4 flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
           <h2 className="font-black md:text-4xl text-2xl text-text-100">
@@ -46,7 +50,9 @@ const OurCars = () => {
         handleClearFilter={() => setSearchQuery("")}
         isSelect={isSelect}
         selectType={selectType}
+        isSelfDrive={queryParams.get("service") === "self_drive"}
       />
+      {isSelect && <SelectionBar selectType={selectType} />}
     </section>
   );
 };

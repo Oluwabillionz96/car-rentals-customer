@@ -1,6 +1,6 @@
 "use client";
 
-import { Car } from "@/constants/cars";
+import { Car } from "@/lib/types";
 import CarCard from "./car-card";
 import EmptyState from "./empty-state";
 import { CarFront } from "lucide-react";
@@ -12,6 +12,7 @@ interface CarGridProps {
   handleClearFilter: () => void;
   isSelect?: boolean;
   selectType?: "single" | "multiple";
+  isSelfDrive?: boolean;
 }
 
 const CarGrid = ({
@@ -21,7 +22,9 @@ const CarGrid = ({
   handleClearFilter,
   isSelect,
   selectType,
+  isSelfDrive,
 }: CarGridProps) => {
+
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -77,6 +80,7 @@ const CarGrid = ({
           id={car.id}
           isSelect={isSelect}
           selectType={selectType}
+          isSelfDrive={isSelfDrive}
         />
       ))}
     </div>

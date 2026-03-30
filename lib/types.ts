@@ -40,7 +40,6 @@ export interface Car {
   images: string[];
   features: string[];
   available: boolean;
-  isDefaultFor?: ServiceId[];
 }
 
 export type BookingSchedule =
