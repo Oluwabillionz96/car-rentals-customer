@@ -19,10 +19,15 @@ const OurFleet = () => {
   const isSelect = queryParams.get("select") === "true";
   const selectType =
     (queryParams.get("selectType") as "single" | "multiple") || "single";
-  const { selectedCarsId, clearCars } = useGlobalStore();
+  const { selectedCarsId, clearCars, modifyCars } = useGlobalStore();
   const router = useRouter();
 
-  const { startBooking } = useBookingStore();
+  const bookingId = queryParams.get("booking");
+  const booking = useBookingStore((state) =>
+    state.bookings.find((b) => b.bookingId === bookingId),
+  );
+  const isModify = !!booking;
+  const { startBooking, updateBooking } = useBookingStore();
 
   const handleBooking = () => {
     const service = getServiceById(queryParams.get("service") as string);
@@ -31,28 +36,56 @@ const OurFleet = () => {
       .filter((car): car is Car => !!car);
 
     if (!service || cars.length !== selectedCarsId.length) return;
-    const bookingId = startBooking(service, cars);
 
-    if (!bookingId) return;
-    router.push(`/booking/${bookingId}`);
+    if (isModify && bookingId) {
+      updateBooking({ bookingId: bookingId, selectedCars: cars });
+      router.push(`/booking/${bookingId}`);
+    } else {
+      const id = startBooking(service, cars);
+      if (!id) return;
+      router.push(`/booking/${id}`);
+    }
   };
 
   useEffect(() => {
-    if (isSelect) {
+
+    if (isSelect && !isModify) {
       clearCars();
     }
-  }, [queryParams, clearCars]);
+  }, [isSelect, isModify, clearCars]);
+
+  useEffect(() => {
+    if (isModify && booking) {
+      const bookingCarsIds = booking.selectedCars.map((car) => car.id);
+      modifyCars(bookingCarsIds);
+    }
+  }, [isModify, booking, modifyCars]);
+
   return (
     <section className={isSelect && selectedCarsId.length > 0 ? "pb-40" : ""}>
       <header className="md:mb-8 mb-4 flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
           <h2 className="font-black md:text-4xl text-2xl text-text-100">
-            Our Fleet
+            {isModify
+              ? "Refine Your Selection"
+              : isSelect
+                ? selectType === "single"
+                  ? "Select Your Vehicle"
+                  : "Curate Your Fleet"
+                : "Our Fleet"}
           </h2>
           <p className="md:text-base text-sm text-text-200">
-            Discover the perfect ride for every destination and style.
+            {isModify
+              ? "Change the vehicles for your booking to better suit your updated travel plans."
+              : isSelect
+                ? selectType === "single"
+                  ? "Pick the perfect ride for your professional chauffeur experience."
+                  : "Choose multiple premium vehicles to assemble your tailored convoy."
+                : "Browse our collection of premium chauffeur-driven vehicles."}
           </p>
+
         </div>
+
         <SearchInput
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}

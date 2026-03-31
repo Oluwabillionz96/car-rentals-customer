@@ -3,6 +3,7 @@ import { create } from "zustand";
 interface GlobalStore {
   selectedCarsId: string[];
   addCar: (carId: string, selectType: "single" | "multiple") => void;
+  modifyCars: (carIds: string[]) => void;
   removeCar: (carId: string) => void;
   clearCars: () => void;
 }
@@ -23,6 +24,9 @@ const useGlobalStore = create<GlobalStore>((set) => ({
   },
   clearCars: () => {
     set(() => ({ selectedCarsId: [] }));
+  },
+  modifyCars(carIds) {
+    set((state) => ({ selectedCarsId: [...new Set([...state.selectedCarsId, ...carIds])] }));
   },
 }));
 

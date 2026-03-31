@@ -3,10 +3,11 @@ import Button from "@/components/button";
 import EmptyState from "@/components/empty-state";
 import ServiceCard from "@/components/service-card";
 import { getCar } from "@/constants/cars";
-import { services } from "@/lib/data/services";
+import { getServiceById, services } from "@/lib/data/services";
+import useBookingStore from "@/store/booking-store";
 import { AlertTriangle, CheckCircle2, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const Features = [
@@ -47,6 +48,7 @@ const FeaturesCard = ({
 
 const ServicesPage = () => {
   const queryParams = useSearchParams();
+  const router = useRouter();
   const carId = queryParams.get("car");
   const isSelect =
     queryParams.get("select") === "true" && (carId ? carId?.length > 0 : false);
@@ -54,6 +56,17 @@ const ServicesPage = () => {
   const car = carId ? getCar(carId) : null;
 
   const [selectedService, setSelectedService] = useState<string | null>(null);
+
+  const { startBooking } = useBookingStore();
+
+  const handleBooking = () => {
+    const car = getCar(carId ?? "");
+    const service = getServiceById(selectedService ?? "");
+    if (!car || !service) return;
+
+    const bookingId = startBooking(service, [car]);
+    router.push(`/booking/${bookingId}`);
+  };
 
   if (isSelect && !car) {
     return (
@@ -135,6 +148,7 @@ const ServicesPage = () => {
           <Button
             className="w-fit disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!selectedService}
+            onClick={handleBooking}
           >
             Continue <ChevronRight />
           </Button>

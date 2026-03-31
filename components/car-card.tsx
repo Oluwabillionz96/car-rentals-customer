@@ -29,7 +29,7 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
   const router = useRouter();
   return (
     <div
-      className={`${isSelected ? "border-primary border-2" : ""} w-full cursor-pointer max-w-[400px] bg-white border border-neutral-100 rounded-lg md:rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full`}
+      className={`${isSelected && isSelect ? "border-primary border-2" : ""} w-full cursor-pointer max-w-[400px] bg-white border border-neutral-100 rounded-lg md:rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full`}
     >
       {/* Image Container */}
       <div className="relative aspect-4/3 w-full overflow-hidden">
