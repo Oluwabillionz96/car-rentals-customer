@@ -1,4 +1,5 @@
-import { Car, GET_CAR_PROPS } from "@/constants/cars";
+import { GET_CAR_PROPS } from "@/constants/cars";
+import { Car } from "@/lib/types";
 import { CheckCircle2 } from "lucide-react";
 import IconCard from "./icon-card";
 import Link from "next/link";
@@ -15,18 +16,12 @@ const DesktopBookingCard = ({
       <div className="top-44 space-y-6">
         <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-8 relative overflow-hidden">
           <p className="bg-primary/20 text-primary text-xs font-medium px-2 py-1 rounded-full w-fit">
-            {car?.type}
+            {car?.category}
           </p>
           <div className="space-y-2">
             <h1 className="text-2xl md:text-3xl font-bold text-text-100">
-              {car?.name} {car?.year}
+              {car?.name}
             </h1>
-            <p className="text-primary  text-2xl font-bold ">
-              ₦{car.price.toLocaleString()}{" "}
-              <span className="text-based font-medium text-text-300">
-                / day
-              </span>
-            </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
@@ -40,6 +35,22 @@ const DesktopBookingCard = ({
             ))}
           </div>
 
+          <div className="flex  flex-col gap-2">
+            <div className="flex justify-between">
+              <p className="text-text-300 font-medium">Price per hour </p>
+              <p className="text-text-100 font-bold">
+                ₦{car.pricePerHour.toLocaleString()}{" "}
+              </p>
+            </div>
+            <div className="flex justify-between">
+              <p className="text-text-300 font-medium">Price Per Day</p>
+              <p className="text-text-100 font-bold">
+                {" "}
+                ₦{car.pricePerDay.toLocaleString()}{" "}
+              </p>
+            </div>
+          </div>
+
           <div className="space-y-4">
             <Link
               href={isBooked ? "#" : `/cars/${car.id}/booking`}
@@ -47,9 +58,6 @@ const DesktopBookingCard = ({
             >
               {isBooked ? "Unavailable" : "Book This Car"}
             </Link>
-            {/* <button className="w-full bg-slate-50 text-text-100 py-4 rounded-xl font-black text-base border border-slate-100 hover:bg-white transition-all">
-              Add to Favorites
-            </button> */}
           </div>
 
           <div className="pt-6 border-t border-slate-100">

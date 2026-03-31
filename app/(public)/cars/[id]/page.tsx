@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { getCar } from "@/constants/cars";
 import Image from "next/image";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import CarInfo from "@/components/car-info";
@@ -15,7 +15,6 @@ import useBookingStore from "@/store/booking-store";
 
 const CarDetailsPage = () => {
   const { id } = useParams();
-  const [isReadMore, setIsReadMore] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -64,8 +63,8 @@ const CarDetailsPage = () => {
       <NavigationMap
         routes={[
           { href: "/", label: "Home" },
-          { href: "/our-cars", label: "Our Cars" },
-          { href: `/cars/${car.id}`, label: car.name + " " + car.year },
+          { href: "/our-fleet", label: "Our Fleet" },
+          { href: `/cars/${car.id}`, label: car.name },
         ]}
       />
 
@@ -79,40 +78,36 @@ const CarDetailsPage = () => {
               onScroll={handleScroll}
               className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar md:rounded-3xl shadow-sm"
             >
-              {[...(car.gallery.length > 0 ? car.gallery : [car.image])].map(
-                (img, i) => (
-                  <div
-                    key={i}
-                    className="relative aspect-16/10 min-w-full snap-center"
-                  >
-                    <Image
-                      src={img}
-                      alt={`${car.name} ${i}`}
-                      fill
-                      priority={i === 0}
-                      className="object-cover"
-                    />
-                  </div>
-                ),
-              )}
+              {[...car.images].map((img, i) => (
+                <div
+                  key={i}
+                  className="relative aspect-16/10 min-w-full snap-center"
+                >
+                  <Image
+                    src={img}
+                    alt={`${car.name} ${i}`}
+                    fill
+                    priority={i === 0}
+                    className="object-cover"
+                  />
+                </div>
+              ))}
             </div>
 
             {/* Mobile Dots */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 md:hidden">
-              {(car.gallery.length > 0 ? car.gallery : [car.image]).map(
-                (_, i) => (
-                  <div
-                    key={i}
-                    className={`h-2 rounded-full transition-all duration-300 ${activeImage === i ? "w-6 bg-white" : "w-2 bg-white/50"}`}
-                  />
-                ),
-              )}
+              {car.images.map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-2 rounded-full transition-all duration-300 ${activeImage === i ? "w-6 bg-white" : "w-2 bg-white/50"}`}
+                />
+              ))}
             </div>
           </div>
 
           {/* Desktop Gallery Thumbnails */}
           <div className="hidden md:grid grid-cols-4 gap-4 mt-6">
-            {car.gallery.slice(0, 4).map((img, i) => (
+            {car.images.slice(0, 4).map((img, i) => (
               <button
                 key={i}
                 onClick={() => scrollToImage(i)}
@@ -124,10 +119,10 @@ const CarDetailsPage = () => {
                   fill
                   className="object-cover"
                 />
-                {i === 3 && car.gallery.length > 4 && (
+                {i === 3 && car.images.length > 4 && (
                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                     <span className="text-white font-bold">
-                      +{car.gallery.length - 4}
+                      +{car.images.length - 4}
                     </span>
                   </div>
                 )}
@@ -136,11 +131,7 @@ const CarDetailsPage = () => {
           </div>
 
           {/* Mobile Car Header Info */}
-          <CarInfo
-            id={id}
-            isReadMore={isReadMore}
-            setIsReadMore={setIsReadMore}
-          />
+          <CarInfo id={id} />
         </div>
 
         {/* Right Column: Desktop Booking Sidebar */}
@@ -151,21 +142,21 @@ const CarDetailsPage = () => {
       </div>
 
       {/* Mobile Floating Bottom Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 h-24 bg-white/90 backdrop-blur-xl border-t border-border-100 px-6 flex items-center justify-between z-50">
-        <div>
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 h-24 bg-white/90 backdrop-blur-xl border-t border-border-100 px-6 flex items-center justify-end z-50">
+        {/* <div>
           <p className="text-xs text-text-300 font-medium ">Total Price</p>
           <p className="text-text-100 text-lg font-bold">
-            ₦{car.price.toLocaleString()}
+            ₦{car.pricePerDay.toLocaleString()}
             <span className="text-xs text-text-400 "> / day</span>
           </p>
-        </div>
+        </div> */}
         <Link
           href={isAlreadyBookedByUser ? "#" : `/cars/${car.id}/booking`}
           className={`px-5 h-14 rounded-xl font-bold text-base shadow-xl text-white  flex items-center gap-2 active:scale-95 transition-all ${isAlreadyBookedByUser ? "bg-gray-400" : "bg-primary"}`}
         >
-          {isAlreadyBookedByUser ? "Unavailable" : "Book"}
+          {isAlreadyBookedByUser ? "Unavailable" : "Book This Car"}
           {!isAlreadyBookedByUser && (
-            <ArrowLeft size={20} className="rotate-180" />
+            <ChevronLeft size={20} className="rotate-180" />
           )}
         </Link>
       </div>

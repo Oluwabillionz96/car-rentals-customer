@@ -2,8 +2,17 @@
 
 import { getCar } from "@/constants/cars";
 import useGlobalStore from "@/store/global-store";
-import { Users, Settings, ShoppingCart, Plus, Check, Info } from "lucide-react";
+import {
+  Users,
+  Settings,
+  ShoppingCart,
+  Plus,
+  Check,
+  Info,
+  Fuel,
+} from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface CarCardProps {
   id: string;
@@ -67,6 +76,10 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
             <Settings size={18} className="text-slate-400" />
             <span className="text-xs md:text-sm">{car?.transmission}</span>
           </div>
+          <div className="flex items-center gap-2 md:font-semibold text-slate-500">
+            <Fuel size={18} className="text-slate-400" />
+            <span className="text-xs md:text-sm">{car?.fuel}</span>
+          </div>
         </div>
 
         {/* Desktop View Bottom Section */}
@@ -112,9 +125,14 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
                   )}
                 </div>
               </button>
-              <button className="bg-primary/10 hover:bg-primary/20 p-4 rounded-2xl transition-colors group/btn">
-                <Info />
-              </button>
+              {!isSelect && (
+                <Link
+                  href={`/cars/${id}`}
+                  className="bg-primary/10 hover:bg-primary/20 p-4 rounded-2xl transition-colors group/btn"
+                >
+                  <Info />
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -130,18 +148,23 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
             onClick={() => {
               if (!isSelect) return;
 
-              if (isSelected) {
-                globalStore.removeCar(id);
-                return;
-              }
-              globalStore.addCar(id, selectType ?? "single");
+                if (isSelected) {
+                  globalStore.removeCar(id);
+                  return;
+                }
+                globalStore.addCar(id, selectType ?? "single");
             }}
           >
             {isSelect ? (isSelected ? "Selected" : "Select Car") : "Book Now"}
           </button>
-          <button className="bg-primary/10 hover:bg-primary/20 p-4 rounded-2xl transition-colors group/btn">
-            <Info />
-          </button>
+          {!isSelect && (
+            <Link
+              href={`/cars/${car?.id}`}
+              className="bg-primary/10 hover:bg-primary/20 p-4 rounded-2xl transition-colors group/btn"
+            >
+              <Info />
+            </Link>
+          )}
         </div>
       </div>
     </div>
