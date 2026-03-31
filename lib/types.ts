@@ -78,32 +78,22 @@ export interface BookingExtension {
   additionalAmount: number;
 }
 
-export interface DraftBooking {
-  bookingId: string;
-  service: Service;
-  selectedCars: Car[];
-  schedule: BookingSchedule | null; // null is honest here — they haven't filled it yet
-  customer: Customer | null; // same
-  createdAt: string;
-}
-
 export interface BookingDetails {
   bookingId: string;
   service: Service;
   selectedCars: Car[];
-  schedule: BookingSchedule;
-  customer: Customer;
+  schedule: BookingSchedule | null;
+  customer: Customer | null;
   extensions: BookingExtension[];
   status: BookingStatus;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 export interface BookingStore {
-  draft: DraftBooking | null;
-  verifiedBookings: BookingDetails[];
+  Bookings: BookingDetails[];
   startBooking: (service: Service, selectedCars: Car[]) => void;
-  updateDraft: (partial: Partial<DraftBooking>) => void;
+  updateBooking: (partial: Partial<BookingDetails>) => void;
   completeBooking: () => void;
   extendBooking: (bookingId: string, hours: number, amount: number) => void;
   cancelBooking: (bookingId: string) => void;

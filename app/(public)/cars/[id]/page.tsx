@@ -143,15 +143,10 @@ const CarDetailsPage = () => {
 
       {/* Mobile Floating Bottom Bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 h-24 bg-white/90 backdrop-blur-xl border-t border-border-100 px-6 flex items-center justify-end z-50">
-        {/* <div>
-          <p className="text-xs text-text-300 font-medium ">Total Price</p>
-          <p className="text-text-100 text-lg font-bold">
-            ₦{car.pricePerDay.toLocaleString()}
-            <span className="text-xs text-text-400 "> / day</span>
-          </p>
-        </div> */}
         <Link
-          href={isAlreadyBookedByUser ? "#" : `/cars/${car.id}/booking`}
+          href={
+            isAlreadyBookedByUser ? "#" : `/services?car=${car.id}&select=true`
+          }
           className={`px-5 h-14 rounded-xl font-bold text-base shadow-xl text-white  flex items-center gap-2 active:scale-95 transition-all ${isAlreadyBookedByUser ? "bg-gray-400" : "bg-primary"}`}
         >
           {isAlreadyBookedByUser ? "Unavailable" : "Book This Car"}

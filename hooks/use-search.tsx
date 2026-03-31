@@ -9,7 +9,7 @@ const useSearch = () => {
   const [loading, setLoading] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const bookings = useBookingStore((state) => state.verifiedBooking);
+  const { bookings } = useBookingStore();
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setLoading(true);
@@ -25,7 +25,11 @@ const useSearch = () => {
 
   const cars = useMemo(() => {
     return MOCK_CARS.filter((car) => {
-      return !bookings?.some((booking) => booking.carId === car.id);
+      return !bookings?.some(
+        (booking) =>
+          booking.selectedCars.find((c) => c.id === car.id) &&
+          (booking.status === "confirmed" || booking.status === "ongoing"),
+      );
     });
   }, [bookings]);
 

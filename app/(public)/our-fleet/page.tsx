@@ -3,22 +3,44 @@
 import CarGrid from "@/components/car-grid";
 import SearchInput from "@/components/search-input";
 import useSearch from "@/hooks/use-search";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import SelectionBar from "@/components/selection-bar";
 import useGlobalStore from "@/store/global-store";
+import useBookingStore from "@/store/booking-store";
+import { getServiceById } from "@/lib/data/services";
+import { getCar } from "@/constants/cars";
+import { Car } from "@/lib/types";
 
-const OurCars = () => {
+const OurFleet = () => {
   const { searchQuery, setSearchQuery, filteredCars, loading, allCars } =
     useSearch();
   const queryParams = useSearchParams();
-  const isSelect = !!queryParams.get("select");
+  const isSelect = queryParams.get("select") === "true";
   const selectType =
     (queryParams.get("selectType") as "single" | "multiple") || "single";
   const { selectedCarsId, clearCars } = useGlobalStore();
+  const router = useRouter();
+
+  const { startBooking } = useBookingStore();
+
+  const handleBooking = () => {
+    const service = getServiceById(queryParams.get("service") as string);
+    const cars = selectedCarsId
+      .map((id) => getCar(id))
+      .filter((car): car is Car => !!car);
+
+    if (!service || cars.length !== selectedCarsId.length) return;
+    const bookingId = startBooking(service, cars);
+
+    if (!bookingId) return;
+    router.push(`/booking/${bookingId}`);
+  };
 
   useEffect(() => {
-    clearCars();
+    if (isSelect) {
+      clearCars();
+    }
   }, [queryParams, clearCars]);
   return (
     <section className={isSelect && selectedCarsId.length > 0 ? "pb-40" : ""}>
@@ -45,9 +67,15 @@ const OurCars = () => {
         selectType={selectType}
         isSelfDrive={queryParams.get("service") === "self_drive"}
       />
-      {isSelect && <SelectionBar selectType={selectType} />}
+      {isSelect && (
+        <SelectionBar
+          selectType={selectType}
+          handleBooking={handleBooking}
+          selectedCars={selectedCarsId.length}
+        />
+      )}
     </section>
   );
 };
 
-export default OurCars;
+export default OurFleet;

@@ -1,5 +1,4 @@
 import { Fuel, Settings, Users } from "lucide-react";
-import { ParamValue } from "next/dist/server/request/params";
 import { Car } from "@/lib/types";
 
 export const MOCK_CARS: Car[] = [
@@ -174,12 +173,12 @@ export const GET_CAR_PROPS = (car?: Car) => [
   },
 ];
 
-export function getCar(id: string | ParamValue) {
+export function getCar(id: string): Car | undefined {
   return MOCK_CARS.find((car) => car.id === id);
 }
 
 export const generateBookingId = () => {
-  let bookingId = "SRC-2026-";
+  let bookingId = `SCR-${new Date().getFullYear()}-`;
   for (let i = 0; i !== 5; i++) {
     bookingId = `${bookingId}${Math.floor(Math.random() * 10).toString()}`;
   }

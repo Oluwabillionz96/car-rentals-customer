@@ -5,26 +5,29 @@ import { ArrowRight } from "lucide-react";
 
 const SelectionBar = ({
   selectType,
+  selectedCars,
+  handleBooking,
 }: {
   selectType: "single" | "multiple";
+  handleBooking: () => void;
+  selectedCars: number;
 }) => {
-  const { selectedCarsId, clearCars } = useGlobalStore();
+  const { clearCars } = useGlobalStore();
 
-  if (selectedCarsId.length === 0) return null;
+  if (selectedCars === 0) return null;
 
   return (
     <div className="z-60 fixed bg-white/95 p-4 md:py-6 md:px-20 w-full bottom-0 left-0 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] backdrop-blur-xl border-t border-slate-100 animate-in slide-in-from-bottom-full duration-500">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-        {selectType === "multiple" && (
+        {selectType === "multiple" ? (
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center font-bold text-xl shadow-lg shadow-primary/20">
-              {selectedCarsId.length}
+              {selectedCars}
             </div>
 
             <div className="flex flex-col">
               <p className="font-bold text-text-100 text-sm md:text-lg leading-tight uppercase tracking-tight">
-                {selectedCarsId.length}{" "}
-                {selectedCarsId.length > 1 ? "Cars" : "Car"} Selected
+                {selectedCars} {selectedCars ? "Cars" : "Car"} Selected
               </p>
 
               <button
@@ -35,13 +38,20 @@ const SelectionBar = ({
               </button>
             </div>
           </div>
+        ) : (
+          <p className="font-bold text-text-100 text-sm md:text-lg leading-tight uppercase tracking-tight">
+            {selectedCars} {selectedCars > 1 ? "Cars" : "Car"} Selected
+          </p>
         )}
 
         {/* Next Step Action */}
         <div
           className={`flex items-center gap-3 ${selectType === "single" ? "w-full justify-end" : ""}`}
         >
-          <button className="flex items-center gap-2 px-8 md:px-12 py-3.5 md:py-4 rounded-xl bg-primary text-white font-black text-sm md:text-base shadow-xl shadow-primary/20 hover:opacity-90 active:scale-95 transition-all whitespace-nowrap">
+          <button
+            className="flex items-center gap-2 px-8 md:px-12 py-3.5 md:py-4 rounded-xl bg-primary text-white font-black text-sm md:text-base shadow-xl shadow-primary/20 hover:opacity-90 active:scale-95 transition-all whitespace-nowrap"
+            onClick={handleBooking}
+          >
             <span>{selectType === "single" ? "Book Now" : "Next"}</span>
             <ArrowRight
               size={18}

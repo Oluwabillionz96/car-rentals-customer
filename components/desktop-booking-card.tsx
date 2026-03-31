@@ -53,7 +53,7 @@ const DesktopBookingCard = ({
 
           <div className="space-y-4">
             <Link
-              href={isBooked ? "#" : `/cars/${car.id}/booking`}
+              href={isBooked ? "#" : `/services?car=${car.id}&select=true`}
               className={`w-full py-4 rounded-xl font-black text-base  hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 ${isBooked ? "bg-gray-400" : "bg-primary"} text-white`}
             >
               {isBooked ? "Unavailable" : "Book This Car"}

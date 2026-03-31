@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface CarCardProps {
   id: string;
@@ -25,6 +26,7 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
   const globalStore = useGlobalStore((state) => state);
   const car = getCar(id);
   const isSelected = globalStore.selectedCarsId.includes(id);
+  const router = useRouter();
   return (
     <div
       className={`${isSelected ? "border-primary border-2" : ""} w-full cursor-pointer max-w-[400px] bg-white border border-neutral-100 rounded-lg md:rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full`}
@@ -101,7 +103,10 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
               <button
                 className="bg-primary/10 hover:bg-primary/20 p-4 rounded-2xl transition-colors group/btn"
                 onClick={() => {
-                  if (!isSelect) return;
+                  if (!isSelect) {
+                    router.push(`/services?car=${car?.id}&select=true`);
+                    return;
+                  }
                   if (isSelected) {
                     globalStore.removeCar(id);
                     return;
@@ -146,13 +151,16 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
                 : "border-border-100"
             }`}
             onClick={() => {
-              if (!isSelect) return;
+              if (!isSelect) {
+                router.push(`/services/car=${id}&select=true`);
+                return;
+              }
 
-                if (isSelected) {
-                  globalStore.removeCar(id);
-                  return;
-                }
-                globalStore.addCar(id, selectType ?? "single");
+              if (isSelected) {
+                globalStore.removeCar(id);
+                return;
+              }
+              globalStore.addCar(id, selectType ?? "single");
             }}
           >
             {isSelect ? (isSelected ? "Selected" : "Select Car") : "Book Now"}
