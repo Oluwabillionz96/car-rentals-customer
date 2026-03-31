@@ -69,7 +69,7 @@ const PaymentPage = () => {
             <div className="flex flex-col gap-3 py-3">
               <div className="flex justify-between">
                 <p className="text-sm text-text-300">
-                  Rental Fees (₦ {car?.price.toLocaleString() || 0} x{" "}
+                  Rental Fees (₦ {car?.pricePerDay.toLocaleString() || 0} x{" "}
                   {totalDays})
                 </p>
                 <p className="text-sm font-medium text-text-100">

@@ -1,16 +1,8 @@
-import {
-  BusFront,
-  CalendarHeart,
-  CarFront,
-  ChevronRight,
-  Plane,
-  Search,
-  UserRound,
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import ServiceCard from "./service-card";
 import { services } from "@/lib/data/services";
-import { Icon } from "@/lib/utils";
 import Link from "next/link";
+import SeeMoreButton from "./see-more-btn";
 
 const ServicesSection = () => {
   return (
@@ -25,13 +17,7 @@ const ServicesSection = () => {
           );
         })}
       </div>
-      <Link
-        href="/services"
-        className="flex items-center justify-center gap-2 bg-primary text-white px-8 py-4 rounded-2xl w-fit font-bold text-xl transition-all active:scale-[0.98] mx-auto mt-6 shadow-lg"
-      >
-        See more services
-        <ChevronRight size={26} strokeWidth={2.5} />
-      </Link>
+      <SeeMoreButton href="/services" content="See more services" />
     </section>
   );
 };

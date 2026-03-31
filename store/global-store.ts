@@ -11,7 +11,7 @@ const useGlobalStore = create<GlobalStore>((set) => ({
   selectedCarsId: [],
   addCar: (carId, selectType) => {
     if (selectType === "single") {
-      set((state) => ({ selectedCarsId: [carId] }));
+      set(() => ({ selectedCarsId: [carId] }));
     } else {
       set((state) => ({ selectedCarsId: [...state.selectedCarsId, carId] }));
     }

@@ -2,7 +2,6 @@
 
 import useGlobalStore from "@/store/global-store";
 import { ArrowRight } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const SelectionBar = ({
   selectType,
@@ -10,14 +9,12 @@ const SelectionBar = ({
   selectType: "single" | "multiple";
 }) => {
   const { selectedCarsId, clearCars } = useGlobalStore();
-  const router = useRouter();
 
   if (selectedCarsId.length === 0) return null;
 
   return (
     <div className="z-60 fixed bg-white/95 p-4 md:py-6 md:px-20 w-full bottom-0 left-0 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] backdrop-blur-xl border-t border-slate-100 animate-in slide-in-from-bottom-full duration-500">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-        {/* Selection Details */}
         {selectType === "multiple" && (
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center font-bold text-xl shadow-lg shadow-primary/20">

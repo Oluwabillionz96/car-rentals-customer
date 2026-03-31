@@ -23,9 +23,11 @@ const useSearch = () => {
     }, 800);
   };
 
-  const cars = MOCK_CARS.filter((car) => {
-    return !bookings?.some((booking) => booking.carId === car.id);
-  });
+  const cars = useMemo(() => {
+    return MOCK_CARS.filter((car) => {
+      return !bookings?.some((booking) => booking.carId === car.id);
+    });
+  }, [bookings]);
 
   const filteredCars = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
@@ -34,9 +36,9 @@ const useSearch = () => {
     return cars.filter(
       (car) =>
         car.name.toLowerCase().includes(query) ||
-        car.type.toLowerCase().includes(query),
+        car.category.toLowerCase().includes(query),
     );
-  }, [searchQuery]);
+  }, [searchQuery, cars]);
 
   return {
     filteredCars,

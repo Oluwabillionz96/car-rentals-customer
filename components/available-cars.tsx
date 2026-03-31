@@ -1,14 +1,12 @@
 "use client";
-
-import useBookingStore from "@/store/booking-store";
 import CarGrid from "./car-grid";
 import SearchInput from "./search-input";
 import useSearch from "@/hooks/use-search";
+import SeeMoreButton from "./see-more-btn";
 
 const AvailableCars = () => {
   const { searchQuery, setSearchQuery, filteredCars, loading, allCars } =
     useSearch();
-
 
   return (
     <section className="space-y-8">
@@ -28,13 +26,14 @@ const AvailableCars = () => {
       </header>
 
       <CarGrid
-        cars={filteredCars}
+        cars={filteredCars.slice(0, 6)}
         loading={loading}
         allCars={allCars}
         handleClearFilter={() => {
           setSearchQuery("");
         }}
       />
+      <SeeMoreButton href="/our-fleet" content="See More Cars" />
     </section>
   );
 };

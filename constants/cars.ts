@@ -104,7 +104,7 @@ export const MOCK_CARS: Car[] = [
     pricePerDay: 55000,
     pricePerHour: 6500,
     images: [
-      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=2070&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1664427320994-6e27b8f1171f?w=500&auto=format&fit=crop",
     ],
     features: ["Smooth Ride", "Mark Levinson Audio", "Quiet Cabin"],
     available: true,
@@ -134,9 +134,24 @@ export const MOCK_CARS: Car[] = [
     pricePerDay: 95000,
     pricePerHour: 12000,
     images: [
-      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=2070&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1765461734605-34657fa04db2?q=80&w=870&auto=format&fit=crop",
     ],
     features: ["Executive Lounge", "Rear Climate", "Electric Sliders"],
+    available: true,
+  },
+  {
+    id: "bmw",
+    name: "BMW",
+    category: "luxury",
+    seats: 5,
+    transmission: "auto",
+    fuel: "Petrol",
+    pricePerDay: 200000,
+    pricePerHour: 23000,
+    images: [
+      "https://images.unsplash.com/photo-1635770311293-b09d08a522fc?q=80&w=464&auto=format&fit=crop",
+    ],
+    features: ["Smooth Ride", "Mark Levinson Audio", "Quiet Cabin"],
     available: true,
   },
 ];

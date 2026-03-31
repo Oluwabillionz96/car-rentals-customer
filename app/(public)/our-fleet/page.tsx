@@ -4,7 +4,7 @@ import CarGrid from "@/components/car-grid";
 import SearchInput from "@/components/search-input";
 import useSearch from "@/hooks/use-search";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import SelectionBar from "@/components/selection-bar";
 import useGlobalStore from "@/store/global-store";
 
@@ -12,21 +12,14 @@ const OurCars = () => {
   const { searchQuery, setSearchQuery, filteredCars, loading, allCars } =
     useSearch();
   const queryParams = useSearchParams();
-  const [isSelect, setIsSelect] = useState(false);
-  const [selectType, setSelectType] = useState<"single" | "multiple">(
-    queryParams.get("selectType") as "single" | "multiple",
-  );
+  const isSelect = !!queryParams.get("select");
+  const selectType =
+    (queryParams.get("selectType") as "single" | "multiple") || "single";
   const { selectedCarsId, clearCars } = useGlobalStore();
-  useEffect(() => {
-    if (queryParams.get("select")) {
-      setIsSelect(true);
-    }
-    if (queryParams.get("selectType")) {
-      setSelectType(queryParams.get("selectType") as "single" | "multiple");
-    }
 
+  useEffect(() => {
     clearCars();
-  }, [queryParams]);
+  }, [queryParams, clearCars]);
   return (
     <section className={isSelect && selectedCarsId.length > 0 ? "pb-40" : ""}>
       <header className="md:mb-8 mb-4 flex flex-col md:flex-row justify-between items-center gap-4">

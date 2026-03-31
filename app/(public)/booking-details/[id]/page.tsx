@@ -85,7 +85,7 @@ const BookingDetailsPage = () => {
           {/* Hero Image Card */}
           <div className="relative w-full aspect-4/3 md:aspect-video lg:rounded-[24px] overflow-hidden shadow-2xl shadow-slate-200/50 bg-white">
             <Image
-              src={car.image}
+              src={car.images[0]}
               alt={car.name}
               fill
               className="object-cover"
@@ -125,7 +125,7 @@ const BookingDetailsPage = () => {
                   {car.name}
                 </h2>
                 <p className="text-sm text-slate-400 font-medium">
-                  {car.type} • {car.transmission}
+                  {car?.category} • {car.transmission}
                 </p>
               </div>
               <div className="md:text-right">
