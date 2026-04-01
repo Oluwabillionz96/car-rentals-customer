@@ -7,10 +7,12 @@ const SelectionBar = ({
   selectType,
   selectedCars,
   handleBooking,
+  isModify,
 }: {
   selectType: "single" | "multiple";
   handleBooking: () => void;
   selectedCars: number;
+  isModify?: boolean;
 }) => {
   const { clearCars } = useGlobalStore();
 
@@ -52,7 +54,19 @@ const SelectionBar = ({
             className="flex items-center gap-2 px-8 md:px-12 py-3.5 md:py-4 rounded-xl bg-primary text-white font-black text-sm md:text-base shadow-xl shadow-primary/20 hover:opacity-90 active:scale-95 transition-all whitespace-nowrap"
             onClick={handleBooking}
           >
-            <span>{selectType === "single" ? "Book Now" : "Next"}</span>
+            <span>
+              {selectType === "single" ? (
+                !isModify ? (
+                  "Book Now"
+                ) : (
+                  <span>
+                    Contiue <span className="hidden md:inline">Booking</span>
+                  </span>
+                )
+              ) : (
+                "Next"
+              )}
+            </span>
             <ArrowRight
               size={18}
               className={`${selectType === "multiple" ? "hidden sm:inline-block" : ""}`}

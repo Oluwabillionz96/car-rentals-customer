@@ -26,7 +26,9 @@ const useGlobalStore = create<GlobalStore>((set) => ({
     set(() => ({ selectedCarsId: [] }));
   },
   modifyCars(carIds) {
-    set((state) => ({ selectedCarsId: [...new Set([...state.selectedCarsId, ...carIds])] }));
+    set((state) => ({
+      selectedCarsId: [...new Set([...state.selectedCarsId, ...carIds])],
+    }));
   },
 }));
 

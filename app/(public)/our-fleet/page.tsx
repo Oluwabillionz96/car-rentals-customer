@@ -48,7 +48,6 @@ const OurFleet = () => {
   };
 
   useEffect(() => {
-
     if (isSelect && !isModify) {
       clearCars();
     }
@@ -83,7 +82,6 @@ const OurFleet = () => {
                   : "Choose multiple premium vehicles to assemble your tailored convoy."
                 : "Browse our collection of premium chauffeur-driven vehicles."}
           </p>
-
         </div>
 
         <SearchInput
@@ -105,6 +103,7 @@ const OurFleet = () => {
           selectType={selectType}
           handleBooking={handleBooking}
           selectedCars={selectedCarsId.length}
+          isModify={isModify}
         />
       )}
     </section>

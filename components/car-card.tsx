@@ -116,17 +116,17 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
               >
                 <div className="relative flex">
                   {isSelect && isSelected ? (
-                    <>
+                    <div className="flex items-center gap-2">
+                      <p className="text-primary font-bold text-sm">Selected</p>
                       <Check size={20} className="text-primary" />
-                    </>
+                    </div>
                   ) : (
-                    <>
-                      <ShoppingCart size={20} className="text-primary" />
-                      <Plus
-                        size={10}
-                        className="absolute -top-1 -right-1 text-primary stroke-3"
-                      />
-                    </>
+                    <div className="flex items-center gap-2">
+                      <p className="text-primary font-bold text-sm">
+                        {isSelect ? "Select" : "Book"}
+                      </p>
+                      <Plus size={20} className="text-primary" />
+                    </div>
                   )}
                 </div>
               </button>
