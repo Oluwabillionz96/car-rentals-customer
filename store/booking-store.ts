@@ -37,7 +37,7 @@ const useBookingStore = create<BookingStore>((set, get) => ({
   updateBooking(partial) {
     set((state) => {
       const updated = state.bookings.map((b) =>
-        b.bookingId === partial.bookingId ? { ...b, ...partial } : b,
+        b.bookingId === partial.bookingId ? { ...b, ...partial, updatedAt: now() } : b,
       );
       persistVerifiedBookings(updated);
       return { bookings: updated };
