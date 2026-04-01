@@ -7,7 +7,10 @@ import {
 } from "lucide-react";
 import { BookingDetails, BookingSchedule, BookingStatus } from "./types";
 
-export const calculateDays = (start: Date | null, end: Date | null) => {
+export const calculateDays = (
+  start: Date | null | string,
+  end: Date | null | string,
+) => {
   if (!start || !end) return 0;
   const diffTime = Math.abs(
     new Date(end).getTime() - new Date(start).getTime(),
@@ -75,4 +78,32 @@ export const loadBookings = (): BookingDetails[] => {
 export const persistVerifiedBookings = (bookings: BookingDetails[]) => {
   if (typeof window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
+};
+
+export const calculatePrice = (booking: BookingDetails) => {
+  if (booking.service.pricing === "hourly") {
+    const bookingSchedule =
+      booking.schedule?.type === "hourly" && booking.schedule;
+
+    if (bookingSchedule) {
+      const totalHours = bookingSchedule?.hours;
+      const totalPrice = booking.selectedCars
+        .map((car) => car.pricePerHour)
+        .reduce((acc, price) => acc + price, 0);
+      return totalPrice * totalHours;
+    }
+  }
+  const bookingSchedule =
+    booking.schedule?.type === "daily" && booking.schedule;
+  if (bookingSchedule) {
+    const days = calculateDays(
+      bookingSchedule?.pickupDate,
+      bookingSchedule?.dropoffDate,
+    );
+    const totalPrice = booking.selectedCars
+      .map((car) => car.pricePerDay)
+      .reduce((acc, price) => acc + price, 0);
+    return totalPrice * days;
+  }
+  return 0;
 };

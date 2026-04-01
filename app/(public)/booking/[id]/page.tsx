@@ -48,12 +48,16 @@ const BookingPage = () => {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Car Preview */}
-        <BookingCardLeft allImages={allImages} booking={booking} />
+      <div className="flex flex-col-reverse lg:grid lg:grid-cols-12 gap-8 items-start relative">
+        {/* Left Column: Form (Sticky on Desktop) */}
+        <div className="lg:col-span-7 lg:sticky lg:top-24 w-full">
+          <BookingCardRight booking={booking} />
+        </div>
 
-        {/* Right Column: Form */}
-        <BookingCardRight booking={booking}/>
+        {/* Right Column: Car Details / Cards */}
+        <div className="lg:col-span-5 w-full">
+          <BookingCardLeft booking={booking} />
+        </div>
       </div>
     </div>
   );

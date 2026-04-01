@@ -12,6 +12,7 @@ const Input = ({
   value,
   onChange,
   showIconDesktop = false,
+  disabled = false,
 }: {
   icon: LucideIcon;
   type?: string;
@@ -23,6 +24,7 @@ const Input = ({
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   showIconDesktop?: boolean;
+  disabled?: boolean;
 }) => {
   const Icon = icon;
   return (
@@ -38,7 +40,8 @@ const Input = ({
           id={id}
           value={value}
           onChange={onChange}
-          className={`h-full w-full outline-none placeholder:text-text-400 p-4 ${
+          disabled={disabled}
+          className={`h-full w-full outline-none placeholder:text-text-400 p-4 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-50 ${
             showIconDesktop ? "pl-12" : "pl-10 lg:pl-4"
           }`}
           {...registration}
