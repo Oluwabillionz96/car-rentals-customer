@@ -48,7 +48,7 @@ const BookingPage = () => {
         </p>
       </header>
 
-      <div className="flex flex-col-reverse lg:grid lg:grid-cols-12 gap-8 items-start relative">
+      <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 items-start relative">
         {/* Left Column: Form (Sticky on Desktop) */}
         <div className="lg:col-span-7 lg:sticky lg:top-24 w-full">
           <BookingCardRight booking={booking} />

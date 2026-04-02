@@ -21,6 +21,7 @@ import {
   ShieldCheck,
   User,
   ArrowRight,
+  ChevronLeft,
 } from "lucide-react";
 import Button from "./button";
 import { useRouter } from "next/navigation";
@@ -85,13 +86,17 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
   const router = useRouter();
 
   const onSubmit = (data: BookingFormValues) => {
+    if (booking.status !== "draft") {
+      router.push(`/booking/${booking.bookingId}/payment`);
+      return;
+    }
     updateBooking({
       bookingId: booking.bookingId,
       customer: data.customer,
       schedule: data.schedule as BookingSchedule,
       status: "confirmed", // Assuming confirming after details added
     });
-    router.push("/");
+    router.push(`/booking/${booking.bookingId}/payment`);
   };
 
   const nextStep = async () => {
@@ -423,23 +428,24 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                   </div>
                 )}
 
-                <div className="pt-6 flex gap-4">
+                <div className="pt-6 flex flex-col-reverse md:flex-row gap-4">
                   <button
                     type="button"
                     onClick={prevStep}
-                    className="flex-1 border-2 border-slate-100 rounded-xl font-bold py-4 hover:bg-slate-50 transition-colors"
+                    className="flex-1 border-2 border-slate-100 flex items-center justify-center gap-2  rounded-xl font-bold py-4 hover:bg-slate-50 transition-colors"
                   >
+                    <ChevronLeft size={20} />
                     Back
                   </button>
                   <Button
                     type="submit"
                     form="booking-form"
-                    className="flex-2 disabled:cursor-not-allowed disabled:opacity-50 "
-                    disabled={booking.status !== "draft"}
+                    className="flex-2 py-4  "
                   >
                     {booking.status === "draft"
-                      ? "Confirm Booking"
-                      : "Booking Confirmed"}
+                      ? "Proceed to Payment"
+                      : "View Payment Details"}
+                    <ChevronRight size={20} />
                   </Button>
                 </div>
               </motion.div>
