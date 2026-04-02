@@ -12,7 +12,6 @@ interface CheckoutCustomerFormProps {
   isConfirmed: boolean;
   serviceId?: string;
   watch: UseFormWatch<BookingFormValues>;
-  onNext: () => void;
 }
 
 export default function CheckoutCustomerForm({
@@ -21,7 +20,6 @@ export default function CheckoutCustomerForm({
   isConfirmed,
   serviceId,
   watch,
-  onNext,
 }: CheckoutCustomerFormProps) {
   const isSelfDrive = serviceId === "self_drive";
 
@@ -107,21 +105,6 @@ export default function CheckoutCustomerForm({
           </div>
         </div>
       )}
-
-      <div className="pt-6">
-        <Button
-          type="button"
-          onClick={onNext}
-          disabled={
-            !watch("customer.firstName") ||
-            !watch("customer.lastName") ||
-            !watch("customer.email") ||
-            !watch("customer.phone")
-          }
-        >
-          Continue <ChevronRight size={20} />
-        </Button>
-      </div>
     </div>
   );
 }

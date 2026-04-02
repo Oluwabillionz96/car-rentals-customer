@@ -2,11 +2,7 @@ import { BookingDetails } from "@/lib/types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const BookingCardLeft = ({
-  booking,
-}: {
-  booking: BookingDetails;
-}) => {
+const BookingCardLeft = ({ booking }: { booking: BookingDetails }) => {
   const router = useRouter();
   const timeQuery = booking.service.pricing === "hourly" ? "hour" : "days";
 
@@ -14,33 +10,35 @@ const BookingCardLeft = ({
     <div className="space-y-6">
       <div className="flex justify-between items-center px-1">
         <h3 className="text-xl font-bold text-text-100">Selected Vehicles</h3>
-        <button
-          onClick={() =>
-            router.push(
-              `/our-fleet?service=${booking.service.id}&select=true&selectType=${booking.service.selectType}&booking=${booking.bookingId}`,
-            )
-          }
-          className="text-primary text-sm font-bold underline hover:no-underline"
-        >
-          Modify
-        </button>
+        {booking.status === "draft" && (
+          <button
+            onClick={() =>
+              router.push(
+                `/our-fleet?service=${booking.service.id}&select=true&selectType=${booking.service.selectType}&booking=${booking.bookingId}`,
+              )
+            }
+            className="text-primary text-sm font-bold underline hover:no-underline"
+          >
+            Modify
+          </button>
+        )}
       </div>
       <div className="space-y-4">
         {booking.selectedCars.map((car, index) => (
-          <div 
+          <div
             key={car.id + index}
             className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 p-2"
           >
             <div className="relative aspect-video rounded-2xl overflow-hidden group touch-pan-y shadow-inner bg-slate-100">
-               <Image
-                  src={car.images[0]}
-                  alt={car.name}
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-text-100 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
-                  Vehicle {index + 1}
-                </div>
+              <Image
+                src={car.images[0]}
+                alt={car.name}
+                fill
+                className="object-cover"
+              />
+              <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-text-100 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
+                Vehicle {index + 1}
+              </div>
             </div>
 
             <div className="p-6">
@@ -60,7 +58,11 @@ const BookingCardLeft = ({
                   {booking.service.name}
                 </span>
                 <span className="bg-slate-100 text-text-400 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
-                  ₦{car[timeQuery === "hour" ? "pricePerHour" : "pricePerDay"].toLocaleString()} / {timeQuery}
+                  ₦
+                  {car[
+                    timeQuery === "hour" ? "pricePerHour" : "pricePerDay"
+                  ].toLocaleString()}{" "}
+                  / {timeQuery}
                 </span>
               </div>
             </div>

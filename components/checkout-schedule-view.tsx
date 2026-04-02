@@ -2,7 +2,7 @@
 
 import { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue } from "react-hook-form";
 import { BookingFormValues } from "@/lib/validations";
-import { Calendar, Clock, MapPin, Minus, Plus, ArrowRight, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar, Clock, MapPin, Minus, Plus, ArrowRight, AlertCircle, ChevronLeft,  CheckCircle2 } from "lucide-react";
 import Input from "./input";
 import Button from "./button";
 
@@ -16,7 +16,7 @@ interface CheckoutScheduleViewProps {
   watch: UseFormWatch<BookingFormValues>;
   setValue: UseFormSetValue<BookingFormValues>;
   onBack: () => void;
-  isDraft: boolean;
+  onSave: () => void;
 }
 
 export default function CheckoutScheduleView({
@@ -27,8 +27,9 @@ export default function CheckoutScheduleView({
   watch,
   setValue,
   onBack,
-  isDraft,
+  onSave,
 }: CheckoutScheduleViewProps) {
+  // ... rest of the logic ...
   const scheduleType = watch("schedule.type");
   const startTime = watch("schedule.startTime");
   const hours = (watch("schedule.hours") as number) || 1;
@@ -186,12 +187,16 @@ export default function CheckoutScheduleView({
           className="flex-1 border-2 border-slate-100 flex items-center justify-center gap-2 rounded-xl font-bold py-4 hover:bg-slate-50 transition-colors"
         >
           <ChevronLeft size={20} />
-          Back
+          Cancel Tweak
         </button>
-        <Button type="submit" className="flex-2 py-4">
-          {isDraft ? "Proceed to Payment" : "View Payment Details"}
-          <ChevronRight size={20} />
-        </Button>
+        <button
+          type="button"
+          onClick={onSave}
+          className="flex-2 bg-primary hover:bg-primary/90 text-white font-black py-4 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 uppercase text-sm md:text-base group active:scale-95"
+        >
+          Confirm Modification
+          <CheckCircle2 size={20} />
+        </button>
       </div>
     </div>
   );

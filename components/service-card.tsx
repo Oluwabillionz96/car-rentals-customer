@@ -20,7 +20,7 @@ const ServiceCard = ({
   setSelectedService?: Dispatch<SetStateAction<string | null>>;
   onBookNow?: (service: Service) => void;
 }) => {
-  const ServiceIcon = Icon[service.id as keyof typeof Icon] || Icon.executive;
+  const ServiceIcon = Icon[service.id as keyof typeof Icon] || Icon.corporate_and_executive_use;
   const isSelected = selectedService === service.id;
   return (
     <article
