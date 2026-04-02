@@ -17,6 +17,7 @@ interface CheckoutScheduleViewProps {
   setValue: UseFormSetValue<BookingFormValues>;
   onBack: () => void;
   onSave: () => void;
+  hasConflicts?: boolean;
 }
 
 export default function CheckoutScheduleView({
@@ -28,6 +29,7 @@ export default function CheckoutScheduleView({
   setValue,
   onBack,
   onSave,
+  hasConflicts,
 }: CheckoutScheduleViewProps) {
   // ... rest of the logic ...
   const scheduleType = watch("schedule.type");
@@ -180,6 +182,15 @@ export default function CheckoutScheduleView({
         </div>
       )}
 
+      {hasConflicts && !isConfirmed && (
+        <div className="p-4 bg-red-50 border border-red-100 rounded-2xl flex gap-3 text-red-600 animate-in fade-in slide-in-from-bottom-2">
+          <AlertCircle size={20} className="shrink-0" />
+          <p className="text-xs font-bold uppercase italic tracking-tight">
+            Vehicle conflict detected for this slot. Please choose another time.
+          </p>
+        </div>
+      )}
+
       <div className="pt-6 flex flex-col-reverse md:flex-row gap-4">
         <button
           type="button"
@@ -192,7 +203,8 @@ export default function CheckoutScheduleView({
         <button
           type="button"
           onClick={onSave}
-          className="flex-2 bg-primary hover:bg-primary/90 text-white font-black py-4 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 uppercase text-sm md:text-base group active:scale-95"
+          disabled={hasConflicts}
+          className="flex-2 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-4 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 uppercase text-sm md:text-base group active:scale-95"
         >
           Confirm Modification
           <CheckCircle2 size={20} />

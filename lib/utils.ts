@@ -158,3 +158,14 @@ export const calculatePrice = (booking: BookingDetails) => {
   }
   return 0;
 };
+
+export const formatDateForInput = (dateStr: string) => {
+  if (!dateStr) return "";
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return "";
+    return date.toISOString().split("T")[0];
+  } catch (e) {
+    return "";
+  }
+};

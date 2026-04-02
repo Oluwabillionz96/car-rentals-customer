@@ -8,8 +8,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { calculatePrice } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
+import { calculatePrice, isCarAvailable, formatDateForInput } from "@/lib/utils";
+import { AlertCircle, ArrowRight } from "lucide-react";
 
 // Optimized Sub-components
 import CheckoutCustomerForm from "./checkout-customer-form";
@@ -19,7 +19,7 @@ import CheckoutScheduleSummary from "./checkout-schedule-summary";
 
 const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
   const [isEditingSchedule, setIsEditingSchedule] = useState(false);
-  const { updateBooking } = useBookingStore();
+  const { updateBooking, bookings } = useBookingStore();
   const existingSchedule = booking?.schedule;
   const isConfirmed = booking.status !== "draft";
 
@@ -44,7 +44,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
               type: "hourly",
               date:
                 existingSchedule?.type === "hourly"
-                  ? existingSchedule.date
+                  ? formatDateForInput(existingSchedule.date)
                   : "",
               startTime:
                 existingSchedule?.type === "hourly"
@@ -63,17 +63,24 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
               type: "daily",
               pickupDate:
                 existingSchedule?.type === "daily"
-                  ? existingSchedule.pickupDate
+                  ? formatDateForInput(existingSchedule.pickupDate)
                   : "",
               dropoffDate:
                 existingSchedule?.type === "daily"
-                  ? existingSchedule.dropoffDate
+                  ? formatDateForInput(existingSchedule.dropoffDate)
                   : "",
             },
     },
   });
 
   const router = useRouter();
+
+  // Availability Check Logic
+  const currentSchedule = watch("schedule") as BookingSchedule;
+  const carsWithConflicts = booking.selectedCars.filter(
+    (car) => !isCarAvailable(car, bookings, currentSchedule),
+  );
+  const hasConflicts = carsWithConflicts.length > 0;
 
   const onSubmit = (data: BookingFormValues) => {
     if (booking.status !== "draft") {
@@ -94,7 +101,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
   return (
     <>
       <div className="lg:col-span-7 bg-white rounded-[40px] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-        {/* Modal-like logic without forcing steps */}
+        {/* Header */}
         <div className="p-8 md:p-10 border-b border-slate-50 bg-slate-50/10">
           <h2 className="text-xl font-black text-text-100 uppercase italic tracking-tighter">
             Finalize Your Reservation
@@ -137,6 +144,26 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                     watch={watch}
                   />
 
+                  {hasConflicts && booking.status === "draft" && (
+                    <div className="p-6 bg-red-50 border border-red-100 rounded-3xl flex gap-4 items-start animate-in fade-in slide-in-from-bottom-2 duration-300">
+                      <AlertCircle
+                        className="text-red-500 shrink-0"
+                        size={24}
+                      />
+                      <div>
+                        <h4 className="text-sm font-black text-red-600 uppercase italic tracking-tight mb-1">
+                          Scheduling Conflict Detected
+                        </h4>
+                        <p className="text-xs text-red-500 font-medium leading-relaxed italic">
+                          Some of your selected vehicles (
+                          {carsWithConflicts.map((c) => c.name).join(", ")}) are
+                          already reserved for this period. Please re-adjust
+                          your schedule or select different vehicles.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="pt-4 border-t border-slate-50">
                     <button
                       type="submit"
@@ -144,7 +171,8 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                         !watch("customer.firstName") ||
                         !watch("customer.lastName") ||
                         !watch("customer.email") ||
-                        !watch("customer.phone")
+                        !watch("customer.phone") ||
+                        (hasConflicts && booking.status === "draft")
                       }
                       className="w-full bg-primary hover:bg-primary/90 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-3 text-base md:text-lg uppercase group active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed tracking-tight italic"
                     >
@@ -180,6 +208,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                   setValue={setValue}
                   onBack={() => setIsEditingSchedule(false)}
                   onSave={() => setIsEditingSchedule(false)}
+                  hasConflicts={hasConflicts}
                 />
               </motion.div>
             )}

@@ -26,7 +26,7 @@ import { hourlyScheduleSchema, dailyScheduleSchema } from "@/lib/validations";
 import DailyScheduleForm from "./daily-schedule-form";
 import HourlyScheduleForm from "./hourly-schedule-form";
 import BookingSummaryCard from "./booking-summary-card";
-import { isCarAvailable } from "@/lib/utils";
+import { isCarAvailable, formatDateForInput } from "@/lib/utils";
 import useBookingStore from "@/store/booking-store";
 
 interface BookingScheduleModalProps {
@@ -45,7 +45,7 @@ export default function BookingScheduleModal({
   isSelect,
 }: BookingScheduleModalProps) {
   const router = useRouter();
-  const { setTempSchedule } = useGlobalStore();
+  const { tempSchedule, setTempSchedule } = useGlobalStore();
   const [step, setStep] = useState<1 | 2>(1);
   const isDaily = service?.pricing === "daily";
   const { bookings, startBooking } = useBookingStore();
@@ -78,19 +78,31 @@ export default function BookingScheduleModal({
   useEffect(() => {
     if (isOpen) {
       setStep(1);
-      reset(
-        isDaily
-          ? { type: "daily", pickupDate: "", dropoffDate: "" }
-          : {
-              type: "hourly",
-              date: "",
-              startTime: "",
-              hours: service?.minHours || 1,
-              pickupAddress: "",
-            },
-      );
+      if (tempSchedule) {
+        reset({
+          ...tempSchedule,
+          ...(tempSchedule.type === "hourly"
+            ? { date: formatDateForInput(tempSchedule.date) }
+            : {
+                pickupDate: formatDateForInput(tempSchedule.pickupDate),
+                dropoffDate: formatDateForInput(tempSchedule.dropoffDate),
+              }),
+        });
+      } else {
+        reset(
+          isDaily
+            ? { type: "daily", pickupDate: "", dropoffDate: "" }
+            : {
+                type: "hourly",
+                date: "",
+                startTime: "",
+                hours: service?.minHours || 1,
+                pickupAddress: "",
+              },
+        );
+      }
     }
-  }, [isOpen, reset, isDaily, service]);
+  }, [isOpen, reset, isDaily, service, tempSchedule]);
 
   const onConfirm = (data: BookingSchedule) => {
     setTempSchedule(data);

@@ -151,7 +151,7 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
             }`}
             onClick={() => {
               if (!isSelect) {
-                router.push(`/services/car=${id}&select=true`);
+                router.push(`/services?car=${id}&select=true`);
                 return;
               }
 
