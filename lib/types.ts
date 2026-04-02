@@ -1,9 +1,8 @@
 export type ServiceId =
-  | "wedding"
-  | "executive"
+  | "weddings_and_events"
+  | "corporate_and_executive_use"
   | "airport_transfers"
-  | "city_tours"
-  | "group_trips"
+  | "city_tours_and_group_trips"
   | "self_drive";
 
 export type SelectType = "single" | "multiple";
@@ -42,20 +41,22 @@ export interface Car {
   available: boolean;
 }
 
-export type BookingSchedule =
-  | {
-      type: "hourly";
-      date: string;
-      startTime: string;
-      hours: number;
-      pickupAddress: string;
-      destinationNote?: string;
-    }
-  | {
-      type: "daily";
-      pickupDate: string;
-      dropoffDate: string;
-    };
+export interface HourlyBookingSchedule {
+  type: "hourly";
+  date: string;
+  startTime: string;
+  hours: number;
+  pickupAddress: string;
+  destinationNote?: string;
+}
+
+export interface DailyBookingSchedule {
+  type: "daily";
+  pickupDate: string;
+  dropoffDate: string;
+}
+
+export type BookingSchedule = HourlyBookingSchedule | DailyBookingSchedule;
 
 export interface DriverVerification {
   licenseNumber: string;
@@ -91,9 +92,15 @@ export interface BookingDetails {
 }
 
 export interface BookingStore {
-  Bookings: BookingDetails[];
-  startBooking: (service: Service, selectedCars: Car[]) => void;
-  updateBooking: (partial: Partial<BookingDetails>) => void;
+  bookings: BookingDetails[];
+  startBooking: (
+    service: Service | null,
+    selectedCars: Car[] | null,
+    schedule?: BookingSchedule | null,
+  ) => string | null;
+  updateBooking: (
+    partial: Partial<BookingDetails> & { bookingId: string },
+  ) => void;
   completeBooking: () => void;
   extendBooking: (bookingId: string, hours: number, amount: number) => void;
   cancelBooking: (bookingId: string) => void;

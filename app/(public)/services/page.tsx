@@ -9,6 +9,8 @@ import { AlertTriangle, CheckCircle2, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import BookingScheduleModal from "@/components/booking-schedule-modal";
+import { Service } from "@/lib/types";
 
 const Features = [
   {
@@ -46,6 +48,8 @@ const FeaturesCard = ({
   );
 };
 
+
+
 const ServicesPage = () => {
   const queryParams = useSearchParams();
   const router = useRouter();
@@ -55,17 +59,26 @@ const ServicesPage = () => {
 
   const car = carId ? getCar(carId) : null;
 
-  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { startBooking } = useBookingStore();
+
+  const handleBookNow = (service: Service) => {
+    setSelectedService(service);
+    setIsModalOpen(true);
+  };
 
   const handleBooking = () => {
     const car = getCar(carId ?? "");
-    const service = getServiceById(selectedService ?? "");
+    const service = getServiceById(selectedServiceId ?? "");
     if (!car || !service) return;
 
-    const bookingId = startBooking(service, [car]);
-    router.push(`/booking/${bookingId}`);
+    // For the flow where car is ALREADY selected, we might still need a schedule.
+    // But per the user's request, the modal is primarily for the "before cars" flow.
+    // However, to keep it consistent, if being used here, we should probably trigger the modal too.
+    setSelectedService(service);
+    setIsModalOpen(true);
   };
 
   if (isSelect && !car) {
@@ -81,6 +94,11 @@ const ServicesPage = () => {
   }
   return (
     <>
+      <BookingScheduleModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        service={selectedService}
+      />
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto text-center relative z-10">
@@ -119,10 +137,6 @@ const ServicesPage = () => {
             </div>
           )}
         </div>
-
-        {/* Background Decorative Elements */}
-        {/* <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -z-10" />
-        <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-[400px] h-[400px] bg-primary/10 rounded-full blur-3xl -z-10" /> */}
       </section>
 
       {/* Main Services Grid */}
@@ -135,8 +149,9 @@ const ServicesPage = () => {
                 service={service}
                 isPage={true}
                 isSelect={isSelect}
-                selectedService={selectedService}
-                setSelectedService={setSelectedService}
+                selectedService={selectedServiceId}
+                setSelectedService={setSelectedServiceId}
+                onBookNow={handleBookNow}
               />
             );
           })}
@@ -147,7 +162,7 @@ const ServicesPage = () => {
         <div className="flex justify-center  mx-auto">
           <Button
             className="w-fit disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!selectedService}
+            disabled={!selectedServiceId}
             onClick={handleBooking}
           >
             Continue <ChevronRight />

@@ -3,8 +3,8 @@ import { Service } from "@/lib/types";
 
 export const services: Service[] = [
   {
-    id: "wedding",
-    name: "Weddings",
+    id: "weddings_and_events",
+    name: "Weddings & Events",
     description:
       "Arrive in style. Build your convoy with multiple premium vehicles for the full wedding experience.",
     selectType: "multiple",
@@ -14,8 +14,8 @@ export const services: Service[] = [
     minHours: 4,
   },
   {
-    id: "executive",
-    name: "Executive",
+    id: "corporate_and_executive_use",
+    name: "Corporate & Executive Use",
     description:
       "Premium transport for business meetings, corporate events, and VIP engagements.",
     selectType: "multiple",
@@ -36,27 +36,17 @@ export const services: Service[] = [
     minHours: 2,
   },
   {
-    id: "city_tours",
-    name: "City Tours",
+    id: "city_tours_and_group_trips",
+    name: "City Tours & Group Trips",
     description:
       "Explore the city at your own pace with a knowledgeable local driver by your side.",
-    selectType: "single",
-    pricing: "hourly",
-    hasChauffeur: true,
-    autoAssign: true,
-    minHours: 3,
-  },
-  {
-    id: "group_trips",
-    name: "Group Trips",
-    description:
-      "Moving a crowd? We have spacious vehicles and professional drivers for groups of any size.",
-    selectType: "single",
+    selectType: "multiple",
     pricing: "hourly",
     hasChauffeur: true,
     autoAssign: false,
     minHours: 3,
   },
+
   {
     id: "self_drive",
     name: "Self Drive",

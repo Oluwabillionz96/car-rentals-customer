@@ -19,7 +19,7 @@ const OurFleet = () => {
   const isSelect = queryParams.get("select") === "true";
   const selectType =
     (queryParams.get("selectType") as "single" | "multiple") || "single";
-  const { selectedCarsId, clearCars, modifyCars } = useGlobalStore();
+  const { selectedCarsId, clearCars, modifyCars, tempSchedule } = useGlobalStore();
   const router = useRouter();
 
   const bookingId = queryParams.get("booking");
@@ -41,7 +41,7 @@ const OurFleet = () => {
       updateBooking({ bookingId: bookingId, selectedCars: cars });
       router.push(`/booking/${bookingId}`);
     } else {
-      const id = startBooking(service, cars);
+      const id = startBooking(service, cars, tempSchedule);
       if (!id) return;
       router.push(`/booking/${id}`);
     }

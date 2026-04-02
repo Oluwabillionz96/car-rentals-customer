@@ -47,7 +47,7 @@ const Input = ({
           {...registration}
         />
         <Icon
-          className={`absolute top-1/2 -translate-y-1/2 left-4 text-text-400 ${
+          className={`absolute top-1/2 -translate-y-1/2 left-4 text-text-400 pointer-events-none ${
             showIconDesktop ? "" : "lg:hidden"
           }`}
           size={18}

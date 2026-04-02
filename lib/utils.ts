@@ -19,11 +19,10 @@ export const calculateDays = (
 };
 
 export const Icon = {
-  wedding: CalendarHeart,
-  executive: UserRound,
+  weddings_and_events: CalendarHeart,
+  corporate_and_executive_use: UserRound,
   airport_transfers: Plane,
-  city_tours: CarFront,
-  group_trips: BusFront,
+  city_tours_and_group_trips: CarFront,
   self_drive: UserRound,
 };
 

@@ -12,12 +12,14 @@ const ServiceCard = ({
   isSelect,
   selectedService,
   setSelectedService,
+  onBookNow,
 }: {
   service: Service;
   isPage?: boolean;
   isSelect?: boolean;
   selectedService?: string | null;
   setSelectedService?: Dispatch<SetStateAction<string | null>>;
+  onBookNow?: (service: Service) => void;
 }) => {
   const ServiceIcon = Icon[service.id as keyof typeof Icon] || Icon.executive;
   const isSelected = selectedService === service.id;
@@ -77,16 +79,19 @@ const ServiceCard = ({
       </div>
 
       {!isSelect && (
-        <Link
-          href={`/our-fleet?service=${service.id}&select=true&selectType=${service.selectType}`}
-          className="inline-flex items-center gap-2 font-bold text-primary group/link"
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onBookNow?.(service);
+          }}
+          className="inline-flex items-center gap-2 font-bold text-primary group/link text-left w-fit"
         >
           Book this Service
           <ChevronRight
             size={20}
             className="group-hover/link:translate-x-1 transition-transform"
           />
-        </Link>
+        </button>
       )}
     </article>
   );

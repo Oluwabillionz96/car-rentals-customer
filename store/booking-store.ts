@@ -1,5 +1,5 @@
 import { generateBookingId } from "@/constants/cars";
-import { BookingDetails,  Car, Service } from "@/lib/types";
+import { BookingDetails, BookingSchedule, Car, Service } from "@/lib/types";
 import { loadBookings, now, persistVerifiedBookings } from "@/lib/utils";
 import { create } from "zustand";
 
@@ -7,21 +7,29 @@ import { create } from "zustand";
 
 export interface BookingStore {
   bookings: BookingDetails[];
-  startBooking: (service: Service | null, selectedCars: Car[] | null) => string | null;
-  updateBooking: (partial: Partial<BookingDetails> & { bookingId: string }) => void;
+  startBooking: (
+    service: Service | null,
+    selectedCars: Car[] | null,
+    schedule?: BookingSchedule | null
+  ) => string | null;
+  updateBooking: (
+    partial: Partial<BookingDetails> & { bookingId: string }
+  ) => void;
   cancelBooking: (bookingId: string) => void;
   updateBookingStatuses: () => void;
+  completeBooking: () => void;
+  extendBooking: (bookingId: string, hours: number, amount: number) => void;
 }
 
 const useBookingStore = create<BookingStore>((set, get) => ({
   bookings: loadBookings(),
-  startBooking(service, selectedCars) {
+  startBooking(service, selectedCars, schedule = null) {
     if (!selectedCars || !service) return null;
     const draft: BookingDetails = {
       bookingId: generateBookingId(),
       service: service,
       selectedCars: selectedCars,
-      schedule: null,
+      schedule: schedule ?? null,
       customer: null,
       extensions: [],
       status: "draft",
@@ -56,6 +64,26 @@ const useBookingStore = create<BookingStore>((set, get) => ({
   },
   updateBookingStatuses() {
     set({ bookings: loadBookings() });
+  },
+  completeBooking() {
+    // This is a stub or would handle finalizing the check-in/out process
+  },
+  extendBooking(bookingId: string, hours: number, amount: number) {
+    set((state) => {
+      const updated = state.bookings.map((b) =>
+        b.bookingId === bookingId
+          ? {
+              ...b,
+              extensions: [
+                ...b.extensions,
+                { addedHours: hours, addedAt: now(), additionalAmount: amount },
+              ],
+            }
+          : b,
+      );
+      persistVerifiedBookings(updated);
+      return { bookings: updated };
+    });
   },
 }));
 
