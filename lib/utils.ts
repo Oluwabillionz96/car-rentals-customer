@@ -26,6 +26,40 @@ export const Icon = {
   self_drive: UserRound,
 };
 
+export const getScheduleRange = (schedule: BookingSchedule) => {
+  if (schedule.type === "daily") {
+    return {
+      start: new Date(schedule.pickupDate).getTime(),
+      end: new Date(schedule.dropoffDate).getTime(),
+    };
+  }
+
+  // Hourly normalization
+  const startTime = new Date(`${schedule.date}T${schedule.startTime}`).getTime();
+  const endTime = startTime + schedule.hours * 60 * 60 * 1000;
+
+  return { start: startTime, end: endTime };
+};
+
+/**
+ * Checks if two booking schedules occupy the same time slot.
+ * Returns true if there is a conflict (overlap).
+ */
+export const isScheduleOverlapping = (
+  requestedSchedule: BookingSchedule,
+  existingSchedule: BookingSchedule,
+) => {
+  const newRange = getScheduleRange(requestedSchedule);
+  const alreadyBookedRange = getScheduleRange(existingSchedule);
+
+  // A conflict exists if the new start is before their end
+  // AND their start is before the new end.
+  return (
+    newRange.start < alreadyBookedRange.end &&
+    alreadyBookedRange.start < newRange.end
+  );
+};
+
 const generateBookingId = () => {
   return `BK-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
 };
