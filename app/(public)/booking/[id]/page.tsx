@@ -17,9 +17,6 @@ const BookingPage = () => {
 
   const booking = bookings.find((b) => b.bookingId === id);
 
-  // Collect all images from all selected cars
-  const allImages = booking?.selectedCars.flatMap((car) => car.images) || [];
-
   useEffect(() => {
     if (!booking) {
       router.push("/our-fleet");

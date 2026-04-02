@@ -1,9 +1,7 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import ServiceCard from "./service-card";
 import { services } from "@/lib/data/services";
-import Link from "next/link";
 import SeeMoreButton from "./see-more-btn";
 import { useState } from "react";
 import { Service } from "@/lib/types";

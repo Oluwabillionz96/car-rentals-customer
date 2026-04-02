@@ -4,10 +4,9 @@ import EmptyState from "@/components/empty-state";
 import ServiceCard from "@/components/service-card";
 import { getCar } from "@/constants/cars";
 import { getServiceById, services } from "@/lib/data/services";
-import useBookingStore from "@/store/booking-store";
 import { AlertTriangle, CheckCircle2, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import BookingScheduleModal from "@/components/booking-schedule-modal";
 import { Service } from "@/lib/types";
@@ -52,7 +51,6 @@ const FeaturesCard = ({
 
 const ServicesPage = () => {
   const queryParams = useSearchParams();
-  const router = useRouter();
   const carId = queryParams.get("car");
   const isSelect =
     queryParams.get("select") === "true" && (carId ? carId?.length > 0 : false);

@@ -5,7 +5,6 @@ import useGlobalStore from "@/store/global-store";
 import {
   Users,
   Settings,
-  ShoppingCart,
   Plus,
   Check,
   Info,

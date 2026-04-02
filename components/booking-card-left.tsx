@@ -1,5 +1,4 @@
 import { BookingDetails } from "@/lib/types";
-import { calculateDays, calculatePrice } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 

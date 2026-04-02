@@ -1,7 +1,6 @@
 "use client";
 
 import { CheckCircle2, ChevronRight } from "lucide-react";
-import Link from "next/link";
 import { Service } from "@/lib/types";
 import { Icon } from "@/lib/utils";
 import { Dispatch, SetStateAction } from "react";
