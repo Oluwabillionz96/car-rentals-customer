@@ -7,11 +7,17 @@ import { BookingSchedule } from "@/lib/types";
 interface BookingSummaryCardProps {
   formValues: BookingSchedule;
   onEdit: () => void;
+  isSelect?: boolean;
+  isCarBusy?: boolean;
+  carName?: string;
 }
 
 export default function BookingSummaryCard({
   formValues,
   onEdit,
+  isSelect,
+  isCarBusy,
+  carName,
 }: BookingSummaryCardProps) {
   const isDaily = formValues.type === "daily";
   return (
@@ -83,9 +89,18 @@ export default function BookingSummaryCard({
         </div>
       </div>
 
-      <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10 text-center">
-        <p className="text-xs text-text-300 font-medium">
-          One last step: Click below to browse cars available for this schedule.
+      {/* Dynamic Availability Status Card */}
+      <div
+        className={`p-6 rounded-[30px] border transition-all ${isCarBusy ? "bg-red-50 border-red-100" : "bg-primary/5 border-primary/10 shadow-sm"}`}
+      >
+        <p
+          className={`text-sm md:text-base font-bold text-center leading-relaxed ${isCarBusy ? "text-red-600" : "text-text-200 uppercase tracking-tight italic"}`}
+        >
+          {isSelect
+            ? isCarBusy
+              ? `Oops! This ${carName} is already reserved for this slot. Please try another schedule or car.`
+              : `Great! This ${carName} is available. Click below to finalize your booking.`
+            : "One last step: Click below to browse cars available for this schedule."}
         </p>
       </div>
     </motion.div>

@@ -45,15 +45,10 @@ export default function BookingScheduleModal({
   isSelect,
 }: BookingScheduleModalProps) {
   const router = useRouter();
-  const { setTempSchedule, tempSchedule } = useGlobalStore();
+  const { setTempSchedule } = useGlobalStore();
   const [step, setStep] = useState<1 | 2>(1);
   const isDaily = service?.pricing === "daily";
-  const { bookings } = useBookingStore();
-
-  if (car) {
-    const available = isCarAvailable(car, bookings, tempSchedule);
-    console.log({ available, tempSchedule });
-  }
+  const { bookings, startBooking } = useBookingStore();
 
   const {
     control,
@@ -76,7 +71,9 @@ export default function BookingScheduleModal({
   });
 
   const formValues = watch();
-  const { startBooking } = useBookingStore();
+
+  // Calculate availability for specific car if selected
+  const isCarBusy = car && !isCarAvailable(car, bookings, formValues);
 
   useEffect(() => {
     if (isOpen) {
@@ -97,15 +94,17 @@ export default function BookingScheduleModal({
 
   const onConfirm = (data: BookingSchedule) => {
     setTempSchedule(data);
-    if (isSelect) {
-      const id = startBooking(service, [car], tempSchedule);
+
+    if (isSelect && car) {
+      // If direct booking from fleet, start booking immediately
+      const id = startBooking(service, [car], data);
       router.push(`/booking/${id}`);
     } else {
+      // Otherwise proceed to fleet selection
       router.push(
         `/our-fleet?service=${service?.id}&select=true&selectType=${service?.selectType}`,
       );
     }
-
     onClose();
   };
 
@@ -165,14 +164,14 @@ export default function BookingScheduleModal({
             <div className="flex-1 overflow-y-auto px-6 md:px-8 py-8 custom-scrollbar space-y-10">
               {step === 1 ? (
                 <div className="space-y-10">
-                  <div className="bg-primary/5 border border-primary/10 p-6 rounded-3xl flex gap-4 items-start">
+                  <div className="bg-primary/5 border border-primary/10 p-6 rounded-3xl flex gap-4 items-start shadow-sm shadow-primary/5">
                     <div className="bg-primary text-white p-2 rounded-xl shrink-0">
                       <CheckCircle2 size={24} />
                     </div>
-                    <p className="text-sm md:text-base text-text-100 font-medium leading-relaxed">
+                    <p className="text-sm md:text-base text-text-100 font-bold leading-relaxed uppercase tracking-tight italic">
                       {isSelect
-                        ? "See if this car is Available"
-                        : "  We only show cars available for your specific time."}
+                        ? "Verify scheduling for this specific vehicle"
+                        : "We only show cars available for your specific time."}
                     </p>
                   </div>
                   {isDaily ? (
@@ -200,6 +199,9 @@ export default function BookingScheduleModal({
                 <BookingSummaryCard
                   formValues={formValues}
                   onEdit={() => setStep(1)}
+                  isSelect={isSelect}
+                  isCarBusy={!!isCarBusy}
+                  carName={car?.name}
                 />
               )}
 
@@ -222,16 +224,16 @@ export default function BookingScheduleModal({
                 onClick={handleSubmit(
                   step === 1 ? () => setStep(2) : onConfirm,
                 )}
-                disabled={step === 1 && !isValid}
+                disabled={
+                  (step === 1 && !isValid) || (step === 2 && !!isCarBusy)
+                }
                 className="flex-2 disabled:opacity-50 disabled:cursor-not-allowed bg-primary hover:bg-primary/90 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-3 text-base md:text-lg uppercase group active:scale-95"
               >
                 {step === 1
-                  ? isSelect
-                    ? "Check Availability"
-                    : "Review Schedule"
+                  ? "Review Details"
                   : isSelect
-                    ? "Confirm Booking"
-                    : "Confirm"}
+                    ? "Finalize Booking"
+                    : "Confirm & Search"}
                 {step === 1 ? (
                   <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                 ) : (
