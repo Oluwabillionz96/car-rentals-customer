@@ -98,6 +98,8 @@ const ServicesPage = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         service={selectedService}
+        car={car}
+        isSelect={isSelect}
       />
       {/* Hero Section */}
       <section className="relative overflow-hidden">

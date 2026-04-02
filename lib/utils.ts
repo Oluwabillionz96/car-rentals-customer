@@ -5,7 +5,7 @@ import {
   Plane,
   UserRound,
 } from "lucide-react";
-import { BookingDetails, BookingSchedule, BookingStatus } from "./types";
+import { BookingDetails, BookingSchedule, BookingStatus, Car } from "./types";
 
 export const calculateDays = (
   start: Date | null | string,
@@ -35,7 +35,9 @@ export const getScheduleRange = (schedule: BookingSchedule) => {
   }
 
   // Hourly normalization
-  const startTime = new Date(`${schedule.date}T${schedule.startTime}`).getTime();
+  const startTime = new Date(
+    `${schedule.date}T${schedule.startTime}`,
+  ).getTime();
   const endTime = startTime + schedule.hours * 60 * 60 * 1000;
 
   return { start: startTime, end: endTime };
@@ -60,8 +62,25 @@ export const isScheduleOverlapping = (
   );
 };
 
-const generateBookingId = () => {
-  return `BK-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+export const isCarAvailable = (
+  car: Car,
+  bookings: BookingDetails[],
+  schedule?: BookingSchedule | null,
+) => {
+  if (!schedule) return true;
+  const validBookings = bookings.filter(
+    (bookingData) =>
+      (bookingData.status === "confirmed" ||
+        bookingData.status === "ongoing") &&
+      bookingData.selectedCars.find((bookedCar) => bookedCar.id === car.id),
+  );
+
+  return validBookings.every((bookingData) => {
+    if (bookingData.schedule) {
+      return !isScheduleOverlapping(schedule, bookingData.schedule);
+    }
+    return true;
+  });
 };
 
 export const now = () => new Date().toISOString();

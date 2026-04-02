@@ -12,6 +12,7 @@ import {
   BookingSchedule,
   DailyBookingSchedule,
   HourlyBookingSchedule,
+  Car,
 } from "@/lib/types";
 import { useState, useEffect } from "react";
 import { useForm, Control, UseFormWatch, FieldErrors } from "react-hook-form";
@@ -25,22 +26,34 @@ import { hourlyScheduleSchema, dailyScheduleSchema } from "@/lib/validations";
 import DailyScheduleForm from "./daily-schedule-form";
 import HourlyScheduleForm from "./hourly-schedule-form";
 import BookingSummaryCard from "./booking-summary-card";
+import { isCarAvailable } from "@/lib/utils";
+import useBookingStore from "@/store/booking-store";
 
 interface BookingScheduleModalProps {
   isOpen: boolean;
   onClose: () => void;
   service: Service | null;
+  isSelect?: boolean;
+  car?: Car | null;
 }
 
 export default function BookingScheduleModal({
   isOpen,
   onClose,
   service,
+  car,
+  isSelect,
 }: BookingScheduleModalProps) {
   const router = useRouter();
-  const setTempSchedule = useGlobalStore((state) => state.setTempSchedule);
+  const { setTempSchedule, tempSchedule } = useGlobalStore();
   const [step, setStep] = useState<1 | 2>(1);
   const isDaily = service?.pricing === "daily";
+  const { bookings } = useBookingStore();
+
+  if (car) {
+    const available = isCarAvailable(car, bookings, tempSchedule);
+    console.log({ available, tempSchedule });
+  }
 
   const {
     control,
@@ -63,6 +76,7 @@ export default function BookingScheduleModal({
   });
 
   const formValues = watch();
+  const { startBooking } = useBookingStore();
 
   useEffect(() => {
     if (isOpen) {
@@ -83,9 +97,15 @@ export default function BookingScheduleModal({
 
   const onConfirm = (data: BookingSchedule) => {
     setTempSchedule(data);
-    router.push(
-      `/our-fleet?service=${service?.id}&select=true&selectType=${service?.selectType}`,
-    );
+    if (isSelect) {
+      const id = startBooking(service, [car], tempSchedule);
+      router.push(`/booking/${id}`);
+    } else {
+      router.push(
+        `/our-fleet?service=${service?.id}&select=true&selectType=${service?.selectType}`,
+      );
+    }
+
     onClose();
   };
 
@@ -150,7 +170,9 @@ export default function BookingScheduleModal({
                       <CheckCircle2 size={24} />
                     </div>
                     <p className="text-sm md:text-base text-text-100 font-medium leading-relaxed">
-                      We only show cars available for your specific time.
+                      {isSelect
+                        ? "See if this car is Available"
+                        : "  We only show cars available for your specific time."}
                     </p>
                   </div>
                   {isDaily ? (
@@ -203,7 +225,13 @@ export default function BookingScheduleModal({
                 disabled={step === 1 && !isValid}
                 className="flex-2 disabled:opacity-50 disabled:cursor-not-allowed bg-primary hover:bg-primary/90 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-3 text-base md:text-lg uppercase group active:scale-95"
               >
-                {step === 1 ? "Review Schedule" : "Confirm"}
+                {step === 1
+                  ? isSelect
+                    ? "Check Availability"
+                    : "Review Schedule"
+                  : isSelect
+                    ? "Confirm Booking"
+                    : "Confirm"}
                 {step === 1 ? (
                   <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                 ) : (
