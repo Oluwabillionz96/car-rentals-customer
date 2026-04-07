@@ -32,7 +32,7 @@ const useBookingStore = create<BookingStore>((set, get) => ({
       schedule: schedule ?? null,
       customer: null,
       extensions: [],
-      status: "draft",
+      status: null,
       createdAt: now(),
     };
     const { bookings } = get();

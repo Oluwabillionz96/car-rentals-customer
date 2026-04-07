@@ -8,7 +8,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { calculatePrice, isCarAvailable, formatDateForInput } from "@/lib/utils";
+import {
+  calculatePrice,
+  isCarAvailable,
+  formatDateForInput,
+} from "@/lib/utils";
 import { AlertCircle, ArrowRight } from "lucide-react";
 
 // Optimized Sub-components
@@ -21,7 +25,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
   const [isEditingSchedule, setIsEditingSchedule] = useState(false);
   const { updateBooking, bookings } = useBookingStore();
   const existingSchedule = booking?.schedule;
-  const isConfirmed = booking.status !== "draft";
+  const isSaved = booking.status !== null;
 
   const {
     register,
@@ -83,7 +87,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
   const hasConflicts = carsWithConflicts.length > 0;
 
   const onSubmit = (data: BookingFormValues) => {
-    if (booking.status !== "draft") {
+    if (booking.status !== null) {
       router.push(`/booking/${booking.bookingId}/payment`);
       return;
     }
@@ -91,7 +95,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
       bookingId: booking.bookingId,
       customer: data.customer,
       schedule: data.schedule as BookingSchedule,
-      status: "confirmed",
+      status: "draft",
     });
     router.push(`/booking/${booking.bookingId}/payment`);
   };
@@ -127,7 +131,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                   <CheckoutScheduleSummary
                     schedule={watch("schedule") as any}
                     onEdit={() => setIsEditingSchedule(true)}
-                    isDraft={booking.status === "draft"}
+                    isDraft={booking.status === null}
                   />
                 )}
 
@@ -139,7 +143,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                   <CheckoutCustomerForm
                     register={register}
                     errors={errors}
-                    isConfirmed={isConfirmed}
+                    isConfirmed={isSaved}
                     serviceId={booking.service.id}
                     watch={watch}
                   />
@@ -172,12 +176,12 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                         !watch("customer.lastName") ||
                         !watch("customer.email") ||
                         !watch("customer.phone") ||
-                        (hasConflicts && booking.status === "draft")
+                        (hasConflicts && booking.status === null)
                       }
                       className="w-full bg-primary hover:bg-primary/90 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-3 text-base md:text-lg uppercase group active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed tracking-tight italic"
                     >
-                      {booking.status === "draft"
-                        ? "Continue to Payment"
+                      {booking.status === null
+                        ? "Confirm Booking"
                         : "Payment Details"}
                       <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                     </button>
@@ -202,7 +206,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                 <CheckoutScheduleView
                   register={register}
                   errors={errors}
-                  isConfirmed={isConfirmed}
+                  isConfirmed={isSaved}
                   minHours={booking.service.minHours}
                   watch={watch}
                   setValue={setValue}

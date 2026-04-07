@@ -14,7 +14,8 @@ export type BookingStatus =
   | "confirmed" // paid, waiting for pickup date
   | "ongoing" // currently active
   | "past" // completed
-  | "cancelled"; // cancelled by customer or business
+  | "cancelled" // cancelled by customer or business
+  | null;
 
 export interface Service {
   id: ServiceId;

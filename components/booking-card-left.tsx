@@ -10,7 +10,7 @@ const BookingCardLeft = ({ booking }: { booking: BookingDetails }) => {
     <div className="space-y-6">
       <div className="flex justify-between items-center px-1">
         <h3 className="text-xl font-bold text-text-100">Selected Vehicles</h3>
-        {booking.status === "draft" && (
+        {booking.status === null && (
           <button
             onClick={() =>
               router.push(
