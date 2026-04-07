@@ -25,8 +25,8 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
   const [isEditingSchedule, setIsEditingSchedule] = useState(false);
   const { updateBooking, bookings } = useBookingStore();
   const existingSchedule = booking?.schedule;
-  const isSaved = booking.status !== null;
-
+  const isLocked = booking.status !== "draft" && booking.status !== null;
+  console.log({ isLocked, status: booking.status });
   const {
     register,
     handleSubmit,
@@ -93,8 +93,8 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
   const hasConflicts = carsWithConflicts.length > 0;
 
   const onSubmit = (data: BookingFormValues) => {
-    if (booking.status !== null) {
-      router.push(`/booking/${booking.bookingId}/payment`);
+    if (booking.status !== null && booking.status !== "draft") {
+      router.push(`/booking-details/${booking.bookingId}`);
       return;
     }
     updateBooking({
@@ -149,12 +149,12 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                   <CheckoutCustomerForm
                     register={register}
                     errors={errors}
-                    isConfirmed={isSaved}
+                    isConfirmed={isLocked}
                     serviceId={booking.service.id}
                     watch={watch}
                   />
 
-                  {hasConflicts && booking.status === "draft" && (
+                  {hasConflicts && !isLocked && (
                     <div className="p-6 bg-red-50 border border-red-100 rounded-3xl flex gap-4 items-start animate-in fade-in slide-in-from-bottom-2 duration-300">
                       <AlertCircle
                         className="text-red-500 shrink-0"
@@ -182,7 +182,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                         !watch("customer.lastName") ||
                         !watch("customer.email") ||
                         !watch("customer.phone") ||
-                        (hasConflicts && booking.status === null)
+                        (hasConflicts && !isLocked)
                       }
                       className="w-full bg-primary hover:bg-primary/90 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-3 text-base md:text-lg uppercase group active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed tracking-tight italic"
                     >
@@ -194,7 +194,10 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                           Payment
                         </>
                       ) : (
-                        ""
+                        <p>
+                          <span className="hidden md:inline">View</span>{" "}
+                          Booking Details
+                        </p>
                       )}
                       <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                     </button>
@@ -219,7 +222,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                 <CheckoutScheduleView
                   register={register}
                   errors={errors}
-                  isConfirmed={isSaved}
+                  isConfirmed={isLocked}
                   minHours={booking.service.minHours}
                   watch={watch}
                   setValue={setValue}

@@ -30,7 +30,7 @@ const BookingPage = () => {
       {/* Header */}
       <header className="mb-10">
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push("/")}
           className="lg:flex hidden items-center gap-2 text-text-300 hover:text-primary transition-colors mb-4 font-bold"
         >
           <ChevronLeft size={20} />

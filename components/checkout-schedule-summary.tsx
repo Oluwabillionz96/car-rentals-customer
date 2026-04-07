@@ -56,9 +56,19 @@ export default function CheckoutScheduleSummary({
               {isDaily ? "Rental Period" : "Pickup Date"}
             </p>
             <p className="text-sm font-black text-text-100 italic uppercase">
-              {isDaily
-                ? `${new Date(schedule.pickupDate).toLocaleDateString()} - ${new Date(schedule.dropoffDate).toLocaleDateString()}`
-                : new Date(schedule.date).toLocaleDateString()}
+              {isDaily ? (
+                <div className="flex items-center gap-2">
+                  <span>
+                    {new Date(schedule.pickupDate).toLocaleDateString()}
+                  </span>
+                  -
+                  <span>
+                    {new Date(schedule.dropoffDate).toLocaleDateString()}
+                  </span>
+                </div>
+              ) : (
+                new Date(schedule.date).toLocaleDateString()
+              )}
             </p>
           </div>
         </div>

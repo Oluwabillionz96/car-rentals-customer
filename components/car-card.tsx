@@ -2,17 +2,12 @@
 
 import { getCar } from "@/constants/cars";
 import useGlobalStore from "@/store/global-store";
-import {
-  Users,
-  Settings,
-  Plus,
-  Check,
-  Info,
-  Fuel,
-} from "lucide-react";
+import { Users, Settings, Plus, Check, Info, Fuel } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { BookingDetails } from "@/lib/types";
 
 interface CarCardProps {
   id: string;
@@ -20,6 +15,59 @@ interface CarCardProps {
   selectType?: "single" | "multiple";
   isSelfDrive?: boolean;
 }
+
+export const VehicleCard = ({
+  car,
+  index,
+  booking,
+}: {
+  car: BookingDetails["selectedCars"][number];
+  index: number;
+  booking: BookingDetails;
+}) => {
+  const timeQuery = booking.service.pricing === "hourly" ? "hour" : "day";
+  const unitPrice = timeQuery === "hour" ? car.pricePerHour : car.pricePerDay;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.08, duration: 0.4 }}
+      className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 p-2"
+    >
+      <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-100 shadow-inner">
+        <Image
+          src={car.images[0]}
+          alt={car.name}
+          fill
+          className="object-cover"
+        />
+        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-text-100 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
+          Vehicle {index + 1}
+        </div>
+      </div>
+
+      <div className="p-5">
+        <div className="flex justify-between items-start mb-3">
+          <div>
+            <h3 className="text-lg font-bold text-text-100">{car.name}</h3>
+            <p className="text-text-400 text-xs font-medium uppercase tracking-wider">
+              {car.category} • {car.transmission} • {car.seats} seats
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <span className="bg-primary/10 text-primary px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+            {booking.service.name}
+          </span>
+          <span className="bg-slate-100 text-text-400 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+            ₦{unitPrice.toLocaleString()} / {timeQuery}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
   const globalStore = useGlobalStore((state) => state);

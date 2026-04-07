@@ -1,9 +1,4 @@
-import {
-  CalendarHeart,
-  CarFront,
-  Plane,
-  UserRound,
-} from "lucide-react";
+import { CalendarHeart, CarFront, Plane, UserRound } from "lucide-react";
 import { BookingDetails, BookingSchedule, BookingStatus, Car } from "./types";
 
 export const calculateDays = (
@@ -117,7 +112,7 @@ export const loadBookings = (): BookingDetails[] => {
     const bookings: BookingDetails[] = JSON.parse(raw);
     // Recalculate statuses on load — time may have passed since last session
     return bookings.map((b) =>
-      b.status === "cancelled"
+      b.status === "cancelled" || b.status === null || b.status === "draft"
         ? b
         : { ...b, status: calculateStatus(b.schedule ?? undefined) },
     );
