@@ -20,10 +20,10 @@ const HeroSection = () => {
         <div className="relative  space-y-4">
           <div className="space-y-2">
             <h1 className="text-4xl font-bold text-white leading-[1.1] tracking-tight">
-              Premium Chauffeur Service
+              Self-Drive & Chauffeur Services
             </h1>
             <p className="text-white/90 text-lg leading-relaxed max-w-[280px]">
-              Professional drivers and luxury cars for your every need.
+              Premium car rentals and professional luxury chauffeurs tailored for your every journey.
             </p>
           </div>
 
@@ -48,14 +48,13 @@ const HeroSection = () => {
       <section className="hidden md:flex flex-col-reverse lg:flex-row gap-12 px-0">
         <div className="flex-1 w-full space-y-6">
           <p className="w-fit uppercase rounded-full text-primary text-xs font-bold tracking-widest bg-primary/10 px-4 py-1.5">
-            Premium Chauffeur Service
+            Self-Drive & Chauffeur Options
           </p>
           <h1 className="text-7xl font-black text-text-100 leading-[1.1]">
             Rent a Car in <span className="text-primary">Nigeria</span>
           </h1>
           <p className="text-xl text-text-200 max-w-xl">
-            Experience seamless mobility with professional chauffeurs and a
-            trusted fleet. Easy, reliable, and premium.
+            Experience seamless mobility with our trusted self-drive fleet or unwind with our premium professional chauffeur services. Easy, reliable, and tailored to you.
           </p>
 
           <div className="flex flex-row gap-4 pt-2">

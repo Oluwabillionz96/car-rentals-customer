@@ -8,33 +8,33 @@ const HowItWorksPage = () => {
       id: 1,
       desktopIcon: Search,
       mobileIcon: Car,
-      title: "1. Browse & Choose",
-      mobileDesc: "Explore our wide range of vehicles, from compact cars to luxury SUVs. Filter by your needs and find your perfect car from our premium fleet.",
-      desktopDesc: "Find your perfect car from our fleet of well-maintained vehicles. Filter by type, price, or capacity."
+      title: "1. Choose Your Service",
+      mobileDesc: "Select the perfect option for your journey: take the wheel with our self-drive fleet or relax with a premium chauffeur.",
+      desktopDesc: "Decide how you want to travel. Opt for the freedom of self-drive or the luxury of a professional chauffeur."
     },
     {
       id: 2,
       desktopIcon: Calendar,
       mobileIcon: Calendar,
-      title: "2. Book & Confirm",
-      mobileDesc: "Select your dates, enter your personal details, and review your booking. We'll send an instant confirmation directly to your email.",
-      desktopDesc: "Enter your rental details and receive an instant confirmation via email. Fast, easy, and digital."
+      title: "2. Browse & Schedule",
+      mobileDesc: "Explore our diverse fleet of vehicles and select your preferred dates and pickup options for your trip.",
+      desktopDesc: "Explore our premium fleet to find the perfect car, then schedule your pickup and drop-off dates effortlessly."
     },
     {
       id: 3,
       desktopIcon: Banknote,
       mobileIcon: Lock,
-      title: "3. Pay Securely",
-      mobileDesc: "Complete your payment using our secure checkout powered by Paystack. We support cards, bank transfers, and mobile money for your convenience.",
-      desktopDesc: "Complete your booking with a safe transaction powered by Paystack. Multiple payment options available."
+      title: "3. Book Securely",
+      mobileDesc: "Provide your details and complete your reservation instantly using our safe and secure online checkout.",
+      desktopDesc: "Enter your personal details and complete your booking with a safe, instant transaction powered by Paystack."
     },
     {
       id: 4,
       desktopIcon: Key,
       mobileIcon: Key,
-      title: "4. Pick Up & Drive",
-      mobileDesc: "Visit our nearest pickup point at your scheduled time. Show your ID, grab your keys, and start your journey with peace of mind.",
-      desktopDesc: "Collect your keys at our designated location or have it delivered. Your adventure starts here."
+      title: "4. Drive or Be Driven",
+      mobileDesc: "Collect your car keys from our designated location or simply wait for your professional chauffeur to arrive in style.",
+      desktopDesc: "Pick up your keys to begin your self-drive adventure, or relax as your professional chauffeur whisks you away."
     }
   ];
 
@@ -59,15 +59,15 @@ const HowItWorksPage = () => {
              </h1>
              <p className="text-[15px] md:text-lg text-slate-200 md:text-slate-500 mb-8 max-w-3xl px-2 leading-relaxed">
                 <span className="md:hidden">
-                   Experience a seamless car rental process in four simple steps. Find, book, and drive your perfect car today with Solution Car Rentals.
+                   Experience a seamless travel process in four simple steps. Find your perfect ride, choose your service, and get going with Solution Car Rentals.
                 </span>
                 <span className="hidden md:block leading-[1.6]">
-                   Experience a seamless car rental journey with Solution Car Rentals. From<br className="hidden lg:block" />browsing to driving, we&apos;ve simplified every step for your convenience.
+                   Experience a seamless journey with Solution Car Rentals. Whether you prefer<br className="hidden lg:block" />the freedom of self-drive or the luxury of a premium chauffeur, we&apos;ve simplified every step.
                 </span>
              </p>
-             <Link href="/our-cars" className="bg-[#4facfe] md:bg-[#4facfe] hover:opacity-90 text-slate-900 md:text-white font-semibold py-3 px-8 md:py-4 md:px-10 md:text-[17px] rounded-full transition-opacity inline-block">
+             <Link href="/services" className="bg-[#4facfe] md:bg-[#4facfe] hover:opacity-90 text-slate-900 md:text-white font-semibold py-3 px-8 md:py-4 md:px-10 md:text-[17px] rounded-full transition-opacity inline-block">
                 <span className="md:hidden">Get Started</span>
-                <span className="hidden md:inline">Get Started Now</span>
+                <span className="hidden md:inline">Explore Services</span>
              </Link>
           </div>
        </div>
@@ -128,10 +128,10 @@ const HowItWorksPage = () => {
           <div className="md:hidden bg-[#eaf4fe] rounded-3xl p-8 text-center flex flex-col items-center shadow-sm">
              <h2 className="text-2xl font-bold text-slate-900 mb-3">Ready to start?</h2>
              <p className="text-slate-600 mb-8 max-w-[280px] text-[15px] leading-relaxed">
-                 Join thousands of happy customers and get on the road today.
+                 Experience premium travel. Book your self-drive or chauffeur service today.
              </p>
-             <Link href="/our-cars" className="bg-[#4facfe] hover:opacity-90 text-slate-900 font-bold py-3.5 px-8 rounded-full w-[200px] transition-opacity text-[15px] inline-block">
-                Browse Cars
+             <Link href="/services" className="bg-[#4facfe] hover:opacity-90 text-slate-900 font-bold py-3.5 px-8 rounded-full w-[200px] transition-opacity text-[15px] inline-block">
+                View Services
              </Link>
           </div>
 
@@ -139,10 +139,10 @@ const HowItWorksPage = () => {
           <div className="hidden md:flex bg-[#161c2d] rounded-[32px] py-16 lg:py-[72px] px-12 lg:px-20 flex-col items-center justify-center text-center">
              <h2 className="text-[36px] lg:text-[44px] font-bold text-white mb-4 lg:mb-6">Ready to start?</h2>
              <p className="text-[#4facfe] mb-10 lg:mb-12 text-[17px] lg:text-[19px] max-w-2xl font-medium">
-                Join thousands of happy customers and get the best rates on your next rental today.
+                Experience premium travel tailored to you. Book your self-drive car or relax with a professional luxury chauffeur today.
              </p>
              <div className="flex flex-row gap-4 lg:gap-5">
-                <Link href="/our-cars" className="bg-[#4facfe] hover:opacity-90 text-slate-900 font-bold py-3.5 px-8 lg:py-4 lg:px-10 rounded-full transition-opacity text-[15px] lg:text-[17px] inline-block">
+                <Link href="/our-fleet" className="bg-[#4facfe] hover:opacity-90 text-slate-900 font-bold py-3.5 px-8 lg:py-4 lg:px-10 rounded-full transition-opacity text-[15px] lg:text-[17px] inline-block">
                    Browse Fleet
                 </Link>
              </div>
