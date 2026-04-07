@@ -37,15 +37,15 @@ export default function FindMyBookingPage() {
   });
 
   const [notFoundBooking, setNotFoundBooking] = useState(false);
-  const verifiedBookings = useBookingStore((state) => state.verifiedBooking);
+  const { bookings } = useBookingStore();
 
   const router = useRouter();
 
   const onSubmit = async (data: FindBookingFormValues) => {
-    const booking = verifiedBookings?.find(
+    const booking = bookings.find(
       (booking) =>
-        booking?.customer.email === data.email &&
-        booking.bookingId === data.bookingId,
+        booking?.customer?.email === data.email &&
+        booking?.bookingId === data.bookingId,
     );
     if (booking) {
       router.push(`/booking-details/${booking.bookingId}`);
