@@ -1,29 +1,136 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import Image from "next/image";
-import { Calendar, MapPin, Hash } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  ChevronLeft,
+  Hash,
+  Car,
+  CreditCard,
+  MapPin,
+  Copy,
+  Check,
+} from "lucide-react";
+
 import useBookingStore from "@/store/booking-store";
-import { getCar } from "@/constants/cars";
-import { calculateDays } from "@/lib/utils";
+import { calculatePrice, calculateDays } from "@/lib/utils";
+import { BookingStatus } from "@/lib/types";
 import EmptyState from "@/components/empty-state";
 import { useCancelBooking } from "@/hooks/use-cancel-booking";
 import CancellationCard from "@/components/cancellation-card";
 import Map from "@/components/map";
+import { VehicleCard } from "@/components/car-card";
+import CustomerInfo from "@/components/customer-info";
+import ScheduleInfo from "@/components/schedule-info";
 
+// ─── Status Badge ────────────────────────────────────────────────────────────
+const getStatusBadge = (status: BookingStatus) => {
+  const config: Record<string, { bg: string; text: string; label: string }> = {
+    confirmed: {
+      bg: "bg-blue-50 border-blue-100",
+      text: "text-blue-500",
+      label: "Upcoming",
+    },
+    ongoing: {
+      bg: "bg-emerald-50 border-emerald-100",
+      text: "text-emerald-600",
+      label: "Ongoing",
+    },
+    past: {
+      bg: "bg-slate-100 border-slate-200",
+      text: "text-slate-500",
+      label: "Completed",
+    },
+    cancelled: {
+      bg: "bg-red-50 border-red-100",
+      text: "text-red-500",
+      label: "Cancelled",
+    },
+    draft: {
+      bg: "bg-amber-50 border-amber-100",
+      text: "text-amber-500",
+      label: "Draft",
+    },
+  };
+
+  if (!status) return null;
+  const c = config[status];
+  if (!c) return null;
+
+  return (
+    <span
+      className={`w-fit px-3 py-1 ${c.bg} ${c.text} text-[10px] font-bold rounded-md uppercase tracking-wide border`}
+    >
+      {c.label}
+    </span>
+  );
+};
+
+// ─── Payment Summary Section ─────────────────────────────────────────────────
+const BookingPaymentSummary = ({
+  totalPrice,
+  durationLabel,
+}: {
+  totalPrice: number;
+  durationLabel: string;
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 16 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.3, duration: 0.4 }}
+    className="bg-white rounded-[32px] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden"
+  >
+    <div className="p-6 md:p-8 border-b border-slate-50">
+      <h2 className="text-base font-black text-text-100 uppercase italic tracking-tighter flex items-center gap-2">
+        <CreditCard size={18} className="text-primary" />
+        Payment Summary
+      </h2>
+    </div>
+
+    <div className="p-6 md:p-8 space-y-4">
+      <div className="flex justify-between text-sm">
+        <span className="text-text-300 font-medium">
+          Rental Fee ({durationLabel})
+        </span>
+        <span className="text-text-100 font-bold">
+          ₦{totalPrice.toLocaleString()}
+        </span>
+      </div>
+      <div className="flex justify-between text-sm">
+        <span className="text-text-300 font-medium">Insurance (Premium)</span>
+        <span className="text-text-100 font-bold">₦0</span>
+      </div>
+      <div className="flex justify-between text-sm">
+        <span className="text-text-300 font-medium">Taxes & Fees</span>
+        <span className="text-text-100 font-bold">₦0</span>
+      </div>
+
+      <div className="pt-4 flex justify-between items-center border-t border-slate-100">
+        <p className="text-base font-bold text-text-100">Total Paid</p>
+        <p className="text-2xl font-black text-primary tracking-tight">
+          ₦{totalPrice.toLocaleString()}
+        </p>
+      </div>
+    </div>
+  </motion.div>
+);
+
+// ─── Main Page ───────────────────────────────────────────────────────────────
 const BookingDetailsPage = () => {
   const { id } = useParams();
-  const verifiedBookings = useBookingStore((state) => state.verifiedBooking);
+  const router = useRouter();
+  const { bookings } = useBookingStore();
+  const [copied, setCopied] = useState(false);
 
-  const booking = verifiedBookings?.find((b) => b.bookingId === id);
-  const car = booking ? getCar(booking.carId) : null;
+  const booking = bookings.find((b) => b.bookingId === id);
 
   const { openCancelModal, CancelModal } = useCancelBooking({
-    carName: car?.name || "",
+    carName: booking?.selectedCars[0]?.name || "",
     bookingId: booking?.bookingId || "",
   });
 
-  if (!booking || !car) {
+  if (!booking || booking.selectedCars.length === 0) {
     return (
       <EmptyState
         title="Booking Not Found"
@@ -35,203 +142,144 @@ const BookingDetailsPage = () => {
     );
   }
 
-  const days = calculateDays(booking.pickupDate, booking.dropoffDate);
+  const totalPrice = calculatePrice(booking);
 
-  const formatDate = (date: Date | null) => {
-    if (!date) return "N/A";
-    return new Date(date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
-
-  const getStatusBadge = (status?: string) => {
-    switch (status) {
-      case "Future":
-        return (
-          <span className="w-fit px-3 py-1 bg-blue-50 text-blue-500 text-[10px] font-bold rounded-md uppercase tracking-wide border border-blue-100">
-            Upcoming
-          </span>
-        );
-      case "Ongoing":
-        return (
-          <span className="w-fit px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-md uppercase tracking-wide border border-emerald-100">
-            Ongoing
-          </span>
-        );
-      case "Past":
-        return (
-          <span className="w-fit px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold rounded-md uppercase tracking-wide border border-slate-200">
-            Completed
-          </span>
-        );
-      case "Cancelled":
-        return (
-          <span className="w-fit px-3 py-1 bg-red-50 text-red-500 text-[10px] font-bold rounded-md uppercase tracking-wide border border-red-100">
-            Cancelled
-          </span>
-        );
-      default:
-        return null;
+  // Build duration label
+  const getDurationLabel = () => {
+    if (booking.schedule?.type === "hourly") {
+      return `${booking.schedule.hours} ${booking.schedule.hours === 1 ? "hour" : "hours"}`;
     }
+    if (booking.schedule?.type === "daily") {
+      const days = calculateDays(
+        booking.schedule.pickupDate,
+        booking.schedule.dropoffDate,
+      );
+      return `${days} ${days === 1 ? "day" : "days"}`;
+    }
+    return "N/A";
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafb] pb-20 lg:pb-10 font-[Inter]">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:items-start">
-        {/* Left Column: Image & Location */}
-        <div className="lg:col-span-7 flex flex-col gap-6">
-          {/* Hero Image Card */}
-          <div className="relative w-full aspect-4/3 md:aspect-video lg:rounded-[24px] overflow-hidden shadow-2xl shadow-slate-200/50 bg-white">
-            <Image
-              src={car.images[0]}
-              alt={car.name}
-              fill
-              className="object-cover"
-              priority
-            />
+    <div>
+      {/* Header */}
+      <header className="mb-10">
+        <button
+          onClick={() => router.push("/")}
+          className="lg:flex hidden items-center gap-2 text-text-300 hover:text-primary transition-colors mb-4 font-bold"
+        >
+          <ChevronLeft size={20} />
+          Back
+        </button>
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 mb-2">
+            <h1 className="text-3xl md:text-5xl font-black text-text-100 tracking-tight">
+              Booking <span className="text-primary text-nowrap">Details</span>
+            </h1>
+            {getStatusBadge(booking.status)}
           </div>
-
-          {/* Pick-up Location Card */}
-          <div className="bg-white rounded-[24px] p-3 lg:p-6 shadow-xl shadow-slate-200/40 border border-slate-50">
-            <div className="flex items-center gap-3 mb-4">
-              <MapPin size={18} className="text-primary" />
-              <h3 className="text-base font-bold text-[#1e293b]">
-                Pick-up Location
-              </h3>
-            </div>
-
-            <div className="space-y-4">
-              <p className="text-text-300 text-sm leading-relaxed">
-                De-Castle Luxury Home
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <p className="text-text-200">{booking.service.name} experience</p>
+            <span className="hidden sm:inline text-slate-200">•</span>
+            <div className="flex items-center gap-2">
+              <p className="text-base text-text-100 font-bold uppercase tracking-wider">
+                ID: {booking.bookingId}
               </p>
-
-              <div className="w-full h-48 md:h-64 relative rounded-[16px] overflow-hidden border border-slate-100">
-                <Map />
-              </div>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(booking.bookingId);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                className="p-1.5 hover:bg-slate-100 rounded-md transition-colors text-text-300 hover:text-text-100"
+                title="Copy Booking ID"
+              >
+                {copied ? (
+                  <Check size={16} className="text-emerald-500" />
+                ) : (
+                  <Copy size={16} />
+                )}
+              </button>
             </div>
           </div>
+        </motion.div>
+      </header>
+
+      {/* Two-Column Layout */}
+      <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 items-start">
+        {/* Left Column: Cars */}
+        <div className="lg:col-span-7 w-full order-2 lg:order-1">
+          <div className="flex items-center gap-2 mb-4 px-1">
+            <Car size={18} className="text-primary" />
+            <h3 className="text-lg font-black text-text-100 uppercase italic tracking-tighter">
+              Selected Vehicles ({booking.selectedCars.length})
+            </h3>
+          </div>
+          <div className="space-y-4">
+            {booking.selectedCars.map((car, index) => (
+              <VehicleCard
+                key={car.id + index}
+                car={car}
+                index={index}
+                booking={booking}
+              />
+            ))}
+          </div>
+
+          {/* Pick-up Location */}
+          {booking?.service?.id === "self_drive" && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.4 }}
+              className="bg-white rounded-[32px] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden mt-8"
+            >
+              <div className="p-6 md:p-8 border-b border-slate-50">
+                <h2 className="text-base font-black text-text-100 uppercase italic tracking-tighter flex items-center gap-2">
+                  <MapPin size={18} className="text-primary" />
+                  Pick-up Location
+                </h2>
+              </div>
+              <div className="p-6 md:p-8 space-y-4">
+                <p className="text-text-300 text-sm leading-relaxed">
+                  De-Castle Luxury Home
+                </p>
+                <div className="w-full h-48 md:h-64 relative rounded-2xl overflow-hidden border border-slate-100">
+                  <Map />
+                </div>
+              </div>
+            </motion.div>
+          )}
         </div>
 
-        {/* Right Column: Booking Info, Payment & Actions */}
-        <div className="lg:col-span-5 flex flex-col gap-4 md:mx-6 lg:mx-0 ">
-          {/* Main Booking Summary Card */}
-          <div className="bg-white rounded-[24px] p-3 lg:p-6 shadow-xl shadow-slate-200/40 border border-slate-50">
-            <div className="flex justify-between items-start mb-4 flex-col gap-6 md:gap-2 md:flex-row">
-              <div className="flex flex-col gap-1.5">
-                {getStatusBadge(booking.status)}
-                <h2 className="text-2xl font-bold text-[#1e293b]">
-                  {car.name}
-                </h2>
-                <p className="text-sm text-slate-400 font-medium">
-                  {car?.category} • {car.transmission}
-                </p>
-              </div>
-              <div className="md:text-right">
-                <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest mb-0.5">
-                  Booking ID
-                </p>
-                <p className="text-xs font-bold text-slate-800">
-                  {booking.bookingId || "SCR-2026-XXXXX"}
-                </p>
-              </div>
-            </div>
+        {/* Right Column: Summary + Details */}
+        <div className="lg:col-span-5 w-full space-y-8 order-1 lg:order-2">
+          {/* Payment Summary */}
+          <BookingPaymentSummary
+            totalPrice={totalPrice}
+            durationLabel={getDurationLabel()}
+          />
 
-            {/* Date Blocks */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-3 py-6 border-y border-slate-50">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-[#E1F5FE] rounded-lg text-[#4FBFF8]">
-                  <Calendar size={18} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase mb-0.5">
-                    Pick-up
-                  </span>
-                  <span className="text-sm font-bold text-[#1e293b]">
-                    {formatDate(booking.pickupDate)}
-                  </span>
-                  <span className="text-[11px] text-slate-400 font-medium">
-                    10:00 AM
-                  </span>
-                </div>
-              </div>
+          {/* Schedule Info */}
+          <ScheduleInfo booking={booking} />
 
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-[#E1F5FE] rounded-lg text-[#4FBFF8]">
-                  <Calendar size={18} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase mb-0.5">
-                    Drop-off
-                  </span>
-                  <span className="text-sm font-bold text-[#1e293b]">
-                    {formatDate(booking.dropoffDate)}
-                  </span>
-                  <span className="text-[11px] text-slate-400 font-medium">
-                    10:00 AM
-                  </span>
-                </div>
-              </div>
-            </div>
+          {/* Customer Info */}
+          <CustomerInfo booking={booking} />
 
-            {/* Payment Summary */}
-            <div className="pt-6 space-y-3.5">
-              <h3 className="text-base font-bold text-[#1e293b] mb-3">
-                Payment Summary
-              </h3>
-
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-400 font-medium whitespace-nowrap">
-                    Rental Fee ({days} {days === 1 ? "day" : "days"})
-                  </span>
-                  <span className="text-[#1e293b] font-bold">
-                    ₦ {booking?.totalPrice?.toLocaleString() || "0.00"}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-400 font-medium whitespace-nowrap">
-                    Insurance (Premium)
-                  </span>
-                  <span className="text-[#1e293b] font-bold">₦0.00</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-400 font-medium whitespace-nowrap">
-                    Taxes & Fees
-                  </span>
-                  <span className="text-[#1e293b] font-bold">₦0.00</span>
-                </div>
-              </div>
-
-              <div className="pt-4 flex justify-between items-center border-t border-slate-50">
-                <p className="text-base font-bold text-[#1e293b]">Total Paid</p>
-                <p className="text-lg md:text-2xl font-bold text-[#4FBFF8] tracking-tight">
-                  ₦ {booking.totalPrice?.toLocaleString() || "0.00"}
-                </p>
-              </div>
-
-              {/* <div className="mt-4 p-3.5 bg-[#F1FBF6] rounded-xl flex items-center gap-2.5 border border-green-50">
-                <ShieldCheck size={16} className="text-green-500" />
-                <p className="text-[11px] font-semibold text-green-700">
-                  Paid via Visa ending in 4242
-                </p>
-              </div> */}
-            </div>
-          </div>
-
-          {/* Cancellation Policy Card */}
-          {booking.status === "Future" && (
+          {/* Cancellation Card (only for upcoming bookings) */}
+          {booking.status === "confirmed" && (
             <CancellationCard
-              pickupDate={booking.pickupDate}
+              schedule={booking.schedule}
               onCancel={openCancelModal}
-              className="mt-2"
             />
           )}
         </div>
       </div>
 
-      {/* Cancel Confirmation Modal via Hook */}
+      {/* Cancel Confirmation Modal */}
       <CancelModal />
     </div>
   );

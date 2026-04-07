@@ -15,14 +15,14 @@ const ScheduleInfo = ({ booking }: { booking: BookingDetails }) => {
       transition={{ delay: 0.25, duration: 0.4 }}
       className="bg-white rounded-[32px] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden"
     >
-      <div className="p-6 md:p-8 border-b border-slate-50">
+      <div className="p-6 md:px-8 border-b border-slate-50">
         <h2 className="text-base font-black text-text-100 uppercase italic tracking-tighter flex items-center gap-2">
           <Calendar size={18} className="text-primary" />
           Schedule
         </h2>
       </div>
 
-      <div className="p-6 md:p-8">
+      <div className="p-6 md:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-primary/5 rounded-xl">
@@ -33,9 +33,19 @@ const ScheduleInfo = ({ booking }: { booking: BookingDetails }) => {
                 {isDaily ? "Rental Period" : "Pickup Date"}
               </p>
               <p className="text-sm font-black text-text-100 italic uppercase">
-                {isDaily
-                  ? `${new Date(schedule.pickupDate).toLocaleDateString()} – ${new Date(schedule.dropoffDate).toLocaleDateString()}`
-                  : new Date(schedule.date).toLocaleDateString()}
+                {isDaily ? (
+                  <div className="flex items-center gap-2">
+                    <span>
+                      {new Date(schedule.pickupDate).toLocaleDateString()}
+                    </span>
+                    -
+                    <span>
+                      {new Date(schedule.dropoffDate).toLocaleDateString()}
+                    </span>
+                  </div>
+                ) : (
+                  new Date(schedule.date).toLocaleDateString()
+                )}
               </p>
             </div>
           </div>

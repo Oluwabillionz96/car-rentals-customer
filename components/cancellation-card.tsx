@@ -1,21 +1,30 @@
 "use client";
 
 import { XCircle } from "lucide-react";
+import { BookingSchedule } from "@/lib/types";
 
 interface CancellationCardProps {
-  pickupDate: Date | null;
+  schedule: BookingSchedule | null;
   onCancel: () => void;
   className?: string;
 }
 
 export default function CancellationCard({
-  pickupDate,
+  schedule,
   onCancel,
   className = "",
 }: CancellationCardProps) {
-  const formatDate = (date: Date | null) => {
-    if (!date) return "N/A";
-    return new Date(date).toLocaleDateString("en-US", {
+  const getPickupDateText = () => {
+    if (!schedule) return "N/A";
+    if (schedule.type === "daily") {
+      return new Date(schedule.pickupDate).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+    // hourly
+    return new Date(schedule.date).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
@@ -28,7 +37,7 @@ export default function CancellationCard({
         Need to cancel?
       </h3>
       <p className="text-slate-400 text-sm mb-6 leading-relaxed text-left">
-        Cancel for free before {formatDate(pickupDate)}, 10:00 AM. After this
+        Cancel for free before {getPickupDateText()}, 10:00 AM. After this
         time, a fee may apply.
       </p>
       <button
