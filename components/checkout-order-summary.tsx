@@ -40,15 +40,15 @@ export default function CheckoutOrderSummary({
             </span>
           </div>
           <div className="flex justify-between items-center text-sm font-medium">
-            <span className="text-text-300">Duration ({timeQuery}s)</span>
+            <span className="text-text-300">Duration ({timeQuery})</span>
             <span className="text-text-100 font-bold">
               {booking.schedule?.type === "hourly"
                 ? booking.schedule.hours
                 : calculateDays(
                     booking.schedule?.pickupDate || "",
                     booking.schedule?.dropoffDate || "",
-                  )}{" "}
-              {timeQuery}s
+                  )}
+              {timeQuery}
             </span>
           </div>
         </div>
