@@ -24,7 +24,7 @@ export default function CheckoutScheduleSummary({
             Confirmed Schedule
           </h4>
           <p className="text-sm text-text-300 font-medium italic">
-            We've locked in your requested time.
+            We&apos;ve locked in your requested time.
           </p>
         </div>
         {isDraft && (

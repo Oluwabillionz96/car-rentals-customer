@@ -4,7 +4,6 @@ import { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue } from "rea
 import { BookingFormValues } from "@/lib/validations";
 import { Calendar, Clock, MapPin, Minus, Plus, ArrowRight, AlertCircle, ChevronLeft,  CheckCircle2 } from "lucide-react";
 import Input from "./input";
-import Button from "./button";
 
 import { HourlyBookingSchedule, DailyBookingSchedule } from "@/lib/types";
 

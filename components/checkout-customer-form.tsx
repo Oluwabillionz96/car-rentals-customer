@@ -1,17 +1,15 @@
 "use client";
 
-import { User, Mail, Phone, ShieldCheck, CreditCard, Calendar, CheckCircle2, ChevronRight } from "lucide-react";
-import { UseFormRegister, FieldErrors, UseFormWatch } from "react-hook-form";
+import { User, Mail, Phone, ShieldCheck, CreditCard, Calendar, CheckCircle2 } from "lucide-react";
+import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { BookingFormValues } from "@/lib/validations";
 import Input from "./input";
-import Button from "./button";
 
 interface CheckoutCustomerFormProps {
   register: UseFormRegister<BookingFormValues>;
   errors: FieldErrors<BookingFormValues>;
   isConfirmed: boolean;
   serviceId?: string;
-  watch: UseFormWatch<BookingFormValues>;
 }
 
 export default function CheckoutCustomerForm({
@@ -19,7 +17,6 @@ export default function CheckoutCustomerForm({
   errors,
   isConfirmed,
   serviceId,
-  watch,
 }: CheckoutCustomerFormProps) {
   const isSelfDrive = serviceId === "self_drive";
 

@@ -160,7 +160,7 @@ export const formatDateForInput = (dateStr: string) => {
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return "";
     return date.toISOString().split("T")[0];
-  } catch (e) {
+  } catch {
     return "";
   }
 };

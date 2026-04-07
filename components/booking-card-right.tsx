@@ -151,7 +151,6 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                     errors={errors}
                     isConfirmed={isLocked}
                     serviceId={booking.service.id}
-                    watch={watch}
                   />
 
                   {hasConflicts && !isLocked && (
@@ -195,8 +194,8 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                         </>
                       ) : (
                         <p>
-                          <span className="hidden md:inline">View</span>{" "}
-                          Booking Details
+                          <span className="hidden md:inline">View</span> Booking
+                          Details
                         </p>
                       )}
                       <ArrowRight className="group-hover:translate-x-1 transition-transform" />
