@@ -10,6 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import BookingScheduleModal from "@/components/booking-schedule-modal";
 import { Service } from "@/lib/types";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Features = [
   {
@@ -140,7 +141,7 @@ const ServicesPage = () => {
       </section>
 
       {/* Main Services Grid */}
-      <section className="max-w-7xl mx-auto">
+      <section className={`max-w-7xl mx-auto ${isSelect ? "pb-32" : ""}`}>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
           {services.map((service) => {
             return (
@@ -159,15 +160,34 @@ const ServicesPage = () => {
       </section>
 
       {isSelect ? (
-        <div className="flex justify-center  mx-auto">
-          <Button
-            className="w-fit disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!selectedServiceId}
-            onClick={handleBooking}
-          >
-            Continue <ChevronRight />
-          </Button>
-        </div>
+        <AnimatePresence>
+          {selectedServiceId && (
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-xl border-t border-slate-100 p-4 md:p-6 shadow-[0_-20px_40px_rgba(0,0,0,0.08)] z-50 flex justify-center items-center"
+            >
+              <div className="w-full max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4 px-4 md:px-0">
+                <div className="text-center sm:text-left hidden md:block">
+                  <p className="text-[10px] font-bold text-text-400 uppercase tracking-widest">
+                    Selected Service
+                  </p>
+                  <p className="text-lg font-black text-text-100 italic">
+                    {getServiceById(selectedServiceId)?.name}
+                  </p>
+                </div>
+                <Button
+                  className="w-full sm:w-auto px-10 py-5 text-base md:text-lg shadow-xl shadow-primary/20 animate-in fade-in"
+                  onClick={handleBooking}
+                >
+                  Confirm & Continue <ChevronRight className="ml-1" />
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       ) : (
         <>
           {" "}
