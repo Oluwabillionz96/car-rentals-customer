@@ -6,6 +6,7 @@ import Input from "./input";
 import DatePicker from "./date-picker";
 import { HourlyBookingSchedule } from "@/lib/types";
 import { getLocalDateString } from "@/lib/utils";
+import HourIncrementer from "./hour-incrementer";
 
 interface HourlyScheduleFormProps {
   control: Control<HourlyBookingSchedule>;
@@ -103,20 +104,15 @@ export default function HourlyScheduleForm({
               name="hours"
               control={control}
               render={({ field }) => (
-                <Input
-                  {...field}
-                  icon={Calendar}
-                  type="number"
-                  placeholder="Duration"
-                  id="hours"
-                  value={field.value.toString()}
-                  onChange={(e) =>
-                    field.onChange(parseInt(e.target.value) || 1)
-                  }
-                  error={errors.hours?.message}
-                  showIconDesktop
-                  className="h-14"
-                />
+                <>
+                  <HourIncrementer
+                    hours={field.value}
+                    onDecrement={() =>
+                      field.onChange(Math.max(minHours || 1, field.value - 1))
+                    }
+                    onIncrement={() => field.onChange(field.value + 1)}
+                  />
+                </>
               )}
             />
           </div>

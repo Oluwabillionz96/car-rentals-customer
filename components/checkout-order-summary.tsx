@@ -19,6 +19,7 @@ export default function CheckoutOrderSummary({
   const totalPrice = booking && calculatePrice(booking);
   const pickupDate = useWatch({ control, name: "schedule.pickupDate" });
   const dropoffDate = useWatch({ control, name: "schedule.dropoffDate" });
+  const hours = useWatch({ control, name: "schedule.hours" });
   return (
     <div className="bg-primary/5 rounded-3xl p-6 my-2 border border-primary/10 space-y-4">
       <h3 className="font-bold text-primary flex items-center gap-2">
@@ -47,7 +48,7 @@ export default function CheckoutOrderSummary({
             <span className="text-text-300">Duration ({timeQuery})</span>
             <span className="text-text-100 font-bold">
               {booking?.schedule?.type === "hourly"
-                ? booking?.schedule.hours
+                ? hours
                 : calculateDays(pickupDate, dropoffDate)}
             </span>
           </div>

@@ -27,6 +27,7 @@ import {
   DailyBookingSchedule,
   BookingSchedule,
 } from "@/lib/types";
+import HourIncrementer from "./hour-incrementer";
 
 interface CheckoutScheduleViewProps {
   register: UseFormRegister<BookingFormValues>;
@@ -67,12 +68,11 @@ export default function CheckoutScheduleView({
   const currentSchedule = watch("schedule");
   const hasModifications =
     JSON.stringify(currentSchedule) !== JSON.stringify(originalSchedule);
-  
+
   const pickupDate = useWatch({ control, name: "schedule.pickupDate" });
   const dropoffDate = useWatch({ control, name: "schedule.dropoffDate" });
 
   const invalid = new Date(pickupDate) > new Date(dropoffDate);
-
 
   const calculateEndTime = (start: string, duration: number) => {
     if (!start) return null;
@@ -117,34 +117,15 @@ export default function CheckoutScheduleView({
               For how long? (Minimum {minHours} hours)
             </label>
             <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="flex-1 w-full h-16 flex items-center justify-between px-6 rounded-2xl border-2 border-slate-100 bg-slate-50/30">
-                <button
-                  type="button"
-                  disabled={isConfirmed}
-                  onClick={() =>
-                    setValue("schedule.hours", Math.max(minHours, hours - 1))
-                  }
-                  className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-text-100 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Minus size={20} />
-                </button>
-                <div className="flex flex-col items-center">
-                  <span className="text-2xl font-black text-text-100 uppercase">
-                    {hours}
-                  </span>
-                  <span className="text-[10px] font-bold text-text-400 uppercase tracking-widest">
-                    {hours === 1 ? "Hour" : "Hours"}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  disabled={isConfirmed}
-                  onClick={() => setValue("schedule.hours", hours + 1)}
-                  className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-text-100 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Plus size={20} />
-                </button>
-              </div>
+              <HourIncrementer
+                decrementerDisabled={isConfirmed}
+                incrementerDisabled={isConfirmed}
+                onDecrement={() =>
+                  setValue("schedule.hours", Math.max(minHours, hours - 1))
+                }
+                onIncrement={() => setValue("schedule.hours", hours + 1)}
+                hours={hours}
+              />
 
               {startTime && (
                 <div className="hidden md:flex items-center gap-3 text-text-300">
