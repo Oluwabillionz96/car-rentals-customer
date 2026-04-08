@@ -1,10 +1,11 @@
 "use client";
 
-import { Calendar, Clock, MapPin } from "lucide-react";
-import { Control, Controller, FieldErrors } from "react-hook-form";
+import { Clock, MapPin, Calendar } from "lucide-react";
+import { Control, Controller, FieldErrors, useWatch } from "react-hook-form";
 import Input from "./input";
 import DatePicker from "./date-picker";
 import { HourlyBookingSchedule } from "@/lib/types";
+import { getLocalDateString } from "@/lib/utils";
 
 interface HourlyScheduleFormProps {
   control: Control<HourlyBookingSchedule>;
@@ -17,6 +18,12 @@ export default function HourlyScheduleForm({
   errors,
   minHours,
 }: HourlyScheduleFormProps) {
+  const selectedDate = useWatch({ control, name: "date" });
+  const now = new Date();
+  const isToday = selectedDate === getLocalDateString(now);
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
       <div className="space-y-8">
@@ -26,8 +33,10 @@ export default function HourlyScheduleForm({
           render={({ field }) => (
             <DatePicker
               label="Pickup Date"
-              selectedDate={field.value ? new Date(field.value) : null}
-              onDateSelect={(d) => field.onChange(d?.toISOString() || "")}
+              selectedDate={
+                field.value ? new Date(field.value + "T00:00:00") : null
+              }
+              onDateSelect={(d) => field.onChange(getLocalDateString(d))}
               className="max-w-none"
             />
           )}
@@ -56,12 +65,22 @@ export default function HourlyScheduleForm({
                     </option>
                     {Array.from({ length: 15 }).map((_, hour) =>
                       ["00", "30"].map((minute) => {
-                        const time = `${(hour + 7)
-                          .toString()
-                          .padStart(2, "0")}:${minute}`;
+                        const timeHour = hour + 7;
+                        const time = `${timeHour.toString().padStart(2, "0")}:${minute}`;
+                        const isDisabled =
+                          isToday &&
+                          (timeHour < currentHour ||
+                            (timeHour === currentHour &&
+                              parseInt(minute) <= currentMinute));
+
                         return (
-                          <option key={time} value={time}>
-                            {time} {hour + 7 >= 12 ? "PM" : "AM"}
+                          <option
+                            key={time}
+                            value={time}
+                            disabled={isDisabled}
+                            className={`${isDisabled ? "hidden" : ""}`}
+                          >
+                            {time} {timeHour >= 12 ? "PM" : "AM"}
                           </option>
                         );
                       }),
@@ -91,7 +110,9 @@ export default function HourlyScheduleForm({
                   placeholder="Duration"
                   id="hours"
                   value={field.value.toString()}
-                  onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                  onChange={(e) =>
+                    field.onChange(parseInt(e.target.value) || 1)
+                  }
                   error={errors.hours?.message}
                   showIconDesktop
                   className="h-14"

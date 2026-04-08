@@ -159,8 +159,16 @@ export const formatDateForInput = (dateStr: string) => {
   try {
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return "";
-    return date.toISOString().split("T")[0];
+    return getLocalDateString(date);
   } catch {
     return "";
   }
+};
+
+export const getLocalDateString = (d: Date | null) => {
+  if (!d) return "";
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };

@@ -54,6 +54,8 @@ export default function BookingScheduleModal({
     control,
     handleSubmit,
     watch,
+    setError,
+    clearErrors,
     formState: { errors, isValid },
     reset,
   } = useForm<BookingSchedule>({
@@ -234,7 +236,26 @@ export default function BookingScheduleModal({
               </button>
               <button
                 onClick={handleSubmit(
-                  step === 1 ? () => setStep(2) : onConfirm,
+                  step === 1
+                    ? () => {
+                        clearErrors();
+                        const now = new Date();
+                        if (formValues.type === "hourly") {
+                          const selectedTime = new Date(`${formValues.date}T${formValues.startTime}`);
+                          if (selectedTime < now) {
+                            setError("startTime", { type: "manual", message: "Cannot select a past time." });
+                            return;
+                          }
+                        } else if (formValues.type === "daily") {
+                          const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                          if (new Date(formValues.pickupDate) < today) {
+                            setError("pickupDate", { type: "manual", message: "Cannot select a past date." });
+                            return;
+                          }
+                        }
+                        setStep(2);
+                      }
+                    : onConfirm,
                 )}
                 disabled={
                   (step === 1 && !isValid) || (step === 2 && !!isCarBusy)
