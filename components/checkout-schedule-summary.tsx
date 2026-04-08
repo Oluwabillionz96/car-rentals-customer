@@ -1,7 +1,7 @@
 "use client";
 
 import { Calendar, Clock, MapPin, Edit2 } from "lucide-react";
-import { BookingSchedule } from "@/lib/types";
+import { BookingSchedule} from "@/lib/types";
 
 interface CheckoutScheduleSummaryProps {
   schedule: BookingSchedule;
@@ -108,6 +108,7 @@ export default function CheckoutScheduleSummary({
 
       {/* Decorative Accent */}
       <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 blur-2xl" />
+     
     </div>
   );
 }

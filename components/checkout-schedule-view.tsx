@@ -1,11 +1,32 @@
 "use client";
 
-import { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue } from "react-hook-form";
+import {
+  UseFormRegister,
+  FieldErrors,
+  UseFormWatch,
+  UseFormSetValue,
+  Control,
+  useWatch,
+} from "react-hook-form";
 import { BookingFormValues } from "@/lib/validations";
-import { Calendar, Clock, MapPin, Minus, Plus, ArrowRight, AlertCircle, ChevronLeft,  CheckCircle2 } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Minus,
+  Plus,
+  ArrowRight,
+  AlertCircle,
+  ChevronLeft,
+  Check,
+} from "lucide-react";
 import Input from "./input";
 
-import { HourlyBookingSchedule, DailyBookingSchedule } from "@/lib/types";
+import {
+  HourlyBookingSchedule,
+  DailyBookingSchedule,
+  BookingSchedule,
+} from "@/lib/types";
 
 interface CheckoutScheduleViewProps {
   register: UseFormRegister<BookingFormValues>;
@@ -17,6 +38,8 @@ interface CheckoutScheduleViewProps {
   onBack: () => void;
   onSave: () => void;
   hasConflicts?: boolean;
+  control: Control<BookingFormValues>;
+  originalSchedule: BookingSchedule | null;
 }
 
 export default function CheckoutScheduleView({
@@ -29,6 +52,8 @@ export default function CheckoutScheduleView({
   onBack,
   onSave,
   hasConflicts,
+  control,
+  originalSchedule,
 }: CheckoutScheduleViewProps) {
   // ... rest of the logic ...
   const scheduleType = watch("schedule.type");
@@ -38,6 +63,16 @@ export default function CheckoutScheduleView({
   // Type-safe error narrowing
   const hourlyErrors = errors.schedule as FieldErrors<HourlyBookingSchedule>;
   const dailyErrors = errors.schedule as FieldErrors<DailyBookingSchedule>;
+
+  const currentSchedule = watch("schedule");
+  const hasModifications =
+    JSON.stringify(currentSchedule) !== JSON.stringify(originalSchedule);
+  
+  const pickupDate = useWatch({ control, name: "schedule.pickupDate" });
+  const dropoffDate = useWatch({ control, name: "schedule.dropoffDate" });
+
+  const invalid = new Date(pickupDate) > new Date(dropoffDate);
+
 
   const calculateEndTime = (start: string, duration: number) => {
     if (!start) return null;
@@ -152,24 +187,40 @@ export default function CheckoutScheduleView({
       ) : (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input
-              id="pickupDate"
-              type="date"
-              icon={Calendar}
-              placeholder="Pickup Date"
-              registration={register("schedule.pickupDate")}
-              error={dailyErrors?.pickupDate?.message}
-              disabled={isConfirmed}
-            />
-            <Input
-              id="dropoffDate"
-              type="date"
-              icon={Calendar}
-              placeholder="Drop-off Date"
-              registration={register("schedule.dropoffDate")}
-              error={dailyErrors?.dropoffDate?.message}
-              disabled={isConfirmed}
-            />
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="pickupDate"
+                className="text-xs font-bold text-text-400 uppercase tracking-widest ml-1"
+              >
+                When are you picking up?
+              </label>
+              <Input
+                id="pickupDate"
+                type="date"
+                icon={Calendar}
+                placeholder="Pickup Date"
+                registration={register("schedule.pickupDate")}
+                error={dailyErrors?.pickupDate?.message}
+                disabled={isConfirmed}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="dropoffDate"
+                className="text-xs font-bold text-text-400 uppercase tracking-widest ml-1"
+              >
+                When is the drop-off?
+              </label>
+              <Input
+                id="dropoffDate"
+                type="date"
+                icon={Calendar}
+                placeholder="Drop-off Date"
+                registration={register("schedule.dropoffDate")}
+                error={dailyErrors?.dropoffDate?.message}
+                disabled={isConfirmed}
+              />
+            </div>
           </div>
           <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10 flex gap-3 text-primary">
             <AlertCircle size={20} className="shrink-0" />
@@ -190,6 +241,18 @@ export default function CheckoutScheduleView({
         </div>
       )}
 
+      {scheduleType === "daily" && invalid && (
+        <div className="p-4 bg-red-50 border border-red-100 rounded-2xl flex items-start gap-3 text-red-600 shadow-sm shadow-red-100/50 animate-in fade-in slide-in-from-bottom-2">
+          <AlertCircle size={20} className="shrink-0 mt-0.5" />
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-medium leading-relaxed opacity-90">
+              Your drop-off date cannot be earlier than your pickup date. Please
+              adjust your dates.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="pt-6 flex flex-col-reverse md:flex-row gap-4">
         <button
           type="button"
@@ -197,17 +260,19 @@ export default function CheckoutScheduleView({
           className="flex-1 border-2 border-slate-100 flex items-center justify-center gap-2 rounded-xl font-bold py-4 hover:bg-slate-50 transition-colors"
         >
           <ChevronLeft size={20} />
-          Cancel Tweak
+          {hasModifications ? "Cancel Tweak" : "Back"}
         </button>
-        <button
-          type="button"
-          onClick={onSave}
-          disabled={hasConflicts}
-          className="flex-2 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-4 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 uppercase text-sm md:text-base group active:scale-95"
-        >
-          Confirm Modification
-          <CheckCircle2 size={20} />
-        </button>
+        {hasModifications && (
+          <button
+            type="button"
+            onClick={onSave}
+            disabled={hasConflicts || (scheduleType === "daily" && invalid)}
+            className="flex-2 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-4 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 uppercase text-sm md:text-base group active:scale-95"
+          >
+            Confirm Modification
+            <Check />
+          </button>
+        )}
       </div>
     </div>
   );

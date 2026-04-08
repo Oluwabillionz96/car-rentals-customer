@@ -6,7 +6,7 @@ import useBookingStore from "@/store/booking-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import {
   calculatePrice,
@@ -31,6 +31,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
     handleSubmit,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -87,6 +88,8 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
             },
     },
   });
+  const [originalSchedule, setOriginalSchedule] =
+    useState<BookingSchedule | null>(watch("schedule"));
 
   const router = useRouter();
 
@@ -110,6 +113,8 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
     });
     router.push(`/booking/${booking.bookingId}/payment`);
   };
+
+  const schedule = useWatch({ control, name: "schedule" });
 
   return (
     <>
@@ -136,10 +141,13 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
                 transition={{ duration: 0.3 }}
               >
                 {/* Non-intrusive Schedule Summary */}
-                {watch("schedule") && (
+                {schedule && (
                   <CheckoutScheduleSummary
-                    schedule={watch("schedule") as any}
-                    onEdit={() => setIsEditingSchedule(true)}
+                    schedule={schedule}
+                    onEdit={() => {
+                      setOriginalSchedule(schedule);
+                      setIsEditingSchedule(true);
+                    }}
                     isDraft={!isLocked}
                   />
                 )}
@@ -229,9 +237,16 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
                   minHours={booking?.service.minHours}
                   watch={watch}
                   setValue={setValue}
-                  onBack={() => setIsEditingSchedule(false)}
+                  onBack={() => {
+                    if (originalSchedule) {
+                      setValue("schedule", originalSchedule);
+                    }
+                    setIsEditingSchedule(false);
+                  }}
                   onSave={() => setIsEditingSchedule(false)}
                   hasConflicts={hasConflicts}
+                  control={control}
+                  originalSchedule={originalSchedule}
                 />
               </motion.div>
             )}
