@@ -2,19 +2,19 @@ import { BookingDetails } from "@/lib/types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const BookingCardLeft = ({ booking }: { booking: BookingDetails }) => {
+const BookingCardLeft = ({ booking }: { booking: BookingDetails | null }) => {
   const router = useRouter();
-  const timeQuery = booking.service.pricing === "hourly" ? "hour" : "days";
+  const timeQuery = booking?.service.pricing === "hourly" ? "hour" : "days";
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center px-1">
         <h3 className="text-xl font-bold text-text-100">Selected Vehicles</h3>
-        {booking.status === null && (
+        {booking?.status === null && (
           <button
             onClick={() =>
               router.push(
-                `/our-fleet?service=${booking.service.id}&select=true&selectType=${booking.service.selectType}&booking=${booking.bookingId}`,
+                `/our-fleet?service=${booking?.service.id}&select=true&selectType=${booking?.service.selectType}&booking=${booking?.bookingId}`,
               )
             }
             className="text-primary text-sm font-bold underline hover:no-underline"
@@ -24,7 +24,7 @@ const BookingCardLeft = ({ booking }: { booking: BookingDetails }) => {
         )}
       </div>
       <div className="space-y-4">
-        {booking.selectedCars.map((car, index) => (
+        {booking?.selectedCars.map((car, index) => (
           <div
             key={car.id + index}
             className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 p-2"

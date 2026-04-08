@@ -165,10 +165,10 @@ const BookingDetailsPage = () => {
       <header className="mb-10">
         <button
           onClick={() => router.push("/")}
-          className="lg:flex hidden items-center gap-2 text-text-300 hover:text-primary transition-colors mb-4 font-bold"
+          className="flex  items-center gap-2 text-primary lg:text-text-300 hover:text-primary transition-colors mb-4 font-bold"
         >
           <ChevronLeft size={20} />
-          Back
+          Back to Home
         </button>
         <motion.div
           initial={{ opacity: 0, y: -10 }}

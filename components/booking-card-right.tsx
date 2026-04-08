@@ -21,12 +21,11 @@ import CheckoutScheduleView from "./checkout-schedule-view";
 import CheckoutOrderSummary from "./checkout-order-summary";
 import CheckoutScheduleSummary from "./checkout-schedule-summary";
 
-const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
+const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
   const [isEditingSchedule, setIsEditingSchedule] = useState(false);
   const { updateBooking, bookings } = useBookingStore();
   const existingSchedule = booking?.schedule;
-  const isLocked = booking.status !== "draft" && booking.status !== null;
-  console.log({ isLocked, status: booking.status });
+  const isLocked = booking?.status !== "draft" && booking?.status !== null;
   const {
     register,
     handleSubmit,
@@ -37,11 +36,11 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       customer: {
-        firstName: booking.customer?.firstName || "",
-        lastName: booking.customer?.lastName || "",
-        email: booking.customer?.email || "",
-        phone: booking.customer?.phone || "",
-        ...(booking.service.id === "self_drive"
+        firstName: booking?.customer?.firstName || "",
+        lastName: booking?.customer?.lastName || "",
+        email: booking?.customer?.email || "",
+        phone: booking?.customer?.phone || "",
+        ...(booking?.service.id === "self_drive"
           ? {
               verification: {
                 licenseNumber:
@@ -93,26 +92,24 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
 
   // Availability Check Logic
   const currentSchedule = watch("schedule") as BookingSchedule;
-  const carsWithConflicts = booking.selectedCars.filter(
+  const carsWithConflicts = booking?.selectedCars.filter(
     (car) => !isCarAvailable(car, bookings, currentSchedule),
   );
-  const hasConflicts = carsWithConflicts.length > 0;
+  const hasConflicts = carsWithConflicts && carsWithConflicts.length > 0;
 
   const onSubmit = (data: BookingFormValues) => {
-    if (booking.status !== null && booking.status !== "draft") {
-      router.push(`/booking-details/${booking.bookingId}`);
+    if (booking?.status !== null && booking?.status !== "draft") {
+      router.push(`/booking-details/${booking?.bookingId}`);
       return;
     }
     updateBooking({
-      bookingId: booking.bookingId,
+      bookingId: booking?.bookingId,
       customer: data.customer,
       schedule: data.schedule as BookingSchedule,
       status: "draft",
     });
     router.push(`/booking/${booking.bookingId}/payment`);
   };
-
-  const totalPrice = calculatePrice(booking);
 
   return (
     <>
@@ -143,7 +140,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                   <CheckoutScheduleSummary
                     schedule={watch("schedule") as any}
                     onEdit={() => setIsEditingSchedule(true)}
-                    isDraft={booking.status === null}
+                    isDraft={!isLocked}
                   />
                 )}
 
@@ -156,7 +153,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                     register={register}
                     errors={errors}
                     isConfirmed={isLocked}
-                    serviceId={booking.service.id}
+                    serviceId={booking?.service.id}
                   />
 
                   {hasConflicts && !isLocked && (
@@ -192,9 +189,9 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                       form="booking-form"
                       className="w-full bg-primary hover:bg-primary/90 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-3 text-base md:text-lg uppercase group active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed tracking-tight italic"
                     >
-                      {booking.status === null ? (
+                      {booking?.status === null ? (
                         "Confirm Booking"
-                      ) : booking.status === "draft" ? (
+                      ) : booking?.status === "draft" ? (
                         <>
                           <span className="hidden md:inline">Proceed to</span>{" "}
                           Payment
@@ -229,7 +226,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
                   register={register}
                   errors={errors}
                   isConfirmed={isLocked}
-                  minHours={booking.service.minHours}
+                  minHours={booking?.service.minHours}
                   watch={watch}
                   setValue={setValue}
                   onBack={() => setIsEditingSchedule(false)}
@@ -242,7 +239,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails }) => {
         </div>
       </div>
 
-      <CheckoutOrderSummary booking={booking} totalPrice={totalPrice} />
+      <CheckoutOrderSummary booking={booking} />
     </>
   );
 };

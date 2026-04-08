@@ -17,13 +17,7 @@ const BookingPage = () => {
 
   const booking = bookings.find((b) => b.bookingId === id);
 
-  useEffect(() => {
-    if (!booking) {
-      router.push("/our-fleet");
-    }
-  }, [booking, router]);
-
-  if (!booking) return null;
+ 
 
   return (
     <div>
@@ -41,19 +35,19 @@ const BookingPage = () => {
           <span className="text-primary text-nowrap">Booking</span>
         </h1>
         <p className="text-text-200 mt-2">
-          Details for your {booking.service.name} experience
+          Details for your {booking?.service.name} experience
         </p>
       </header>
 
       <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 items-start relative">
         {/* Left Column: Form (Sticky on Desktop) */}
         <div className="lg:col-span-7 lg:sticky lg:top-24 w-full">
-          <BookingCardRight booking={booking} />
+          <BookingCardRight booking={booking ?? null} />
         </div>
 
         {/* Right Column: Car Details / Cards */}
         <div className="lg:col-span-5 w-full">
-          <BookingCardLeft booking={booking} />
+          <BookingCardLeft booking={booking ?? null} />
         </div>
       </div>
     </div>
