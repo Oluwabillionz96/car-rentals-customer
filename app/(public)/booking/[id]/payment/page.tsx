@@ -23,12 +23,12 @@ const PaymentPage = () => {
   const booking = bookings.find((b) => b.bookingId === id);
 
   useEffect(() => {
-    if (!booking || !booking.customer || !booking.schedule) {
-      router.push("/our-fleet");
+    if (!booking?.customer || !booking?.schedule) {
+      router.push(`/booking/${id}`);
     }
   }, [booking, router]);
 
-  if (!booking || !booking.customer || !booking.schedule) return null;
+  if (!booking?.customer || !booking?.schedule) return null;
 
   const totalPrice = calculatePrice(booking);
 
