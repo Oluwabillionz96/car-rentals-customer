@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, MapPin, Calendar } from "lucide-react";
+import { Clock, MapPin} from "lucide-react";
 import { Control, Controller, FieldErrors, useWatch } from "react-hook-form";
 import Input from "./input";
 import DatePicker from "./date-picker";

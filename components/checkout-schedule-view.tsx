@@ -13,8 +13,6 @@ import {
   Calendar,
   Clock,
   MapPin,
-  Minus,
-  Plus,
   ArrowRight,
   AlertCircle,
   ChevronLeft,

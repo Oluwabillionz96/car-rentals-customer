@@ -39,7 +39,7 @@ export interface Car {
   pricePerHour: number;
   images: string[];
   features: string[];
-  available: boolean;
+  available: number;
 }
 
 export interface HourlyBookingSchedule {

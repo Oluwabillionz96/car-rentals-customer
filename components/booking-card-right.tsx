@@ -9,7 +9,6 @@ import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import {
-  calculatePrice,
   isCarAvailable,
   formatDateForInput,
 } from "@/lib/utils";

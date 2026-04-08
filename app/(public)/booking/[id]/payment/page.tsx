@@ -24,7 +24,7 @@ const PaymentPage = () => {
 
   useEffect(() => {
     if (!booking?.customer || !booking?.schedule) {
-      router.push(`/booking/${id}`);
+      router.push(`/booking/${booking?.bookingId}`);
     }
   }, [booking, router]);
 
