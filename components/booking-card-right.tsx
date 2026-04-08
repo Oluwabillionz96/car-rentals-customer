@@ -197,19 +197,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
                       form="booking-form"
                       className="w-full bg-primary hover:bg-primary/90 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-3 text-base md:text-lg uppercase group active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed tracking-tight italic"
                     >
-                      {booking?.status === null ? (
-                        "Confirm Booking"
-                      ) : booking?.status === "draft" ? (
-                        <>
-                          <span className="hidden md:inline">Proceed to</span>{" "}
-                          Payment
-                        </>
-                      ) : (
-                        <p>
-                          <span className="hidden md:inline">View</span> Booking
-                          Details
-                        </p>
-                      )}
+                      Confirm Booking
                       <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                     </button>
                   </div>
@@ -254,7 +242,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
         </div>
       </div>
 
-      <CheckoutOrderSummary booking={booking} />
+      <CheckoutOrderSummary booking={booking} control={control}/>
     </>
   );
 };

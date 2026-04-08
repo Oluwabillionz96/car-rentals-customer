@@ -3,16 +3,22 @@
 import { CreditCard } from "lucide-react";
 import { BookingDetails } from "@/lib/types";
 import { calculateDays, calculatePrice } from "@/lib/utils";
+import { Control, useWatch } from "react-hook-form";
+import { BookingFormValues } from "@/lib/validations";
 
 interface CheckoutOrderSummaryProps {
   booking: BookingDetails | null;
+  control: Control<BookingFormValues>;
 }
 
 export default function CheckoutOrderSummary({
   booking,
+  control,
 }: CheckoutOrderSummaryProps) {
   const timeQuery = booking?.service.pricing === "hourly" ? "hour" : "days";
-const totalPrice = booking && calculatePrice(booking);
+  const totalPrice = booking && calculatePrice(booking);
+  const pickupDate = useWatch({ control, name: "schedule.pickupDate" });
+  const dropoffDate = useWatch({ control, name: "schedule.dropoffDate" });
   return (
     <div className="bg-primary/5 rounded-3xl p-6 my-2 border border-primary/10 space-y-4">
       <h3 className="font-bold text-primary flex items-center gap-2">
@@ -42,11 +48,7 @@ const totalPrice = booking && calculatePrice(booking);
             <span className="text-text-100 font-bold">
               {booking?.schedule?.type === "hourly"
                 ? booking?.schedule.hours
-                : calculateDays(
-                    booking?.schedule?.pickupDate || "",
-                    booking?.schedule?.dropoffDate || "",
-                  )}
-              {timeQuery}
+                : calculateDays(pickupDate, dropoffDate)}
             </span>
           </div>
         </div>
