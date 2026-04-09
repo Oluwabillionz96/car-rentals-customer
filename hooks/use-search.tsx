@@ -3,7 +3,7 @@
 import { MOCK_CARS } from "@/constants/cars";
 import useBookingStore from "@/store/booking-store";
 import useGlobalStore from "@/store/global-store";
-import { isScheduleOverlapping } from "@/lib/utils";
+import { getAvailableQuantity } from "@/lib/utils";
 import { useMemo, useRef, useState } from "react";
 
 const useSearch = () => {
@@ -29,30 +29,14 @@ const useSearch = () => {
 
   const cars = useMemo(() => {
     return MOCK_CARS.filter((car) => {
-      // First, check basic availability flag
-      if (!car.available) return false;
+      // Check if fleet size > 0
+      if (car.available <= 0) return false;
 
-      // If we have a schedule chosen, filter surgically by overlap
-      if (tempSchedule) {
-        const isCarUnavailable = bookings?.some((existingReservation) => {
-          const isCarBeingUsed = existingReservation.selectedCars.some(
-            (reservedCar) => reservedCar.id === car.id,
-          );
-          const isBusy =
-            existingReservation.status === "confirmed" ||
-            existingReservation.status === "ongoing";
-          const doesTimeConflict =
-            existingReservation.schedule &&
-            isScheduleOverlapping(tempSchedule, existingReservation.schedule);
+      // Calculate dynamic availability based on schedule
+      const availableQty = getAvailableQuantity(car.id, tempSchedule, bookings);
 
-          return isCarBeingUsed && isBusy && doesTimeConflict;
-        });
-
-        return !isCarUnavailable;
-      }
-
-      // If no schedule chosen (browsing), show everything that is marked available
-      return true;
+      // Only show cars with available units
+      return availableQty > 0;
     });
   }, [bookings, tempSchedule]);
 
