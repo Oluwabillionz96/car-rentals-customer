@@ -2,12 +2,15 @@
 
 import { getCar } from "@/constants/cars";
 import useGlobalStore from "@/store/global-store";
+import useBookingStore from "@/store/booking-store";
+import { getAvailableQuantity } from "@/lib/utils";
 import { Users, Settings, Plus, Check, Info, Fuel } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { BookingDetails } from "@/lib/types";
+import QuantitySelector from "./quantity-selector";
 
 interface CarCardProps {
   id: string;
@@ -26,7 +29,9 @@ export const VehicleCard = ({
   booking: BookingDetails;
 }) => {
   const timeQuery = booking.service.pricing === "hourly" ? "hour" : "day";
-  const unitPrice = timeQuery === "hour" ? car.pricePerHour : car.pricePerDay;
+  const currentCar = getCar(car.carId);
+  const unitPrice =
+    timeQuery === "hour" ? currentCar?.pricePerHour : currentCar?.pricePerDay;
 
   return (
     <motion.div
@@ -37,8 +42,8 @@ export const VehicleCard = ({
     >
       <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-100 shadow-inner">
         <Image
-          src={car.images[0]}
-          alt={car.name}
+          src={currentCar?.images[0] || ""}
+          alt={currentCar?.name || ""}
           fill
           className="object-cover"
         />
@@ -50,9 +55,10 @@ export const VehicleCard = ({
       <div className="p-5">
         <div className="flex justify-between items-start mb-3">
           <div>
-            <h3 className="text-lg font-bold text-text-100">{car.name}</h3>
+            <h3 className="text-lg font-bold text-text-100">{currentCar?.name}</h3>
             <p className="text-text-400 text-xs font-medium uppercase tracking-wider">
-              {car.category} • {car.transmission} • {car.seats} seats
+              {currentCar?.category} • {currentCar?.transmission} • {currentCar?.seats}{" "}
+              seats
             </p>
           </div>
         </div>
@@ -61,7 +67,7 @@ export const VehicleCard = ({
             {booking.service.name}
           </span>
           <span className="bg-slate-100 text-text-400 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
-            ₦{unitPrice.toLocaleString()} / {timeQuery}
+            ₦{unitPrice?.toLocaleString() ?? 0.0} / {timeQuery}
           </span>
         </div>
       </div>
@@ -71,9 +77,27 @@ export const VehicleCard = ({
 
 const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
   const globalStore = useGlobalStore((state) => state);
+  const { bookings } = useBookingStore();
   const car = getCar(id);
-  const isSelected = globalStore.selectedCarsId.includes(id);
   const router = useRouter();
+
+  // Check if car is selected and get quantity
+  const selectedCar = globalStore.selectedCars.find((sc) => sc.carId === id);
+  const isSelected = !!selectedCar;
+  const currentQuantity = selectedCar?.quantity || 0;
+
+  // Calculate available quantity
+  const availableQty = getAvailableQuantity(
+    id,
+    globalStore.tempSchedule,
+    bookings,
+  );
+  const showAvailability = isSelect && globalStore.tempSchedule;
+
+  const handleQuantityChange = (newQuantity: number) => {
+    globalStore.updateCarQuantity(id, newQuantity);
+  };
+
   return (
     <div
       className={`${isSelected && isSelect ? "border-primary border-2" : ""} w-full cursor-pointer max-w-[400px] bg-white border border-neutral-100 rounded-lg md:rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full`}
@@ -92,6 +116,16 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
             {car?.category}
           </span>
         </div>
+        {/* Availability Badge */}
+        {showAvailability && (
+          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full shadow-sm">
+            <span
+              className={`${availableQty > 0 ? "text-green-600" : "text-red-600"} font-bold text-[10px] tracking-widest px-3 py-1`}
+            >
+              {availableQty > 0 ? `${availableQty} available` : "Not available"}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Content Container */}
@@ -146,7 +180,18 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
                   : car?.pricePerHour.toLocaleString()}
               </span>
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-4 items-center">
+              {/* Quantity Selector for Multiple Select */}
+              {isSelect && selectType === "multiple" && (
+                <QuantitySelector
+                  quantity={currentQuantity}
+                  max={availableQty}
+                  onQuantityChange={handleQuantityChange}
+                  disabled={availableQty === 0}
+                />
+              )}
+
+              {/* Select/Book Button */}
               <button
                 className="bg-primary/10 hover:bg-primary/20 p-4 rounded-2xl transition-colors group/btn"
                 onClick={() => {
@@ -154,12 +199,20 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
                     router.push(`/services?car=${car?.id}&select=true`);
                     return;
                   }
-                  if (isSelected) {
-                    globalStore.removeCar(id);
-                    return;
+                  if (selectType === "single") {
+                    if (isSelected) {
+                      globalStore.removeCar(id);
+                    } else {
+                      globalStore.addCar(id, selectType);
+                    }
+                  } else {
+                    // For multiple, just add one
+                    if (currentQuantity === 0) {
+                      globalStore.addCar(id, selectType ?? "multiple");
+                    }
                   }
-                  globalStore.addCar(id, selectType ?? "single");
                 }}
+                disabled={isSelect && availableQty === 0}
               >
                 <div className="relative flex">
                   {isSelect && isSelected ? (
@@ -190,36 +243,61 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
         </div>
 
         {/* Mobile View Button */}
-        <div className="md:hidden mt-auto flex gap-2">
-          <button
-            className={`w-full border-2 py-3 rounded-lg font-bold text-text-100 active:scale-[0.98] transition-all hover:bg-slate-50 text-sm text-center ${
-              isSelected
-                ? "border-primary bg-primary text-white"
-                : "border-border-100"
-            }`}
-            onClick={() => {
-              if (!isSelect) {
-                router.push(`/services?car=${id}&select=true`);
-                return;
-              }
-
-              if (isSelected) {
-                globalStore.removeCar(id);
-                return;
-              }
-              globalStore.addCar(id, selectType ?? "single");
-            }}
-          >
-            {isSelect ? (isSelected ? "Selected" : "Select Car") : "Book Now"}
-          </button>
-          {!isSelect && (
-            <Link
-              href={`/cars/${car?.id}`}
-              className="bg-primary/10 hover:bg-primary/20 p-4 rounded-2xl transition-colors group/btn"
-            >
-              <Info />
-            </Link>
+        <div className="md:hidden mt-auto">
+          {/* Quantity Selector for Multiple Select */}
+          {isSelect && selectType === "multiple" && (
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-sm font-medium text-text-300">
+                Quantity:
+              </span>
+              <QuantitySelector
+                quantity={currentQuantity}
+                max={availableQty}
+                onQuantityChange={handleQuantityChange}
+                disabled={availableQty === 0}
+              />
+            </div>
           )}
+
+          <div className="flex gap-2">
+            <button
+              className={`w-full border-2 py-3 rounded-lg font-bold text-text-100 active:scale-[0.98] transition-all hover:bg-slate-50 text-sm text-center ${
+                isSelected
+                  ? "border-primary bg-primary text-white"
+                  : "border-border-100"
+              }`}
+              onClick={() => {
+                if (!isSelect) {
+                  router.push(`/services?car=${id}&select=true`);
+                  return;
+                }
+
+                if (selectType === "single") {
+                  if (isSelected) {
+                    globalStore.removeCar(id);
+                  } else {
+                    globalStore.addCar(id, selectType);
+                  }
+                } else {
+                  // For multiple, just add one
+                  if (currentQuantity === 0) {
+                    globalStore.addCar(id, selectType ?? "multiple");
+                  }
+                }
+              }}
+              disabled={isSelect && availableQty === 0}
+            >
+              {isSelect ? (isSelected ? "Selected" : "Select Car") : "Book Now"}
+            </button>
+            {!isSelect && (
+              <Link
+                href={`/cars/${car?.id}`}
+                className="bg-primary/10 hover:bg-primary/20 p-4 rounded-2xl transition-colors group/btn"
+              >
+                <Info />
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>

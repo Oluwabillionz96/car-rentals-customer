@@ -9,8 +9,6 @@ import SelectionBar from "@/components/selection-bar";
 import useGlobalStore from "@/store/global-store";
 import useBookingStore from "@/store/booking-store";
 import { getServiceById } from "@/lib/data/services";
-import { getCar } from "@/constants/cars";
-import { Car } from "@/lib/types";
 
 const OurFleet = () => {
   const { searchQuery, setSearchQuery, filteredCars, loading, allCars } =
@@ -19,7 +17,7 @@ const OurFleet = () => {
   const isSelect = queryParams.get("select") === "true";
   const selectType =
     (queryParams.get("selectType") as "single" | "multiple") || "single";
-  const { selectedCarsId, clearCars, modifyCars, tempSchedule } = useGlobalStore();
+  const { selectedCars, clearCars, modifyCars, tempSchedule } = useGlobalStore();
   const router = useRouter();
 
   const bookingId = queryParams.get("booking");
@@ -31,17 +29,14 @@ const OurFleet = () => {
 
   const handleBooking = () => {
     const service = getServiceById(queryParams.get("service") as string);
-    const cars = selectedCarsId
-      .map((id) => getCar(id))
-      .filter((car): car is Car => !!car);
 
-    if (!service || cars.length !== selectedCarsId.length) return;
+    if (!service || selectedCars.length === 0) return;
 
     if (isModify && bookingId) {
-      updateBooking({ bookingId: bookingId, selectedCars: cars });
+      updateBooking({ bookingId: bookingId, selectedCars: selectedCars });
       router.push(`/booking/${bookingId}`);
     } else {
-      const id = startBooking(service, cars, tempSchedule);
+      const id = startBooking(service, selectedCars, tempSchedule);
       if (!id) return;
       router.push(`/booking/${id}`);
     }
@@ -55,13 +50,15 @@ const OurFleet = () => {
 
   useEffect(() => {
     if (isModify && booking) {
-      const bookingCarsIds = booking.selectedCars.map((car) => car.id);
-      modifyCars(bookingCarsIds);
+      modifyCars(booking.selectedCars);
     }
   }, [isModify, booking, modifyCars]);
+  
+  // Calculate total quantity for display
+  const totalQuantity = selectedCars.reduce((sum, sc) => sum + sc.quantity, 0);
 
   return (
-    <section className={isSelect && selectedCarsId.length > 0 ? "pb-40" : ""}>
+    <section className={isSelect && selectedCars.length > 0 ? "pb-40" : ""}>
       <header className="md:mb-8 mb-4 flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
           <h2 className="font-black md:text-4xl text-2xl text-text-100">
@@ -102,7 +99,7 @@ const OurFleet = () => {
         <SelectionBar
           selectType={selectType}
           handleBooking={handleBooking}
-          selectedCars={selectedCarsId.length}
+          selectedCars={totalQuantity}
           isModify={isModify}
         />
       )}
