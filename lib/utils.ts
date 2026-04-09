@@ -1,5 +1,6 @@
 import { CalendarHeart, CarFront, Plane, UserRound } from "lucide-react";
 import { BookingDetails, BookingSchedule, BookingStatus, Car } from "./types";
+import { MOCK_CARS } from "@/constants/cars";
 
 export const calculateDays = (
   start: Date | null | string,
@@ -56,25 +57,62 @@ export const isScheduleOverlapping = (
   );
 };
 
+/**
+ * Calculate how many units of a specific car are available for a given schedule.
+ * @param carId - The ID of the car to check availability for
+ * @param schedule - The requested booking schedule (null = browsing mode)
+ * @param bookings - All existing bookings
+ * @returns The number of available units (0 if none available)
+ */
+export const getAvailableQuantity = (
+  carId: string,
+  schedule: BookingSchedule | null,
+  bookings: BookingDetails[],
+): number => {
+  // Find the car to get total fleet size
+  const car = MOCK_CARS.find((c) => c.id === carId);
+  if (!car) return 0;
+
+  const fleetSize = car.available;
+
+  // If no schedule selected (browsing mode), return total fleet size
+  if (!schedule) return fleetSize;
+
+  // Find all overlapping bookings for this car
+  const overlappingBookings = bookings.filter((booking) => {
+    // Only count confirmed and ongoing bookings
+    if (booking.status !== "confirmed" && booking.status !== "ongoing") {
+      return false;
+    }
+
+    // Check if this booking includes the car we're checking
+    const hasThisCar = booking.selectedCars.some((sc) => sc.carId === carId);
+    if (!hasThisCar) return false;
+
+    // Check if schedules overlap
+    if (!booking.schedule) return false;
+    return isScheduleOverlapping(schedule, booking.schedule);
+  });
+
+  // Sum up quantities from all overlapping bookings
+  const bookedQuantity = overlappingBookings.reduce((sum, booking) => {
+    const selectedCar = booking.selectedCars.find((sc) => sc.carId === carId);
+    return sum + (selectedCar?.quantity || 0);
+  }, 0);
+
+  // Calculate available quantity
+  const available = fleetSize - bookedQuantity;
+  return Math.max(0, available); // Never return negative
+};
+
 export const isCarAvailable = (
   car: Car,
   bookings: BookingDetails[],
   schedule?: BookingSchedule | null,
 ) => {
-  if (!schedule) return true;
-  const validBookings = bookings.filter(
-    (bookingData) =>
-      (bookingData.status === "confirmed" ||
-        bookingData.status === "ongoing") &&
-      bookingData.selectedCars.find((bookedCar) => bookedCar.id === car.id),
-  );
-
-  return validBookings.every((bookingData) => {
-    if (bookingData.schedule) {
-      return !isScheduleOverlapping(schedule, bookingData.schedule);
-    }
-    return true;
-  });
+  // Use the new quantity-based availability check
+  const availableQuantity = getAvailableQuantity(car.id, schedule ?? null, bookings);
+  return availableQuantity > 0;
 };
 
 export const now = () => new Date().toISOString();
