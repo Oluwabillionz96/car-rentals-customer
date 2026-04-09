@@ -18,12 +18,6 @@ const CarDetailsPage = () => {
   const [activeImage, setActiveImage] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const verifiedBookings = useBookingStore((state) => state.verifiedBooking);
-
-  const isAlreadyBookedByUser = verifiedBookings?.some(
-    (booking) => booking.carId === id,
-  );
-
   const handleScroll = () => {
     if (scrollRef.current) {
       const { scrollLeft, offsetWidth } = scrollRef.current;
@@ -43,7 +37,7 @@ const CarDetailsPage = () => {
     }
   };
 
-  const car = getCar(id);
+  const car = getCar(id as string);
 
   if (!car) {
     return (
@@ -135,24 +129,17 @@ const CarDetailsPage = () => {
         </div>
 
         {/* Right Column: Desktop Booking Sidebar */}
-        <DesktopBookingCard
-          car={car}
-          isBooked={isAlreadyBookedByUser ?? false}
-        />
+        <DesktopBookingCard car={car} />
       </div>
 
       {/* Mobile Floating Bottom Bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 h-24 bg-white/90 backdrop-blur-xl border-t border-border-100 px-6 flex items-center justify-end z-50">
         <Link
-          href={
-            isAlreadyBookedByUser ? "#" : `/services?car=${car.id}&select=true`
-          }
-          className={`px-5 h-14 rounded-xl font-bold text-base shadow-xl text-white  flex items-center gap-2 active:scale-95 transition-all ${isAlreadyBookedByUser ? "bg-gray-400" : "bg-primary"}`}
+          href={`/services?car=${car.id}&select=true`}
+          className={`px-5 h-14 rounded-xl font-bold text-base shadow-xl text-white  flex items-center gap-2 active:scale-95 transition-all bg-primary`}
         >
-          {isAlreadyBookedByUser ? "Unavailable" : "Book This Car"}
-          {!isAlreadyBookedByUser && (
-            <ChevronLeft size={20} className="rotate-180" />
-          )}
+          Book This Car
+          <ChevronLeft size={20} className="rotate-180" />
         </Link>
       </div>
     </div>

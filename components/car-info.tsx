@@ -6,7 +6,7 @@ import Link from "next/link";
 import Map from "./map";
 
 const CarInfo = ({ id }: { id: ParamValue }) => {
-  const car = getCar(id);
+  const car = getCar(id as string);
   return (
     <div className="px-1 md:p-0 space-y-6">
       <div className="justify-between flex items-start gap-2">

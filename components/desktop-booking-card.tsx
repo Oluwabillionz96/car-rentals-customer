@@ -4,13 +4,7 @@ import { CheckCircle2 } from "lucide-react";
 import IconCard from "./icon-card";
 import Link from "next/link";
 
-const DesktopBookingCard = ({
-  car,
-  isBooked,
-}: {
-  car: Car;
-  isBooked: boolean;
-}) => {
+const DesktopBookingCard = ({ car }: { car: Car }) => {
   return (
     <div className="hidden lg:block lg:col-span-4">
       <div className="top-44 space-y-6">
@@ -53,10 +47,10 @@ const DesktopBookingCard = ({
 
           <div className="space-y-4">
             <Link
-              href={isBooked ? "#" : `/services?car=${car.id}&select=true`}
-              className={`w-full py-4 rounded-xl font-black text-base  hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 ${isBooked ? "bg-gray-400" : "bg-primary"} text-white`}
+              href={`/services?car=${car.id}&select=true`}
+              className={`w-full py-4 rounded-xl font-black text-base  hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 bg-primary text-white`}
             >
-              {isBooked ? "Unavailable" : "Book This Car"}
+              Book This Car
             </Link>
           </div>
 
