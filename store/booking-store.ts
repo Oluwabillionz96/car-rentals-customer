@@ -1,5 +1,5 @@
 import { generateBookingId } from "@/constants/cars";
-import { BookingDetails, BookingSchedule, Car, Service } from "@/lib/types";
+import { BookingDetails, BookingSchedule, SelectedCar, Service } from "@/lib/types";
 import { loadBookings, now, persistVerifiedBookings } from "@/lib/utils";
 import { create } from "zustand";
 
@@ -9,7 +9,7 @@ export interface BookingStore {
   bookings: BookingDetails[];
   startBooking: (
     service: Service | null,
-    selectedCars: Car[] | null,
+    selectedCars: SelectedCar[] | null,
     schedule?: BookingSchedule | null
   ) => string | null;
   updateBooking: (
