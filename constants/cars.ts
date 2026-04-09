@@ -17,7 +17,7 @@ export const MOCK_CARS: Car[] = [
       "https://images.unsplash.com/photo-1619682817481-e994891cd1f5?q=80&w=2070&auto=format&fit=crop",
     ],
     features: ["AC", "Bluetooth", "Backup Camera", "Executive Interior"],
-    available: true,
+    available: 6,
   },
   {
     id: "toyota-camry-2021",
@@ -33,7 +33,7 @@ export const MOCK_CARS: Car[] = [
       "https://images.unsplash.com/photo-1664287721774-13da4b108b18?w=500&auto=format&fit=crop",
     ],
     features: ["AC", "Bluetooth", "Backup Camera", "Executive Interior"],
-    available: true,
+    available: 4,
   },
   {
     id: "mercedes-g63-amg",
@@ -55,7 +55,7 @@ export const MOCK_CARS: Car[] = [
       "All-Wheel Drive",
       "Panoramic View",
     ],
-    available: true,
+    available: 2,
   },
   {
     id: "range-rover-sport-2022",
@@ -75,7 +75,7 @@ export const MOCK_CARS: Car[] = [
       "Adaptive Air Suspension",
       "Matrix LED Headlights",
     ],
-    available: true,
+    available: 3,
   },
   {
     id: "hiace-commuter",
@@ -91,7 +91,7 @@ export const MOCK_CARS: Car[] = [
       "https://images.unsplash.com/photo-1464226110271-dec109869611?q=80&w=1974&auto=format&fit=crop",
     ],
     features: ["Spacious Seating", "Strong AC", "Luggage Space"],
-    available: true,
+    available: 5,
   },
   {
     id: "lexus-es350-2021",
@@ -106,7 +106,7 @@ export const MOCK_CARS: Car[] = [
       "https://images.unsplash.com/photo-1664427320994-6e27b8f1171f?w=500&auto=format&fit=crop",
     ],
     features: ["Smooth Ride", "Mark Levinson Audio", "Quiet Cabin"],
-    available: true,
+    available: 3,
   },
   {
     id: "toyota-prado-txl",
@@ -121,7 +121,7 @@ export const MOCK_CARS: Car[] = [
       "https://images.unsplash.com/photo-1625231334168-35067f8853ed?q=80&w=2070&auto=format&fit=crop",
     ],
     features: ["Off-road capable", "Third Row Seating", "Climate Control"],
-    available: true,
+    available: 4,
   },
   {
     id: "v-class-luxury",
@@ -136,7 +136,7 @@ export const MOCK_CARS: Car[] = [
       "https://images.unsplash.com/photo-1765461734605-34657fa04db2?q=80&w=870&auto=format&fit=crop",
     ],
     features: ["Executive Lounge", "Rear Climate", "Electric Sliders"],
-    available: true,
+    available: 2,
   },
   {
     id: "bmw",
@@ -151,7 +151,7 @@ export const MOCK_CARS: Car[] = [
       "https://images.unsplash.com/photo-1635770311293-b09d08a522fc?q=80&w=464&auto=format&fit=crop",
     ],
     features: ["Smooth Ride", "Mark Levinson Audio", "Quiet Cabin"],
-    available: true,
+    available: 1,
   },
 ];
 

@@ -42,6 +42,11 @@ export interface Car {
   available: number;
 }
 
+export interface SelectedCar {
+  carId: string;
+  quantity: number;
+}
+
 export interface HourlyBookingSchedule {
   type: "hourly";
   date: string;
@@ -83,7 +88,7 @@ export interface BookingExtension {
 export interface BookingDetails {
   bookingId: string;
   service: Service;
-  selectedCars: Car[];
+  selectedCars: SelectedCar[];
   schedule: BookingSchedule | null;
   customer: Customer | null;
   extensions: BookingExtension[];
@@ -96,7 +101,7 @@ export interface BookingStore {
   bookings: BookingDetails[];
   startBooking: (
     service: Service | null,
-    selectedCars: Car[] | null,
+    selectedCars: SelectedCar[] | null,
     schedule?: BookingSchedule | null,
   ) => string | null;
   updateBooking: (
