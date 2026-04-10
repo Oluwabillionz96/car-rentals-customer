@@ -2,7 +2,12 @@
 import { ArrowLeft, Menu, Share2, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import MobileNavbar from "./mobile-navbar";
 import { useState } from "react";
 
@@ -18,29 +23,29 @@ const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { id } = useParams();
-
+  const queryParams = useSearchParams();
   const isDetailsPage = pathname.startsWith("/cars");
-  const isBooking = isDetailsPage && pathname.includes("/booking");
-  const isPayment = isDetailsPage && pathname.includes("/payment");
-  const isConfirmation = isDetailsPage && pathname.includes("/confirmation");
-  const showBackIcon = pathname !== "/" && !pathname.startsWith("/booking-details");
+  const showBackIcon =
+    pathname !== "/" && !pathname.startsWith("/booking-details");
+  const bookingId = queryParams.get("booking");
   return (
     <header className="z-50 fixed bg-white/90 p-4  md:py-6 md:px-20 w-full top-0 left-0  shadow-sm backdrop-blur-md">
       <nav className=" flex justify-between   ">
         {showBackIcon && (
           <button
             onClick={() => {
-              if (isConfirmation) {
+              if (pathname.startsWith("/services")) {
                 router.push("/");
-                return;
-              }
-              if (isBooking) {
-                router.push(`/cars/${id}`);
-                return;
               }
 
-              router.back();
+              if (pathname.startsWith("/our-fleet")) {
+                if (bookingId) {
+                  return router.push(`/booking/${bookingId}`);
+                } else {
+                  return router.back();
+                }
+              }
+              return router.back();
             }}
             className={"lg:hidden"}
           >
@@ -50,17 +55,7 @@ const Header = () => {
 
         {isDetailsPage && (
           <p className="font-bold text-lg text-text-100 lg:hidden">
-            {isDetailsPage && (
-                  <>
-                    {isConfirmation
-                      ? "Confirmation"
-                      : isPayment
-                        ? "Payment"
-                        : isBooking
-                          ? "Book Your Ride"
-                          : "Car Details"}
-                  </>
-                )}
+            Car Details
           </p>
         )}
 
@@ -90,11 +85,7 @@ const Header = () => {
             }
             className="lg:hidden"
           >
-            {isDetailsPage ? (
-              <> {!isBooking && !isPayment && !isConfirmation && <Share2 />}</>
-            ) : (
-              <>{isSidebarOpen ? <X /> : <Menu />}</>
-            )}
+            {isSidebarOpen ? <X /> : <Menu />}
           </button>
         </div>
       </nav>

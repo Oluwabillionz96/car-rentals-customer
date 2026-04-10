@@ -4,7 +4,13 @@ import EmptyState from "@/components/empty-state";
 import ServiceCard from "@/components/service-card";
 import { getCar } from "@/constants/cars";
 import { getServiceById, services } from "@/lib/data/services";
-import { AlertTriangle, CheckCircle2, ChevronRight } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -48,8 +54,6 @@ const FeaturesCard = ({
   );
 };
 
-
-
 const ServicesPage = () => {
   const queryParams = useSearchParams();
   const carId = queryParams.get("car");
@@ -58,10 +62,11 @@ const ServicesPage = () => {
 
   const car = carId ? getCar(carId) : null;
 
-  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
+  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(
+    null,
+  );
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
 
   const handleBookNow = (service: Service) => {
     setSelectedService(service);
@@ -100,8 +105,19 @@ const ServicesPage = () => {
         car={car}
         isSelect={isSelect}
       />
+      {/* Back Button for Selection Flow */}
+
       {/* Hero Section */}
       <section className="relative overflow-hidden">
+        {isSelect && (
+          <Link
+            href={"/"}
+            className="lg:flex justify-center hidden items-center gap-2 text-text-300 hover:text-primary transition-colors mb-4 font-bold"
+          >
+            <ChevronLeft size={20} />
+            Back to Home
+          </Link>
+        )}
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-black text-text-100 mb-6 tracking-tight">
             {isSelect ? (
