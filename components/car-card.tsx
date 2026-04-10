@@ -236,9 +236,10 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
               {!isSelect && (
                 <Link
                   href={`/cars/${id}`}
-                  className="bg-primary/10 hover:bg-primary/20 p-4 rounded-2xl transition-colors group/btn"
+                  className="bg-primary/10 hover:bg-primary/20 px-5 py-4 rounded-2xl transition-colors flex items-center justify-center gap-2"
                 >
-                  <Info />
+                  <span className="text-primary font-bold text-sm">Details</span>
+                  <Info size={20} className="text-primary" />
                 </Link>
               )}
             </div>
@@ -295,9 +296,10 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
             {!isSelect && (
               <Link
                 href={`/cars/${car?.id}`}
-                className="bg-primary/10 hover:bg-primary/20 p-4 rounded-2xl transition-colors group/btn"
+                className="bg-primary/10 hover:bg-primary/20 px-4 py-3 rounded-lg flex items-center justify-center transition-colors gap-2 shrink-0"
               >
-                <Info />
+                <span className="text-primary font-bold text-sm">Details</span>
+                <Info size={20} className="text-primary" />
               </Link>
             )}
           </div>

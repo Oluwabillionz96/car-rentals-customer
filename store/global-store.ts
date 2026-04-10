@@ -12,6 +12,7 @@ export interface GlobalStore {
   clearCars: () => void;
   setTempSchedule: (schedule: BookingSchedule | null) => void;
   setTempService: (service: Service | null) => void;
+  clearAll: () => void;
 }
 
 const useGlobalStore = create<GlobalStore>((set) => ({
@@ -75,6 +76,7 @@ const useGlobalStore = create<GlobalStore>((set) => ({
   },
   setTempSchedule: (schedule) => set({ tempSchedule: schedule }),
   setTempService: (service) => set({ tempService: service }),
+  clearAll: () => set({ selectedCars: [], tempSchedule: null, tempService: null }),
 }));
 
 export default useGlobalStore;

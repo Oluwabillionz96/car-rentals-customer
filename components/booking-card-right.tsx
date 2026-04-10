@@ -8,10 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import {
-  isCarAvailable,
-  formatDateForInput,
-} from "@/lib/utils";
+import { isCarAvailable, formatDateForInput } from "@/lib/utils";
 import { AlertCircle, ArrowRight } from "lucide-react";
 
 // Optimized Sub-components
@@ -20,6 +17,7 @@ import CheckoutScheduleView from "./checkout-schedule-view";
 import CheckoutOrderSummary from "./checkout-order-summary";
 import CheckoutScheduleSummary from "./checkout-schedule-summary";
 import { getCar } from "@/constants/cars";
+import useGlobalStore from "@/store/global-store";
 
 const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
   const [isEditingSchedule, setIsEditingSchedule] = useState(false);
@@ -100,6 +98,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
     return car && !isCarAvailable(car, bookings, currentSchedule);
   });
   const hasConflicts = carsWithConflicts && carsWithConflicts.length > 0;
+  const { clearAll } = useGlobalStore();
 
   const onSubmit = (data: BookingFormValues) => {
     if (booking?.status !== null && booking?.status !== "draft") {
@@ -112,6 +111,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
       schedule: data.schedule as BookingSchedule,
       status: "draft",
     });
+    clearAll();
     router.push(`/booking/${booking.bookingId}/payment`);
   };
 
@@ -177,9 +177,11 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
                         </h4>
                         <p className="text-xs text-red-500 font-medium leading-relaxed italic">
                           Some of your selected vehicles (
-                          {carsWithConflicts.map((c) => getCar(c.carId)?.name).join(", ")}) are
-                          already reserved for this period. Please re-adjust
-                          your schedule or select different vehicles.
+                          {carsWithConflicts
+                            .map((c) => getCar(c.carId)?.name)
+                            .join(", ")}
+                          ) are already reserved for this period. Please
+                          re-adjust your schedule or select different vehicles.
                         </p>
                       </div>
                     </div>
@@ -243,7 +245,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
         </div>
       </div>
 
-      <CheckoutOrderSummary booking={booking} control={control}/>
+      <CheckoutOrderSummary booking={booking} control={control} />
     </>
   );
 };

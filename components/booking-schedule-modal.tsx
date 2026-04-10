@@ -111,7 +111,7 @@ export default function BookingScheduleModal({
 
     if (isSelect && car) {
       // If direct booking from fleet, start booking immediately
-      const id = startBooking(service, [car], data);
+      const id = startBooking(service, [{ carId: car.id, quantity: 1 }], data);
       router.push(`/booking/${id}`);
     } else {
       // Otherwise proceed to fleet selection
@@ -241,15 +241,27 @@ export default function BookingScheduleModal({
                         clearErrors();
                         const now = new Date();
                         if (formValues.type === "hourly") {
-                          const selectedTime = new Date(`${formValues.date}T${formValues.startTime}`);
+                          const selectedTime = new Date(
+                            `${formValues.date}T${formValues.startTime}`,
+                          );
                           if (selectedTime < now) {
-                            setError("startTime", { type: "manual", message: "Cannot select a past time." });
+                            setError("startTime", {
+                              type: "manual",
+                              message: "Cannot select a past time.",
+                            });
                             return;
                           }
                         } else if (formValues.type === "daily") {
-                          const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                          const today = new Date(
+                            now.getFullYear(),
+                            now.getMonth(),
+                            now.getDate(),
+                          );
                           if (new Date(formValues.pickupDate) < today) {
-                            setError("pickupDate", { type: "manual", message: "Cannot select a past date." });
+                            setError("pickupDate", {
+                              type: "manual",
+                              message: "Cannot select a past date.",
+                            });
                             return;
                           }
                         }
