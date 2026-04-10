@@ -34,21 +34,30 @@ export default function CheckoutOrderSummary({
             <p className="text-[10px] font-bold text-text-400 uppercase tracking-widest flex items-center gap-1">
               <Car size={10} /> Selected Vehicles
             </p>
-            <div className="space-y-1.5 text-text-200">
+            <div className="space-y-2 text-text-200">
               {booking?.selectedCars.map((sc) => {
                 const car = getCar(sc.carId);
+                const unitPrice = (timeQuery === "hour" ? car?.pricePerHour : car?.pricePerDay) || 0;
+                const subtotal = unitPrice * sc.quantity;
+                
                 return (
-                  <div key={sc.carId} className="flex justify-between items-center text-[13px]">
-                    <span className="font-bold italic">
-                      {sc.quantity}x {car?.name}
-                    </span>
-                    <span className="font-medium">
-                      ₦{((timeQuery === "hour" ? car?.pricePerHour : car?.pricePerDay) || 0).toLocaleString()}
+                  <div key={sc.carId} className="flex justify-between items-start text-[13px] bg-white/40 p-2 rounded-xl border border-primary/5">
+                    <div className="flex flex-col">
+                      <span className="font-bold italic">
+                        {sc.quantity}x {car?.name}
+                      </span>
+                      <span className="text-[10px] text-text-400 font-medium">
+                        ₦{unitPrice.toLocaleString()} per {timeQuery}
+                      </span>
+                    </div>
+                    <span className="font-black text-primary">
+                      ₦{subtotal.toLocaleString()}
                     </span>
                   </div>
                 );
               })}
             </div>
+
           </div>
 
           <div className="flex justify-between items-center text-sm font-medium pt-2 border-t border-primary/5">
