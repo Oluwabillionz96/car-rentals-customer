@@ -1,12 +1,11 @@
 "use client";
 
 import {
-  UseFormRegister,
   FieldErrors,
   UseFormWatch,
   UseFormSetValue,
-  Control,
   useWatch,
+  useFormContext,
 } from "react-hook-form";
 import { BookingFormValues } from "@/lib/validations";
 import {
@@ -28,33 +27,34 @@ import {
 import HourIncrementer from "./hour-incrementer";
 
 interface CheckoutScheduleViewProps {
-  register: UseFormRegister<BookingFormValues>;
-  errors: FieldErrors<BookingFormValues>;
   isConfirmed: boolean;
   minHours?: number;
-  watch: UseFormWatch<BookingFormValues>;
-  setValue: UseFormSetValue<BookingFormValues>;
   onBack: () => void;
   onSave: () => void;
   hasConflicts?: boolean;
-  control: Control<BookingFormValues>;
+
   originalSchedule: BookingSchedule | null;
 }
 
 export default function CheckoutScheduleView({
-  register,
-  errors,
   isConfirmed,
   minHours = 1,
-  watch,
-  setValue,
+
   onBack,
   onSave,
   hasConflicts,
-  control,
   originalSchedule,
 }: CheckoutScheduleViewProps) {
   // ... rest of the logic ...
+
+  const {
+    register,
+    control,
+    formState: { errors },
+    watch,
+    setValue,
+  } = useFormContext<BookingFormValues>();
+
   const scheduleType = watch("schedule.type");
   const startTime = watch("schedule.startTime");
   const hours = (watch("schedule.hours") as number) || 1;

@@ -6,7 +6,7 @@ import useBookingStore from "@/store/booking-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { isCarAvailable, formatDateForInput } from "@/lib/utils";
 import { AlertCircle, ArrowRight } from "lucide-react";
@@ -24,68 +24,9 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
   const { updateBooking, bookings } = useBookingStore();
   const existingSchedule = booking?.schedule;
   const isLocked = booking?.status !== "draft" && booking?.status !== null;
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    control,
-    formState: { errors },
-  } = useForm<BookingFormValues>({
-    resolver: zodResolver(bookingSchema),
-    defaultValues: {
-      customer: {
-        firstName: booking?.customer?.firstName || "",
-        lastName: booking?.customer?.lastName || "",
-        email: booking?.customer?.email || "",
-        phone: booking?.customer?.phone || "",
-        ...(booking?.service.id === "self_drive"
-          ? {
-              verification: {
-                licenseNumber:
-                  booking.customer?.verification?.licenseNumber || "",
-                licenseExpiry:
-                  booking.customer?.verification?.licenseExpiry || "",
-                nin: booking.customer?.verification?.nin || "",
-                bvn: booking.customer?.verification?.bvn || "",
-              },
-            }
-          : {}),
-      },
-      schedule:
-        booking?.service.pricing === "hourly"
-          ? {
-              type: "hourly",
-              date:
-                existingSchedule?.type === "hourly"
-                  ? formatDateForInput(existingSchedule.date)
-                  : "",
-              startTime:
-                existingSchedule?.type === "hourly"
-                  ? existingSchedule.startTime
-                  : "",
-              hours:
-                (existingSchedule?.type === "hourly"
-                  ? existingSchedule.hours
-                  : booking.service.minHours) || 1,
-              pickupAddress:
-                existingSchedule?.type === "hourly"
-                  ? existingSchedule.pickupAddress
-                  : "",
-            }
-          : {
-              type: "daily",
-              pickupDate:
-                existingSchedule?.type === "daily"
-                  ? formatDateForInput(existingSchedule.pickupDate)
-                  : "",
-              dropoffDate:
-                existingSchedule?.type === "daily"
-                  ? formatDateForInput(existingSchedule.dropoffDate)
-                  : "",
-            },
-    },
-  });
+  const { handleSubmit, watch, setValue, control } =
+    useFormContext<BookingFormValues>();
+
   const [originalSchedule, setOriginalSchedule] =
     useState<BookingSchedule | null>(watch("schedule"));
 
@@ -97,12 +38,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
     const car = getCar(selectedCar.carId);
     return (
       car &&
-      !isCarAvailable(
-        car,
-        bookings,
-        currentSchedule,
-        selectedCar.quantity,
-      )
+      !isCarAvailable(car, bookings, currentSchedule, selectedCar.quantity)
     );
   });
   const hasConflicts = carsWithConflicts && carsWithConflicts.length > 0;
@@ -167,8 +103,6 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
                   className="space-y-8"
                 >
                   <CheckoutCustomerForm
-                    register={register}
-                    errors={errors}
                     isConfirmed={isLocked}
                     serviceId={booking?.service.id}
                   />
@@ -230,12 +164,8 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
                 </div>
 
                 <CheckoutScheduleView
-                  register={register}
-                  errors={errors}
                   isConfirmed={isLocked}
                   minHours={booking?.service.minHours}
-                  watch={watch}
-                  setValue={setValue}
                   onBack={() => {
                     if (originalSchedule) {
                       setValue("schedule", originalSchedule);
@@ -244,7 +174,6 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
                   }}
                   onSave={() => setIsEditingSchedule(false)}
                   hasConflicts={hasConflicts}
-                  control={control}
                   originalSchedule={originalSchedule}
                 />
               </motion.div>
@@ -253,7 +182,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
         </div>
       </div>
 
-      <CheckoutOrderSummary booking={booking} control={control} />
+      <CheckoutOrderSummary booking={booking} />
     </>
   );
 };

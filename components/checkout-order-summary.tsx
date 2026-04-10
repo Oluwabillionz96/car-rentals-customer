@@ -3,20 +3,19 @@
 import { CreditCard, Car } from "lucide-react";
 import { BookingDetails } from "@/lib/types";
 import { calculateDays, calculatePrice, getUnitRate } from "@/lib/utils";
-import { Control, useWatch } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import { BookingFormValues } from "@/lib/validations";
 import { getCar } from "@/constants/cars";
 
 interface CheckoutOrderSummaryProps {
   booking: BookingDetails | null;
-  control: Control<BookingFormValues>;
 }
 
 export default function CheckoutOrderSummary({
   booking,
-  control,
 }: CheckoutOrderSummaryProps) {
   const timeQuery = booking?.service.pricing === "hourly" ? "hour" : "days";
+  const { control } = useFormContext<BookingFormValues>();
   const formSchedule = useWatch({ control, name: "schedule" });
   const totalPrice = booking && calculatePrice(booking, formSchedule);
 
@@ -37,11 +36,17 @@ export default function CheckoutOrderSummary({
             <div className="space-y-2 text-text-200">
               {booking?.selectedCars.map((sc) => {
                 const car = getCar(sc.carId);
-                const unitPrice = (timeQuery === "hour" ? car?.pricePerHour : car?.pricePerDay) || 0;
+                const unitPrice =
+                  (timeQuery === "hour"
+                    ? car?.pricePerHour
+                    : car?.pricePerDay) || 0;
                 const subtotal = unitPrice * sc.quantity;
-                
+
                 return (
-                  <div key={sc.carId} className="flex justify-between items-start text-[13px] bg-white/40 p-2 rounded-xl border border-primary/5">
+                  <div
+                    key={sc.carId}
+                    className="flex justify-between items-start text-[13px] bg-white/40 p-2 rounded-xl border border-primary/5"
+                  >
                     <div className="flex flex-col">
                       <span className="font-bold italic">
                         {sc.quantity}x {car?.name}
@@ -57,16 +62,13 @@ export default function CheckoutOrderSummary({
                 );
               })}
             </div>
-
           </div>
 
           <div className="flex justify-between items-center text-sm font-medium pt-2 border-t border-primary/5">
             <span className="text-text-300">Total Unit Rate</span>
             <span className="text-text-100 font-bold">
-              ₦{" "}
-              {getUnitRate(booking!, timeQuery)
-                .toLocaleString()}{" "}
-              / {timeQuery}
+              ₦ {getUnitRate(booking!, timeQuery).toLocaleString()} /{" "}
+              {timeQuery}
             </span>
           </div>
           <div className="flex justify-between items-center text-sm font-medium">

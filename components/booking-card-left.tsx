@@ -1,10 +1,17 @@
-import { BookingDetails } from "@/lib/types";
+import { BookingDetails, BookingSchedule } from "@/lib/types";
 import { getCar } from "@/constants/cars";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useFormContext, useWatch } from "react-hook-form";
+import useBookingStore from "@/store/booking-store";
+import { isCarAvailable } from "@/lib/utils";
+import { AlertTriangle } from "lucide-react";
 
 const BookingCardLeft = ({ booking }: { booking: BookingDetails | null }) => {
   const router = useRouter();
+  const { bookings } = useBookingStore();
+  const { control } = useFormContext();
+  const formSchedule = useWatch({ control, name: "schedule" }) as BookingSchedule;
   const timeQuery = booking?.service.pricing === "hourly" ? "hour" : "days";
 
   return (
@@ -28,10 +35,19 @@ const BookingCardLeft = ({ booking }: { booking: BookingDetails | null }) => {
         {booking?.selectedCars.map((selectedCar, index) => {
           const car = getCar(selectedCar.carId);
           if (!car) return null;
+
+          const isUnavailable =
+            !isCarAvailable(
+              car,
+              bookings,
+              formSchedule,
+              selectedCar.quantity,
+            ) && booking?.status === null;
+
           return (
           <div
             key={selectedCar.carId + index}
-            className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 p-2"
+            className={`bg-white rounded-3xl overflow-hidden shadow-sm border transition-all ${isUnavailable ? "border-red-500 ring-2 ring-red-500/20" : "border-slate-100"} p-2`}
           >
             <div className="relative aspect-video rounded-2xl overflow-hidden group touch-pan-y shadow-inner bg-slate-100">
               <Image
@@ -43,6 +59,13 @@ const BookingCardLeft = ({ booking }: { booking: BookingDetails | null }) => {
               <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-text-100 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
                 Vehicle {index + 1}
               </div>
+
+              {isUnavailable && (
+                <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1.5 animate-pulse">
+                  <AlertTriangle size={12} />
+                  Insufficient Fleet Capacity
+                </div>
+              )}
             </div>
 
             <div className="p-6">
