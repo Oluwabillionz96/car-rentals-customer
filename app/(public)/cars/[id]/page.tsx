@@ -11,7 +11,6 @@ import DesktopBookingCard from "@/components/desktop-booking-card";
 import NavigationMap from "@/components/navigation-map";
 import EmptyState from "@/components/empty-state";
 import { AlertCircle } from "lucide-react";
-import useBookingStore from "@/store/booking-store";
 
 const CarDetailsPage = () => {
   const { id } = useParams();

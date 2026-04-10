@@ -6,7 +6,6 @@ import { getCar } from "@/constants/cars";
 import { getServiceById, services } from "@/lib/data/services";
 import {
   AlertTriangle,
-  ArrowLeft,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,

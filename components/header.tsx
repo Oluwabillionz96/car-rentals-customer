@@ -1,9 +1,8 @@
 "use client";
-import { ArrowLeft, Menu, Share2, X } from "lucide-react";
+import { ArrowLeft, Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  useParams,
   usePathname,
   useRouter,
   useSearchParams,

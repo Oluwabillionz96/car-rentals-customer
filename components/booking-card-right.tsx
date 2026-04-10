@@ -1,14 +1,13 @@
 "use client";
 
 import { BookingDetails, BookingSchedule } from "@/lib/types";
-import { BookingFormValues, bookingSchema } from "@/lib/validations";
+import { BookingFormValues} from "@/lib/validations";
 import useBookingStore from "@/store/booking-store";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { isCarAvailable, formatDateForInput } from "@/lib/utils";
+import { isCarAvailable} from "@/lib/utils";
 import { AlertCircle, ArrowRight } from "lucide-react";
 
 // Optimized Sub-components
@@ -22,7 +21,6 @@ import useGlobalStore from "@/store/global-store";
 const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
   const [isEditingSchedule, setIsEditingSchedule] = useState(false);
   const { updateBooking, bookings } = useBookingStore();
-  const existingSchedule = booking?.schedule;
   const isLocked = booking?.status !== "draft" && booking?.status !== null;
   const { handleSubmit, watch, setValue, control } =
     useFormContext<BookingFormValues>();

@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  FieldErrors,
-  UseFormWatch,
-  UseFormSetValue,
-  useWatch,
-  useFormContext,
-} from "react-hook-form";
+import { useWatch, useFormContext } from "react-hook-form";
 import { BookingFormValues } from "@/lib/validations";
 import {
   Calendar,
