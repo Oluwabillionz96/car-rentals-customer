@@ -117,7 +117,7 @@ const CarCard = ({ id, isSelect, selectType, isSelfDrive }: CarCardProps) => {
           </span>
         </div>
         {/* Availability Badge */}
-        {showAvailability && (
+        {showAvailability && selectType === "multiple" && (
           <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full shadow-sm">
             <span
               className={`${availableQty > 0 ? "text-green-600" : "text-red-600"} font-bold text-[10px] tracking-widest px-3 py-1`}
