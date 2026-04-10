@@ -26,7 +26,7 @@ import { hourlyScheduleSchema, dailyScheduleSchema } from "@/lib/validations";
 import DailyScheduleForm from "./daily-schedule-form";
 import HourlyScheduleForm from "./hourly-schedule-form";
 import BookingSummaryCard from "./booking-summary-card";
-import { isCarAvailable, formatDateForInput } from "@/lib/utils";
+import { isCarAvailable, formatDateForInput, getAvailableQuantity } from "@/lib/utils";
 import useBookingStore from "@/store/booking-store";
 
 interface BookingScheduleModalProps {
@@ -47,6 +47,7 @@ export default function BookingScheduleModal({
   const router = useRouter();
   const { tempSchedule, setTempSchedule } = useGlobalStore();
   const [step, setStep] = useState<1 | 2>(1);
+  const [quantity, setQuantity] = useState(1);
   const isDaily = service?.pricing === "daily";
   const { bookings, startBooking } = useBookingStore();
 
@@ -75,7 +76,9 @@ export default function BookingScheduleModal({
   const formValues = watch();
 
   // Calculate availability for specific car if selected
-  const isCarBusy = car && !isCarAvailable(car, bookings, formValues);
+  const availableCount =
+    car && getAvailableQuantity(car.id, formValues, bookings);
+  const isCarBusy = car && !isCarAvailable(car, bookings, formValues, quantity);
 
   useEffect(() => {
     if (isOpen) {
@@ -111,7 +114,11 @@ export default function BookingScheduleModal({
 
     if (isSelect && car) {
       // If direct booking from fleet, start booking immediately
-      const id = startBooking(service, [{ carId: car.id, quantity: 1 }], data);
+      const id = startBooking(
+        service,
+        [{ carId: car.id, quantity: quantity }],
+        data,
+      );
       router.push(`/booking/${id}`);
     } else {
       // Otherwise proceed to fleet selection
@@ -208,6 +215,48 @@ export default function BookingScheduleModal({
                       minHours={service.minHours}
                     />
                   )}
+
+                  {isSelect && car && (
+                    <div className="space-y-4 pt-6 mt-6 border-t border-slate-100">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-black text-text-100 uppercase italic">
+                            Set Fleet Quantity
+                          </p>
+                          <p className="text-[10px] text-text-400 font-bold uppercase tracking-wider">
+                            Choose between 1 and {availableCount} units
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setQuantity(Math.max(1, quantity - 1))
+                            }
+                            className="w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-sm text-primary font-black active:scale-90 transition-all disabled:opacity-30"
+                            disabled={quantity <= 1}
+                          >
+                            -
+                          </button>
+                          <span className="w-8 text-center font-black text-text-100 text-lg italic">
+                            {quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setQuantity(
+                                Math.min(availableCount || 0, quantity + 1),
+                              )
+                            }
+                            className="w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-sm text-primary font-black active:scale-90 transition-all disabled:opacity-30"
+                            disabled={quantity >= (availableCount || 0)}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <BookingSummaryCard
@@ -216,6 +265,8 @@ export default function BookingScheduleModal({
                   isSelect={isSelect}
                   isCarBusy={!!isCarBusy}
                   carName={car?.name}
+                  quantity={quantity}
+                  availableCount={availableCount || 0}
                 />
               )}
 

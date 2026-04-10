@@ -10,6 +10,8 @@ interface BookingSummaryCardProps {
   isSelect?: boolean;
   isCarBusy?: boolean;
   carName?: string;
+  quantity?: number;
+  availableCount?: number;
 }
 
 export default function BookingSummaryCard({
@@ -18,6 +20,8 @@ export default function BookingSummaryCard({
   isSelect,
   isCarBusy,
   carName,
+  quantity = 1,
+  availableCount = 0,
 }: BookingSummaryCardProps) {
   const isDaily = formValues.type === "daily";
   return (
@@ -86,6 +90,22 @@ export default function BookingSummaryCard({
               </div>
             </div>
           )}
+
+          {isSelect && (
+            <div className="flex items-center gap-4 pt-4 border-t border-slate-100/50">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-primary shadow-sm">
+                <span className="font-black text-lg italic">#</span>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400 font-bold uppercase tracking-tight">
+                  Fleet Selection
+                </p>
+                <p className="text-base font-black text-text-100 italic uppercase">
+                  {quantity}x {carName || "Vehicle"}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -93,16 +113,21 @@ export default function BookingSummaryCard({
       <div
         className={`p-6 rounded-[30px] border transition-all ${isCarBusy ? "bg-red-50 border-red-100" : "bg-primary/5 border-primary/10 shadow-sm"}`}
       >
-        <p
-          className={`text-sm md:text-base font-bold text-center leading-relaxed ${isCarBusy ? "text-red-600" : "text-text-200 uppercase tracking-tight italic"}`}
-        >
-          {isSelect
-            ? isCarBusy
-              ? `Oops! This ${carName} is already reserved for this slot. Please try another schedule or car.`
-              : `Great! This ${carName} is available. Click below to finalize your booking.`
-            : "One last step: Click below to browse cars available for this schedule."}
-        </p>
+        <div className="flex flex-col items-center gap-2">
+          <p
+            className={`text-sm md:text-base font-bold text-center leading-relaxed ${isCarBusy ? "text-red-600" : "text-text-200 uppercase tracking-tight italic"}`}
+          >
+            {isSelect
+              ? isCarBusy
+                ? availableCount === 0
+                  ? `All units of the ${carName} are currently reserved for this schedule. Please pick another vehicle or adjust your schedule.`
+                  : `Limited Availability: We only have ${availableCount} units of the ${carName} remaining for these dates. Please adjust your fleet size or try a different vehicle.`
+                : `Excellent. The ${carName} is available for your selected schedule. Proceed to finalize your booking.`
+              : "One last step: Click below to browse cars available for this schedule."}
+          </p>
+        </div>
       </div>
+
     </motion.div>
   );
 }

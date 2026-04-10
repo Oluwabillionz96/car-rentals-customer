@@ -39,9 +39,14 @@ const QuantitySelector = ({
       >
         <Minus size={16} className="text-text-100" />
       </button>
-      <span className="w-8 text-center font-bold text-text-100">
-        {quantity}
-      </span>
+      <div className="flex flex-col items-center min-w-[32px]">
+        <span className="font-bold text-text-100">
+          {quantity}
+        </span>
+        <span className="text-[8px] text-text-400 uppercase font-black tracking-tighter">
+          of {max}
+        </span>
+      </div>
       <button
         onClick={(e) => {
           e.stopPropagation();
