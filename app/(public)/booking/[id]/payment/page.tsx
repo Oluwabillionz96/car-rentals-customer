@@ -78,14 +78,14 @@ const PaymentPage = () => {
           <div className="flex items-center gap-2 mb-4 px-1">
             <Car size={18} className="text-primary" />
             <h3 className="text-lg font-black text-text-100 uppercase italic tracking-tighter">
-              Selected Vehicles ({booking.selectedCars.length})
+              Selected Vehicles ({booking.selectedCars.reduce((sum, sc) => sum + sc.quantity, 0)})
             </h3>
           </div>
           <div className="space-y-4">
-            {booking.selectedCars.map((car, index) => (
+            {booking.selectedCars.map((selectedCar, index) => (
               <VehicleCard
-                key={car.id + index}
-                car={car}
+                key={selectedCar.carId + index}
+                car={selectedCar}
                 index={index}
                 booking={booking}
               />
@@ -100,6 +100,7 @@ const PaymentPage = () => {
               booking={booking}
               totalPrice={totalPrice}
               onPay={handlePayClick}
+              bookingId={booking.bookingId}
             />
 
             {/* Customer Info */}

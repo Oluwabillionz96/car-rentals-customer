@@ -1,4 +1,5 @@
 import { BookingDetails } from "@/lib/types";
+import { getCar } from "@/constants/cars";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -24,9 +25,12 @@ const BookingCardLeft = ({ booking }: { booking: BookingDetails | null }) => {
         )}
       </div>
       <div className="space-y-4">
-        {booking?.selectedCars.map((car, index) => (
+        {booking?.selectedCars.map((selectedCar, index) => {
+          const car = getCar(selectedCar.carId);
+          if (!car) return null;
+          return (
           <div
-            key={car.id + index}
+            key={selectedCar.carId + index}
             className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 p-2"
           >
             <div className="relative aspect-video rounded-2xl overflow-hidden group touch-pan-y shadow-inner bg-slate-100">
@@ -57,6 +61,9 @@ const BookingCardLeft = ({ booking }: { booking: BookingDetails | null }) => {
                 <span className="bg-primary/10 text-primary px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
                   {booking.service.name}
                 </span>
+                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+                  Quantity: {selectedCar.quantity}
+                </span>
                 <span className="bg-slate-100 text-text-400 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
                   ₦
                   {car[
@@ -67,7 +74,8 @@ const BookingCardLeft = ({ booking }: { booking: BookingDetails | null }) => {
               </div>
             </div>
           </div>
-        ))}
+        );
+        })}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { getCar } from "@/constants/cars";
 import {
   ChevronLeft,
   Hash,
@@ -125,8 +126,12 @@ const BookingDetailsPage = () => {
 
   const booking = bookings.find((b) => b.bookingId === id);
 
+  const firstCar = booking?.selectedCars[0]
+    ? getCar(booking.selectedCars[0].carId)
+    : null;
+
   const { openCancelModal, CancelModal } = useCancelBooking({
-    carName: booking?.selectedCars[0]?.name || "",
+    carName: firstCar?.name || "",
     bookingId: booking?.bookingId || "",
   });
 
@@ -215,14 +220,15 @@ const BookingDetailsPage = () => {
           <div className="flex items-center gap-2 mb-4 px-1">
             <Car size={18} className="text-primary" />
             <h3 className="text-lg font-black text-text-100 uppercase italic tracking-tighter">
-              Selected Vehicles ({booking.selectedCars.length})
+              Selected Vehicles (
+              {booking.selectedCars.reduce((sum, sc) => sum + sc.quantity, 0)})
             </h3>
           </div>
           <div className="space-y-4">
-            {booking.selectedCars.map((car, index) => (
+            {booking.selectedCars.map((selectedCar, index) => (
               <VehicleCard
-                key={car.id + index}
-                car={car}
+                key={selectedCar.carId + index}
+                car={selectedCar}
                 index={index}
                 booking={booking}
               />

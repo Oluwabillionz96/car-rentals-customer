@@ -1,24 +1,23 @@
 import { BookingDetails } from "@/lib/types";
-import { calculateDays } from "@/lib/utils";
-import { CreditCard, Shield, Sparkles, Wallet } from "lucide-react";
+import { calculateDays, getUnitRate } from "@/lib/utils";
+import { CreditCard, Shield, Sparkles, Wallet, Edit } from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const PaymentSummary = ({
   booking,
   totalPrice,
   onPay,
+  bookingId,
 }: {
   booking: BookingDetails;
   totalPrice: number;
   onPay: () => void;
+  bookingId?: string;
 }) => {
   const timeQuery = booking.service.pricing === "hourly" ? "hour" : "day";
 
-  const unitRate = booking.selectedCars.reduce(
-    (acc, car) =>
-      acc + car[timeQuery === "hour" ? "pricePerHour" : "pricePerDay"],
-    0,
-  );
+  const unitRate = getUnitRate(booking, timeQuery)
 
   const duration =
     booking.schedule?.type === "hourly"
@@ -51,7 +50,7 @@ const PaymentSummary = ({
         <div className="space-y-4">
           <div className="flex justify-between items-center text-sm">
             <span className="text-text-300 font-medium">
-              Vehicles ({booking.selectedCars.length})
+              Vehicles ({booking.selectedCars.reduce((sum, sc) => sum + sc.quantity, 0)})
             </span>
             <span className="text-text-100 font-bold">
               ₦{unitRate.toLocaleString()} / {timeQuery}
@@ -89,8 +88,18 @@ const PaymentSummary = ({
         >
           <Wallet size={20} />
           Pay with Paystack
-        
         </button>
+
+        {/* Modify Booking Button */}
+        {bookingId && (
+          <Link
+            href={`/booking/${bookingId}`}
+            className="w-full border-2 border-slate-200 hover:border-primary hover:bg-primary/5 text-text-100 font-bold py-4 px-8 rounded-2xl transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-tight group"
+          >
+            <Edit size={18} />
+            Modify Booking
+          </Link>
+        )}
 
         {/* Trust badges */}
         <div className="flex items-center justify-center gap-3 pt-2">

@@ -1,6 +1,6 @@
 import { CalendarHeart, CarFront, Plane, UserRound } from "lucide-react";
 import { BookingDetails, BookingSchedule, BookingStatus, Car } from "./types";
-import { MOCK_CARS } from "@/constants/cars";
+import { getCar, MOCK_CARS } from "@/constants/cars";
 
 export const calculateDays = (
   start: Date | null | string,
@@ -111,7 +111,11 @@ export const isCarAvailable = (
   schedule?: BookingSchedule | null,
 ) => {
   // Use the new quantity-based availability check
-  const availableQuantity = getAvailableQuantity(car.id, schedule ?? null, bookings);
+  const availableQuantity = getAvailableQuantity(
+    car.id,
+    schedule ?? null,
+    bookings,
+  );
   return availableQuantity > 0;
 };
 
@@ -164,6 +168,18 @@ export const persistVerifiedBookings = (bookings: BookingDetails[]) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
 };
 
+function getTotalPrice(
+  booking: BookingDetails,
+  priceType: "pricePerDay" | "pricePerHour",
+) {
+  return booking.selectedCars
+    .map((selectedCar) => {
+      const car = getCar(selectedCar.carId);
+      return car ? car[priceType] * selectedCar.quantity : 0;
+    })
+    .reduce((acc, price) => acc + price, 0);
+}
+
 export const calculatePrice = (booking: BookingDetails) => {
   if (booking.service.pricing === "hourly") {
     const bookingSchedule =
@@ -171,9 +187,7 @@ export const calculatePrice = (booking: BookingDetails) => {
 
     if (bookingSchedule) {
       const totalHours = bookingSchedule?.hours;
-      const totalPrice = booking.selectedCars
-        .map((car) => car.pricePerHour)
-        .reduce((acc, price) => acc + price, 0);
+      const totalPrice = getTotalPrice(booking, "pricePerHour");
       return totalPrice * totalHours;
     }
   }
@@ -184,13 +198,24 @@ export const calculatePrice = (booking: BookingDetails) => {
       bookingSchedule?.pickupDate,
       bookingSchedule?.dropoffDate,
     );
-    const totalPrice = booking.selectedCars
-      .map((car) => car.pricePerDay)
-      .reduce((acc, price) => acc + price, 0);
+    const totalPrice = getTotalPrice(booking, "pricePerDay");
     return totalPrice * days;
   }
   return 0;
 };
+
+export function getUnitRate(
+  booking: BookingDetails,
+  timeQuery: "hour" | "day" | "days",
+) {
+  if (!booking) return 0;
+  return booking.selectedCars.reduce((acc, selectedCar) => {
+    const car = getCar(selectedCar.carId);
+    if (!car) return acc;
+    const price = timeQuery === "hour" ? car.pricePerHour : car.pricePerDay;
+    return acc + price * selectedCar.quantity;
+  }, 0);
+}
 
 export const formatDateForInput = (dateStr: string) => {
   if (!dateStr) return "";

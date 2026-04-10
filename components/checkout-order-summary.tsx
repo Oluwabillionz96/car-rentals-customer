@@ -2,7 +2,7 @@
 
 import { CreditCard } from "lucide-react";
 import { BookingDetails } from "@/lib/types";
-import { calculateDays, calculatePrice } from "@/lib/utils";
+import { calculateDays, calculatePrice, getUnitRate } from "@/lib/utils";
 import { Control, useWatch } from "react-hook-form";
 import { BookingFormValues } from "@/lib/validations";
 
@@ -33,13 +33,7 @@ export default function CheckoutOrderSummary({
             <span className="text-text-300">Total Unit Rate</span>
             <span className="text-text-100 font-bold">
               ₦{" "}
-              {booking?.selectedCars
-                .reduce(
-                  (acc, car) =>
-                    acc +
-                    car[timeQuery === "hour" ? "pricePerHour" : "pricePerDay"],
-                  0,
-                )
+              {getUnitRate(booking, timeQuery)
                 .toLocaleString()}{" "}
               / {timeQuery}
             </span>

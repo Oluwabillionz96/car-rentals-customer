@@ -19,6 +19,7 @@ import CheckoutCustomerForm from "./checkout-customer-form";
 import CheckoutScheduleView from "./checkout-schedule-view";
 import CheckoutOrderSummary from "./checkout-order-summary";
 import CheckoutScheduleSummary from "./checkout-schedule-summary";
+import { getCar } from "@/constants/cars";
 
 const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
   const [isEditingSchedule, setIsEditingSchedule] = useState(false);
@@ -94,9 +95,10 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
 
   // Availability Check Logic
   const currentSchedule = watch("schedule") as BookingSchedule;
-  const carsWithConflicts = booking?.selectedCars.filter(
-    (car) => !isCarAvailable(car, bookings, currentSchedule),
-  );
+  const carsWithConflicts = booking?.selectedCars.filter((selectedCar) => {
+    const car = getCar(selectedCar.carId);
+    return car && !isCarAvailable(car, bookings, currentSchedule);
+  });
   const hasConflicts = carsWithConflicts && carsWithConflicts.length > 0;
 
   const onSubmit = (data: BookingFormValues) => {
@@ -175,7 +177,7 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
                         </h4>
                         <p className="text-xs text-red-500 font-medium leading-relaxed italic">
                           Some of your selected vehicles (
-                          {carsWithConflicts.map((c) => c.name).join(", ")}) are
+                          {carsWithConflicts.map((c) => getCar(c.carId)?.name).join(", ")}) are
                           already reserved for this period. Please re-adjust
                           your schedule or select different vehicles.
                         </p>
