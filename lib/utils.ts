@@ -180,23 +180,27 @@ function getTotalPrice(
     .reduce((acc, price) => acc + price, 0);
 }
 
-export const calculatePrice = (booking: BookingDetails) => {
+export const calculatePrice = (
+  booking: BookingDetails,
+  scheduleOverride?: BookingSchedule | null,
+) => {
+  const schedule = scheduleOverride || booking.schedule;
+
   if (booking.service.pricing === "hourly") {
-    const bookingSchedule =
-      booking.schedule?.type === "hourly" && booking.schedule;
+    const bookingSchedule = schedule?.type === "hourly" ? schedule : null;
 
     if (bookingSchedule) {
-      const totalHours = bookingSchedule?.hours;
+      const totalHours = bookingSchedule.hours || 0;
       const totalPrice = getTotalPrice(booking, "pricePerHour");
       return totalPrice * totalHours;
     }
   }
-  const bookingSchedule =
-    booking.schedule?.type === "daily" && booking.schedule;
+
+  const bookingSchedule = schedule?.type === "daily" ? schedule : null;
   if (bookingSchedule) {
     const days = calculateDays(
-      bookingSchedule?.pickupDate,
-      bookingSchedule?.dropoffDate,
+      bookingSchedule.pickupDate,
+      bookingSchedule.dropoffDate,
     );
     const totalPrice = getTotalPrice(booking, "pricePerDay");
     return totalPrice * days;
