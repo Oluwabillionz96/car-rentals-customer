@@ -109,6 +109,7 @@ export const isCarAvailable = (
   car: Car,
   bookings: BookingDetails[],
   schedule?: BookingSchedule | null,
+  requestedQuantity: number = 1,
 ) => {
   // Use the new quantity-based availability check
   const availableQuantity = getAvailableQuantity(
@@ -116,7 +117,7 @@ export const isCarAvailable = (
     schedule ?? null,
     bookings,
   );
-  return availableQuantity > 0;
+  return availableQuantity >= requestedQuantity;
 };
 
 export const now = () => new Date().toISOString();

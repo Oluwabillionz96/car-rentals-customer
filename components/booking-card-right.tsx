@@ -95,7 +95,15 @@ const BookingCardRight = ({ booking }: { booking: BookingDetails | null }) => {
   const currentSchedule = watch("schedule") as BookingSchedule;
   const carsWithConflicts = booking?.selectedCars.filter((selectedCar) => {
     const car = getCar(selectedCar.carId);
-    return car && !isCarAvailable(car, bookings, currentSchedule);
+    return (
+      car &&
+      !isCarAvailable(
+        car,
+        bookings,
+        currentSchedule,
+        selectedCar.quantity,
+      )
+    );
   });
   const hasConflicts = carsWithConflicts && carsWithConflicts.length > 0;
   const { clearAll } = useGlobalStore();
