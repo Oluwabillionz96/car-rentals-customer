@@ -1,50 +1,49 @@
 import { GET_CAR_PROPS, getCar } from "@/constants/cars";
-import { CheckCircle2, ChevronDown, MapPin } from "lucide-react";
+import { CheckCircle2, MapPin } from "lucide-react";
 import { ParamValue } from "next/dist/server/request/params";
-import { Dispatch, SetStateAction } from "react";
 import IconCard from "./icon-card";
 import Link from "next/link";
 import Map from "./map";
 
-const CarInfo = ({
-  id,
-  setIsReadMore,
-  isReadMore,
-}: {
-  id: ParamValue;
-  setIsReadMore: Dispatch<SetStateAction<boolean>>;
-  isReadMore: boolean;
-}) => {
-  const car = getCar(id);
+const CarInfo = ({ id }: { id: ParamValue }) => {
+  const car = getCar(id as string);
   return (
-    <div className="px-6 md:p-0 space-y-6">
+    <div className="px-1 md:p-0 space-y-6">
       <div className="justify-between flex items-start gap-2">
         <div className="flex-1">
           <div className="flex gap-2 flex-wrap lg:hidden">
             <p className="bg-primary/20 text-primary text-xs font-medium px-2 py-1 rounded-full">
-              {car?.type}
+              {car?.category}
             </p>
             <p className="bg-[#DCFCE7] text-[#166534] text-xs font-medium px-2 py-1 rounded-full">
               Available
             </p>
           </div>
         </div>
-        <div className="lg:hidden text-right">
-          <p className="text-primary text-xl font-bold">
-            ₦{car?.price.toLocaleString()}
-          </p>
-          <p className="text-xs text-text-300 font-bold uppercase tracking-widest">
-            Per Day
-          </p>
-        </div>
       </div>
       <div className="space-y-2 lg:hidden">
         <h1 className="text-2xl md:text-4xl font-bold text-text-100 truncate">
-          {car?.name} {car?.year}
+          {car?.name}
         </h1>
         <p className="text-text-300 text-sm ">
           Managed by Solution Car Rentals
         </p>
+      </div>
+
+      <div className="flex  flex-col gap-2">
+        <div className="flex justify-between">
+          <p className="text-text-300 font-medium">Price per hour </p>
+          <p className="text-text-100 font-bold">
+            ₦{car?.pricePerHour.toLocaleString()}{" "}
+          </p>
+        </div>
+        <div className="flex justify-between">
+          <p className="text-text-300 font-medium">Price Per Day</p>
+          <p className="text-text-100 font-bold">
+            {" "}
+            ₦{car?.pricePerDay.toLocaleString()}{" "}
+          </p>
+        </div>
       </div>
 
       {/* Quick Specs Boxes */}
@@ -52,30 +51,6 @@ const CarInfo = ({
         {GET_CAR_PROPS(car).map((spec, i) => (
           <IconCard key={i} text={spec.label ?? ""} icon={spec.icon} />
         ))}
-      </div>
-
-      {/* About Section */}
-      <div className="space-y-4">
-        <h2 className="text-lg md:text-xl font-bold text-text-100 ">
-          Description
-        </h2>
-        <div className="relative">
-          <p
-            className={`text-text-200 text-sm md:text-lg leading-relaxed  transition-all duration-300 ${!isReadMore && "line-clamp-4 md:line-clamp-5"}`}
-          >
-            {car?.description}
-          </p>
-          <button
-            onClick={() => setIsReadMore(!isReadMore)}
-            className="text-primary lg:hidden text-sm font-bold mt-2 flex items-center gap-1 hover:underline active:scale-95 transition-all"
-          >
-            {isReadMore ? "Read less" : "Read more"}
-            <ChevronDown
-              size={14}
-              className={`transition-transform duration-300 ${isReadMore ? "rotate-180" : ""}`}
-            />
-          </button>
-        </div>
       </div>
 
       {/* Top Features */}

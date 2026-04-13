@@ -5,45 +5,55 @@ import { ArrowRight, CalendarCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
+import { BookingDetails } from "@/lib/types";
 
 export default function BookingStatusCard() {
-  const bookings = useBookingStore((state) => state.verifiedBooking);
+  const { bookings, updateBookingStatuses } = useBookingStore();
   const router = useRouter();
-  const updateBookingStatuses = useBookingStore(
-    (state) => state.updateBookingStatuses,
-  );
 
   useEffect(() => {
-    // Update statuses on mount to ensure "Ongoing" vs "Past" is accurate
+    // Update statuses on mount to ensure "ongoing" vs "past" is accurate
     updateBookingStatuses();
   }, [updateBookingStatuses]);
 
-  const activeBooking = useMemo(() => {
-    if (!bookings) return null;
+  const activeBooking = useMemo((): BookingDetails | null => {
+    if (!bookings || bookings.length === 0) return null;
 
-    // Filter for Ongoing or Future bookings
+    // Filter for ongoing or confirmed (upcoming) bookings
     const filtered = bookings.filter(
-      (b) => b.status === "Ongoing" || b.status === "Future",
+      (b) => b.status === "ongoing" || b.status === "confirmed",
     );
-    
+
     if (filtered.length === 0) return null;
 
-    // Sort by pickup date (earliest first) and return the nearest upcoming booking
+    // Sort by schedule start date (earliest first)
     const sorted = filtered.sort((a, b) => {
-      const dateA = a.pickupDate ? new Date(a.pickupDate).getTime() : Infinity;
-      const dateB = b.pickupDate ? new Date(b.pickupDate).getTime() : Infinity;
-      return dateA - dateB;
+      const getStartTime = (booking: BookingDetails) => {
+        if (!booking.schedule) return Infinity;
+        if (booking.schedule.type === "daily") {
+          return new Date(booking.schedule.pickupDate).getTime();
+        }
+        return new Date(`${booking.schedule.date}T${booking.schedule.startTime}`).getTime();
+      };
+      return getStartTime(a) - getStartTime(b);
     });
 
-    return sorted[0]; // Return the earliest booking
+    return sorted[0];
   }, [bookings]);
 
-  if (!activeBooking) return null;
+  if (!activeBooking || !activeBooking.customer) return null;
 
   const name = activeBooking.customer.firstName;
-  const dateObj = activeBooking.pickupDate
-    ? new Date(activeBooking.pickupDate)
-    : null;
+
+  const getPickupDate = (): Date | null => {
+    if (!activeBooking.schedule) return null;
+    if (activeBooking.schedule.type === "daily") {
+      return new Date(activeBooking.schedule.pickupDate);
+    }
+    return new Date(activeBooking.schedule.date);
+  };
+
+  const dateObj = getPickupDate();
   const today = new Date();
 
   const isToday =

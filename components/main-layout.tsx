@@ -1,9 +1,12 @@
+import { Suspense } from "react";
 import Header from "./header";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <section className="min-h-screen bg-slate-50">
-      <Header />
+      <Suspense fallback={null}>
+        <Header />
+      </Suspense>
       <main className="md:pt-32 pt-18 flex flex-col gap-10 md:gap-20 px-4 md:px-20 md:pb-20 pb-10">
         {children}
       </main>
